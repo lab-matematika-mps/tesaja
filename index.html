@@ -105,7 +105,7 @@
 
         .primary-btn {
             background: var(--primary);
-            color: #000; /* Contrast text for bright neon */
+            color: #000; 
             font-weight: 700;
             border: none;
             box-shadow: 0 0 15px var(--primary);
@@ -121,7 +121,6 @@
             background: var(--primary-hover);
         }
 
-        /* Input styling */
         .glass-input {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
@@ -138,7 +137,6 @@
             color: var(--text-muted);
         }
 
-        /* Efek teks glow */
         .text-glow {
             text-shadow: 0 0 10px var(--primary);
         }
@@ -182,7 +180,6 @@
             100% { transform: translateY(0px); }
         }
 
-        /* Tema Card Selection */
         .theme-card {
             border: 2px solid transparent;
             cursor: pointer;
@@ -193,7 +190,6 @@
             transform: scale(1.05);
         }
 
-        /* Canvas Background */
         #bg-canvas {
             position: fixed;
             top: 0;
@@ -204,7 +200,6 @@
             pointer-events: none;
         }
 
-        /* Main content wrapper */
         .main-wrapper {
             flex: 1;
             display: flex;
@@ -212,6 +207,78 @@
             justify-content: center;
             position: relative;
             z-index: 10;
+        }
+
+        /* ==========================================================================
+           DAFTAR MATERI MATEMATIKA STYLES
+           ========================================================================== */
+        .topic-category {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+        }
+        .topic-category:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--primary);
+            box-shadow: var(--glow-shadow);
+        }
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        .badge-count {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            font-weight: 600;
+        }
+        .topic-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .topic-list li {
+            position: relative;
+            padding-left: 1.8rem;
+            color: var(--text-main);
+            opacity: 0.8;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        /* Cabang Tree ├── */
+        .topic-list li::before {
+            content: '├──';
+            position: absolute;
+            left: 0;
+            color: var(--glass-border);
+            font-family: monospace;
+            transition: all 0.3s ease;
+        }
+        /* Cabang Penutup └── */
+        .topic-list li.last-item::before {
+            content: '└──';
+        }
+        .topic-list li:hover {
+            opacity: 1;
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+        .topic-list li:hover::before {
+            color: var(--primary);
         }
     </style>
 </head>
@@ -228,7 +295,6 @@
     <div class="main-wrapper container mx-auto px-4 py-8">
         
         <section id="view-landing" class="view-section flex flex-col items-center justify-center max-w-3xl mx-auto w-full text-center">
-            
             <div class="glass-panel p-8 md:p-12 w-full mt-10 float-anim">
                 <div class="mb-8">
                     <div class="inline-block p-4 rounded-full bg-white/5 mb-4 border border-white/10">
@@ -274,7 +340,6 @@
         </section>
 
         <section id="view-subject" class="view-section hidden flex-col items-center justify-center max-w-4xl mx-auto w-full">
-            
             <div class="glass-panel p-6 md:p-8 w-full mb-8 relative overflow-hidden">
                 <div class="absolute -right-10 -top-10 opacity-10 text-9xl">
                     <i id="narration-icon" class="fas fa-user-astronaut"></i>
@@ -313,16 +378,86 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                <div onclick="ui.showComingSoon()" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group border-t-4 border-t-[var(--primary)]">
+                <div onclick="app.navigate('view-math-topics')" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group border-t-4 border-t-[var(--primary)]">
                     <i class="fas fa-tasks text-4xl mb-4 text-[var(--primary)]"></i>
                     <h3 class="text-xl font-bold mb-2">Latihan Per Materi</h3>
-                    <div class="mt-4 px-4 py-1 bg-white/10 rounded-full text-xs font-semibold tracking-wider">COMING SOON</div>
+                    <div class="mt-4 px-4 py-1 bg-[var(--primary)]/20 text-[var(--primary)] rounded-full text-xs font-bold tracking-wider">BUKA MATERI</div>
                 </div>
 
                 <div onclick="ui.showComingSoon()" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group border-t-4 border-t-[var(--secondary)]">
                     <i class="fas fa-stopwatch text-4xl mb-4 text-[var(--secondary)]"></i>
                     <h3 class="text-xl font-bold mb-2">Simulasi TKA</h3>
                     <div class="mt-4 px-4 py-1 bg-white/10 rounded-full text-xs font-semibold tracking-wider">COMING SOON</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-math-topics" class="view-section hidden flex-col items-center justify-center max-w-4xl mx-auto w-full">
+            <div class="mb-8 text-center">
+                <h2 class="text-3xl font-bold mb-2 text-gradient">Latihan Per Materi</h2>
+                <p class="text-[var(--text-muted)]">Pilih bab dan materi yang ingin kamu kuasai hari ini!</p>
+            </div>
+
+            <div class="glass-panel p-6 w-full mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="topic-category">
+                        <div class="topic-header">
+                            <span><i class="fas fa-book text-[var(--primary)] mr-2"></i> 📘 Bilangan</span>
+                            <span class="badge-count">6 Materi</span>
+                        </div>
+                        <ul class="topic-list">
+                            <li>Operasi Bilangan Cacah</li>
+                            <li>KPK dan FPB</li>
+                            <li>Mengubah Bentuk Pecahan</li>
+                            <li>Pecahan Senilai</li>
+                            <li>Perbandingan Pecahan</li>
+                            <li class="last-item">Operasi Bilangan Pecahan</li>
+                        </ul>
+                    </div>
+
+                    <div class="topic-category">
+                        <div class="topic-header">
+                            <span><i class="fas fa-ruler text-[var(--secondary)] mr-2"></i> 📗 Pengukuran</span>
+                            <span class="badge-count">9 Materi</span>
+                        </div>
+                        <ul class="topic-list">
+                            <li>Satuan Panjang</li>
+                            <li>Hubungan Satuan Panjang</li>
+                            <li>Satuan Berat</li>
+                            <li>Hubungan Satuan Berat</li>
+                            <li>Satuan Volume</li>
+                            <li>Hubungan Satuan Volume</li>
+                            <li>Satuan Waktu</li>
+                            <li>Hubungan Antar Satuan Waktu</li>
+                            <li class="last-item">Laju (Kecepatan)</li>
+                        </ul>
+                    </div>
+
+                    <div class="topic-category">
+                        <div class="topic-header">
+                            <span><i class="fas fa-shapes text-[var(--primary)] mr-2"></i> 📙 Geometri</span>
+                            <span class="badge-count">5 Materi</span>
+                        </div>
+                        <ul class="topic-list">
+                            <li>Bentuk Bangun Datar</li>
+                            <li>Besar Sudut</li>
+                            <li>Keliling dan Luas Bangun Datar</li>
+                            <li>Konstruksi Bangun Ruang</li>
+                            <li class="last-item">Volume Bangun Ruang</li>
+                        </ul>
+                    </div>
+
+                    <div class="topic-category">
+                        <div class="topic-header">
+                            <span><i class="fas fa-chart-pie text-[var(--secondary)] mr-2"></i> 📕 Pengolahan Data</span>
+                            <span class="badge-count">1 Materi</span>
+                        </div>
+                        <ul class="topic-list">
+                            <li class="last-item">Penyajian Data</li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
         </section>
@@ -392,7 +527,6 @@
     </div>
 
     <script>
-        // --- DATA & STATE ---
         const state = {
             viewHistory: ['view-landing'],
             currentTheme: 'galaxy',
@@ -419,7 +553,6 @@
             }
         };
 
-        // --- SISTEM AUDIO (HTML5 Audio) ---
         const audioSys = {
             bgm: new Audio('background-music.mp3'),
             isSetup: false,
@@ -427,7 +560,7 @@
             setup() {
                 if(this.isSetup) return;
                 this.bgm.loop = true;
-                this.bgm.volume = document.getElementById('volume-slider').value; // Ambil dari slider
+                this.bgm.volume = document.getElementById('volume-slider').value;
                 this.isSetup = true;
             },
 
@@ -437,27 +570,19 @@
                     return;
                 }
                 this.setup();
-                
-                // Play dengan penanganan error (browser modern memblokir autoplay tanpa interaksi)
                 this.bgm.play().catch(e => console.log("Autoplay membutuhkan interaksi user", e));
             },
 
             pauseMusic() {
-                if(this.isSetup) {
-                    this.bgm.pause();
-                }
+                if(this.isSetup) this.bgm.pause();
             },
             
             setVolume(val) {
-                if(this.isSetup) {
-                    this.bgm.volume = val;
-                }
+                if(this.isSetup) this.bgm.volume = val;
             },
 
             playSFX(sfxType) {
-                // Jangan mainkan efek suara jika toggle Suara & Musik dimatikan
                 if(!state.musicEnabled) return; 
-                
                 let sfxSrc = '';
                 if(sfxType === 'click') sfxSrc = 'sfx-click.mp3';
                 else if(sfxType === 'galaxy') sfxSrc = themeData.galaxy.sfxUrl;
@@ -467,19 +592,16 @@
                 if(sfxSrc) {
                     const sfxAudio = new Audio(sfxSrc);
                     sfxAudio.volume = document.getElementById('volume-slider').value;
-                    // Putar SFX, abaikan error jika browser memblokirnya
                     sfxAudio.play().catch(e => console.log("SFX diblokir browser", e));
                 }
             }
         };
 
-        // --- STREAMING_CHUNK:Logika UI dan Navigasi... ---
         const ui = {
             showModal(id, contentId) {
                 const modal = document.getElementById(id);
                 const content = document.getElementById(contentId);
                 modal.classList.remove('hidden');
-                // Trigger reflow
                 void modal.offsetWidth;
                 modal.classList.remove('opacity-0');
                 content.classList.remove('scale-95');
@@ -522,11 +644,8 @@
         const settings = {
             toggleMusic() {
                 state.musicEnabled = document.getElementById('toggle-music').checked;
-                if(state.musicEnabled) {
-                    audioSys.playMusic();
-                } else {
-                    audioSys.pauseMusic();
-                }
+                if(state.musicEnabled) audioSys.playMusic();
+                else audioSys.pauseMusic();
             },
             changeVolume(val) {
                 audioSys.setVolume(val);
@@ -541,38 +660,22 @@
 
         const app = {
             setTheme(themeName) {
-                // Update state
                 state.currentTheme = themeName;
-                
-                // Update Body Class untuk CSS Variables
                 document.body.className = `theme-${themeName}`;
-                
-                // Update UI Theme Cards
                 document.querySelectorAll('.theme-card').forEach(el => el.classList.remove('active'));
                 document.getElementById(`btn-theme-${themeName}`).classList.add('active');
-
-                // Mainkan SFX khusus tema ini
                 audioSys.playSFX(themeName);
-
-                // Update Audio
                 if(state.musicEnabled) audioSys.playMusic();
-
-                // Restart Particles
                 bgEngine.initParticles();
             },
 
             startLearning() {
                 const nameInput = document.getElementById('student-name').value.trim();
                 if(!nameInput) {
-                    ui.showAlert(
-                        "Halo, Siapa namamu?", 
-                        "Silakan masukkan nama terlebih dahulu agar kami bisa menyapamu.",
-                        "fas fa-keyboard"
-                    );
+                    ui.showAlert("Halo, Siapa namamu?", "Silakan masukkan nama terlebih dahulu agar kami bisa menyapamu.", "fas fa-keyboard");
                     return;
                 }
                 
-                // Perkenankan audio context pada interaksi pertama user (aturan browser)
                 if(state.musicEnabled && !audioSys.isSetup) {
                     audioSys.setup();
                     audioSys.playMusic();
@@ -596,7 +699,6 @@
                 const currentEl = document.getElementById(currentViewId);
                 const targetEl = document.getElementById(targetViewId);
 
-                // Animasi keluar
                 currentEl.classList.add('fade-exit');
                 
                 setTimeout(() => {
@@ -608,7 +710,7 @@
                     
                     state.viewHistory.push(targetViewId);
                     this.updateBackButton();
-                }, 400); // Sesuaikan dengan durasi animasi CSS
+                }, 400); 
             },
 
             goBack() {
@@ -637,7 +739,6 @@
                 const backBtn = document.getElementById('back-btn-container');
                 if(state.viewHistory.length > 1) {
                     backBtn.classList.remove('hidden');
-                    // Cegah tombol kembali muncul mendadak, gunakan fade
                     backBtn.classList.add('fade-enter');
                 } else {
                     backBtn.classList.add('hidden');
@@ -646,7 +747,6 @@
             }
         };
 
-        // --- STREAMING_CHUNK:Engine Animasi Canvas (Latar Belakang)... ---
         const bgEngine = {
             canvas: document.getElementById('bg-canvas'),
             ctx: null,
@@ -664,7 +764,7 @@
             resize() {
                 this.canvas.width = window.innerWidth;
                 this.canvas.height = window.innerHeight;
-                this.initParticles(); // Re-init on resize
+                this.initParticles();
             },
 
             initParticles() {
@@ -674,7 +774,6 @@
                 const theme = state.currentTheme;
 
                 if (theme === 'galaxy') {
-                    // Bintang
                     for (let i = 0; i < 150; i++) {
                         this.particles.push({
                             x: Math.random() * w, y: Math.random() * h,
@@ -684,7 +783,6 @@
                             type: 'star'
                         });
                     }
-                    // Komet lambat
                     for (let i = 0; i < 3; i++) {
                         this.particles.push({
                             x: Math.random() * w, y: Math.random() * h,
@@ -695,7 +793,6 @@
                         });
                     }
                 } else if (theme === 'sky') {
-                    // Kelopak Sakura
                     for (let i = 0; i < 60; i++) {
                         this.particles.push({
                             x: Math.random() * w, 
@@ -709,7 +806,6 @@
                         });
                     }
                 } else if (theme === 'ocean') {
-                    // Gelembung
                     for (let i = 0; i < 80; i++) {
                         this.particles.push({
                             x: Math.random() * w, 
@@ -763,7 +859,6 @@
                         this.ctx.translate(p.x, p.y);
                         this.ctx.rotate(p.angle);
                         this.ctx.beginPath();
-                        // Membentuk menyerupai kelopak sakura
                         this.ctx.ellipse(0, 0, p.r, p.r/1.5, 0, 0, Math.PI * 2);
                         this.ctx.fillStyle = 'rgba(255, 183, 197, 0.8)';
                         this.ctx.fill();
@@ -773,7 +868,6 @@
                         p.y += p.speedY;
                         p.angle += p.spin;
                         
-                        // Kembali ke atas jika sudah sampai bawah layar
                         if(p.y > h + 20) {
                             p.y = -20;
                             p.x = Math.random() * w;
@@ -788,7 +882,6 @@
                         p.x += p.speedX;
                         p.y += p.speedY;
                         
-                        // Kembali ke bawah jika sudah sampai atas layar
                         if(p.y < -20) {
                             p.y = h + 20;
                             p.x = Math.random() * w;
@@ -800,7 +893,6 @@
             }
         };
 
-        // Initialize background engine on load
         window.addEventListener('load', () => {
             bgEngine.init();
         });
