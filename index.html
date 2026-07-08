@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mugeb TKA Learning Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* Tema Default (Galaksi) */
+            --bg-top: #0a0a1a;
+            --bg-bottom: #1a0b2e;
+            --primary: #00f3ff;
+            --primary-hover: #00d0ff;
+            --secondary: #b900ff;
+            --text-main: #ffffff;
+            --text-muted: #a0a0b8;
+            --glass-bg: rgba(20, 20, 40, 0.4);
+            --glass-border: rgba(0, 243, 255, 0.2);
+            --glow-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+            --font-main: 'Space Grotesk', sans-serif;
+        }
+
+        /* Tema Langit */
+        body.theme-sky {
+            --bg-top: #ffe5d9;
+            --bg-bottom: #ffcad4;
+            --primary: #f28482;
+            --primary-hover: #f0716f;
+            --secondary: #84a59d;
+            --text-main: #2b2d42;
+            --text-muted: #5c677d;
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --glass-border: rgba(242, 132, 130, 0.3);
+            --glow-shadow: 0 10px 25px rgba(242, 132, 130, 0.4);
+        }
+
+        /* Tema Samudra */
+        body.theme-ocean {
+            --bg-top: #001220;
+            --bg-bottom: #004d7a;
+            --primary: #00d4ff;
+            --primary-hover: #00b0ff;
+            --secondary: #00ff88;
+            --text-main: #ffffff;
+            --text-muted: #b3e5fc;
+            --glass-bg: rgba(0, 30, 60, 0.4);
+            --glass-border: rgba(0, 212, 255, 0.3);
+            --glow-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-main);
+            background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom));
+            background-attachment: fixed;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background 1s ease, color 0.5s ease;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Menyembunyikan scrollbar tapi tetap bisa scroll */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .glass-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--glow-shadow);
+            border-color: var(--primary);
+        }
+
+        .primary-btn {
+            background: var(--primary);
+            color: #000; /* Contrast text for bright neon */
+            font-weight: 700;
+            border: none;
+            box-shadow: 0 0 15px var(--primary);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        body.theme-sky .primary-btn {
+            color: #fff;
+        }
+
+        .primary-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px var(--primary-hover);
+            background: var(--primary-hover);
+        }
+
+        /* Input styling */
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            transition: all 0.3s;
+        }
+        .glass-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .glass-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Efek teks glow */
+        .text-glow {
+            text-shadow: 0 0 10px var(--primary);
+        }
+        .text-gradient {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .fade-enter {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s ease forwards;
+        }
+        .fade-exit {
+            animation: fadeOut 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
+        .pulse-slow {
+            animation: pulseGlow 2.5s infinite;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px var(--primary); transform: scale(1); }
+            50% { box-shadow: 0 0 25px var(--primary); transform: scale(1.02); }
+            100% { box-shadow: 0 0 10px var(--primary); transform: scale(1); }
+        }
+
+        .float-anim {
+            animation: floating 4s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Tema Card Selection */
+        .theme-card {
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+        .theme-card.active {
+            border-color: var(--primary);
+            box-shadow: var(--glow-shadow);
+            transform: scale(1.05);
+        }
+
+        /* Canvas Background */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Main content wrapper */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="theme-galaxy">
+
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="fixed top-4 right-4 z-50">
+        <button onclick="ui.toggleSettings()" class="glass-btn p-3 rounded-full flex items-center justify-center w-12 h-12" aria-label="Pengaturan">
+            <i class="fas fa-cog text-xl"></i>
+        </button>
+    </div>
+
+    <div class="main-wrapper container mx-auto px-4 py-8">
+        
+        <section id="view-landing" class="view-section flex flex-col items-center justify-center max-w-3xl mx-auto w-full text-center">
+            
+            <div class="glass-panel p-8 md:p-12 w-full mt-10 float-anim">
+                <div class="mb-8">
+                    <div class="inline-block p-4 rounded-full bg-white/5 mb-4 border border-white/10">
+                        <i class="fas fa-graduation-cap text-4xl text-gradient"></i>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-bold mb-3 tracking-tight">
+                        Mugeb <span class="text-gradient">TKA</span> Learning Center
+                    </h1>
+                    <p class="text-lg text-[var(--text-muted)] font-light">
+                        Berlatih TKA dengan pengalaman belajar yang menyenangkan.
+                    </p>
+                </div>
+
+                <div class="mb-8 w-full max-w-md mx-auto">
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-[var(--text-muted)]"></i>
+                        <input type="text" id="student-name" class="glass-input w-full py-4 pl-12 pr-4 rounded-xl text-lg text-center font-medium" placeholder="Masukkan nama kamu..." autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="mb-10">
+                    <p class="text-sm uppercase tracking-widest text-[var(--text-muted)] mb-4 font-semibold">Pilih Tema Perjalananmu</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="theme-card glass-btn p-4 rounded-xl active flex flex-col items-center gap-2" onclick="app.setTheme('galaxy')" id="btn-theme-galaxy">
+                            <span class="text-3xl">🌌</span>
+                            <span class="font-medium">Galaksi</span>
+                        </div>
+                        <div class="theme-card glass-btn p-4 rounded-xl flex flex-col items-center gap-2" onclick="app.setTheme('sky')" id="btn-theme-sky">
+                            <span class="text-3xl">🌅</span>
+                            <span class="font-medium">Langit</span>
+                        </div>
+                        <div class="theme-card glass-btn p-4 rounded-xl flex flex-col items-center gap-2" onclick="app.setTheme('ocean')" id="btn-theme-ocean">
+                            <span class="text-3xl">🌊</span>
+                            <span class="font-medium">Samudra</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="app.startLearning()" class="primary-btn pulse-slow w-full md:w-auto px-10 py-4 rounded-full text-xl flex items-center justify-center gap-3 mx-auto">
+                    <i class="fas fa-rocket"></i> Mulai Belajar
+                </button>
+            </div>
+        </section>
+
+        <section id="view-subject" class="view-section hidden flex-col items-center justify-center max-w-4xl mx-auto w-full">
+            
+            <div class="glass-panel p-6 md:p-8 w-full mb-8 relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 opacity-10 text-9xl">
+                    <i id="narration-icon" class="fas fa-user-astronaut"></i>
+                </div>
+                <div class="relative z-10 flex gap-4 items-start">
+                    <div class="text-3xl text-[var(--primary)] mt-1">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <p id="greeting-text" class="text-lg md:text-xl font-light leading-relaxed"></p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                <div onclick="app.navigate('view-math')" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group">
+                    <div class="w-20 h-20 rounded-full bg-[var(--primary)]/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-calculator text-4xl text-[var(--primary)]"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Matematika</h3>
+                    <p class="text-[var(--text-muted)] text-sm">Logika, Berhitung & Analisis</p>
+                </div>
+
+                <div onclick="ui.showComingSoon()" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group">
+                    <div class="w-20 h-20 rounded-full bg-[var(--secondary)]/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-book-open text-4xl text-[var(--secondary)]"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Bahasa Indonesia</h3>
+                    <p class="text-[var(--text-muted)] text-sm">Literasi & Pemahaman Bacaan</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-math" class="view-section hidden flex-col items-center justify-center max-w-4xl mx-auto w-full">
+            <div class="mb-8 text-center">
+                <h2 class="text-3xl font-bold mb-2 text-gradient">Matematika</h2>
+                <p class="text-[var(--text-muted)]">Pilih mode latihan yang kamu inginkan.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                <div onclick="ui.showComingSoon()" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group border-t-4 border-t-[var(--primary)]">
+                    <i class="fas fa-tasks text-4xl mb-4 text-[var(--primary)]"></i>
+                    <h3 class="text-xl font-bold mb-2">Latihan Per Materi</h3>
+                    <div class="mt-4 px-4 py-1 bg-white/10 rounded-full text-xs font-semibold tracking-wider">COMING SOON</div>
+                </div>
+
+                <div onclick="ui.showComingSoon()" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group border-t-4 border-t-[var(--secondary)]">
+                    <i class="fas fa-stopwatch text-4xl mb-4 text-[var(--secondary)]"></i>
+                    <h3 class="text-xl font-bold mb-2">Simulasi TKA</h3>
+                    <div class="mt-4 px-4 py-1 bg-white/10 rounded-full text-xs font-semibold tracking-wider">COMING SOON</div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <div id="back-btn-container" class="hidden pb-10 flex justify-center z-20">
+        <button onclick="app.goBack()" class="glass-btn px-6 py-3 rounded-full flex items-center gap-2 hover:bg-white/10">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </button>
+    </div>
+
+    <footer class="w-full text-center p-6 border-t border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md z-20 mt-auto">
+        <div class="container mx-auto">
+            <p class="font-bold text-sm md:text-base text-gradient mb-1">Berakhlak Mulia dan Berprestasi</p>
+            <p class="text-xs text-[var(--text-muted)] mb-2">Website dibuat khusus sebagai media latihan TKA.</p>
+            <p class="text-xs text-[var(--text-muted)]">&copy; 2026 Mugeb Primary School (SD Muhammadiyah 1 GKB)</p>
+        </div>
+    </footer>
+
+    <div id="settings-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-11/12 max-w-sm p-6 transform scale-95 transition-transform duration-300" id="settings-content">
+            <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-3">
+                <h3 class="text-xl font-bold"><i class="fas fa-sliders-h mr-2"></i> Pengaturan</h3>
+                <button onclick="ui.toggleSettings()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium"><i class="fas fa-music mr-2 w-5"></i> Suara & Musik</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-music" class="sr-only peer" onchange="settings.toggleMusic()">
+                        <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div>
+                    </label>
+                </div>
+
+                <div class="flex justify-between items-center">
+                    <span class="font-medium"><i class="fas fa-volume-up mr-2 w-5"></i> Volume</span>
+                    <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" class="w-24 accent-[var(--primary)] cursor-pointer" onchange="settings.changeVolume(this.value)">
+                </div>
+                
+                <div class="flex justify-between items-center">
+                    <span class="font-medium"><i class="fas fa-magic mr-2 w-5"></i> Efek Animasi</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-particles" class="sr-only peer" checked onchange="settings.toggleParticles()">
+                        <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div>
+                    </label>
+                </div>
+
+                <div class="mt-4 p-3 bg-white/5 rounded-lg border border-white/10 text-xs text-center text-[var(--text-muted)]">
+                    <i class="fas fa-info-circle mb-1"></i><br>
+                    Mode Terang/Gelap menyesuaikan otomatis dengan tema yang dipilih.
+                </div>
+            </div>
+
+            <button onclick="ui.toggleSettings()" class="primary-btn w-full mt-6 py-2 rounded-lg font-bold">Simpan</button>
+        </div>
+    </div>
+
+    <div id="alert-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-11/12 max-w-sm p-8 text-center transform scale-95 transition-transform duration-300" id="alert-content">
+            <div id="alert-icon" class="text-4xl mb-4 text-[var(--primary)]"></div>
+            <h3 id="alert-title" class="text-xl font-bold mb-2"></h3>
+            <p id="alert-msg" class="text-[var(--text-muted)] mb-6 text-sm"></p>
+            <button onclick="ui.closeAlert()" class="primary-btn px-6 py-2 rounded-full font-bold">Mengerti</button>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA & STATE ---
+        const state = {
+            viewHistory: ['view-landing'],
+            currentTheme: 'galaxy',
+            studentName: '',
+            particlesEnabled: true,
+            musicEnabled: false
+        };
+
+        const themeData = {
+            galaxy: {
+                icon: 'fa-user-astronaut',
+                sfxUrl: 'sfx-galaxy.mp3',
+                getGreeting: (name) => `Halo, <strong>${name}</strong>!<br>Selamat datang di pusat pelatihan TKA Mugeb. Aku akan menjadi teman perjalananmu menjelajahi galaksi ilmu. Kita akan berlatih sedikit demi sedikit hingga kamu semakin percaya diri. Siap memulai misi hari ini?`
+            },
+            sky: {
+                icon: 'fa-sun',
+                sfxUrl: 'sfx-sky.mp3',
+                getGreeting: (name) => `Halo, <strong>${name}</strong>!<br>Selamat datang. Seperti matahari yang perlahan terbit, kemampuanmu juga akan berkembang sedikit demi sedikit. Mari belajar bersama dengan semangat dan hati yang gembira hari ini.`
+            },
+            ocean: {
+                icon: 'fa-water',
+                sfxUrl: 'sfx-ocean.mp3',
+                getGreeting: (name) => `Halo, <strong>${name}</strong>!<br>Selamat datang di dunia bawah laut pengetahuan. Mari menyelam bersama untuk menemukan berbagai kemampuan baru dalam menghadapi TKA.`
+            }
+        };
+
+        // --- SISTEM AUDIO (HTML5 Audio) ---
+        const audioSys = {
+            bgm: new Audio('background-music.mp3'),
+            isSetup: false,
+
+            setup() {
+                if(this.isSetup) return;
+                this.bgm.loop = true;
+                this.bgm.volume = document.getElementById('volume-slider').value; // Ambil dari slider
+                this.isSetup = true;
+            },
+
+            playMusic() {
+                if(!state.musicEnabled) {
+                    this.pauseMusic();
+                    return;
+                }
+                this.setup();
+                
+                // Play dengan penanganan error (browser modern memblokir autoplay tanpa interaksi)
+                this.bgm.play().catch(e => console.log("Autoplay membutuhkan interaksi user", e));
+            },
+
+            pauseMusic() {
+                if(this.isSetup) {
+                    this.bgm.pause();
+                }
+            },
+            
+            setVolume(val) {
+                if(this.isSetup) {
+                    this.bgm.volume = val;
+                }
+            },
+
+            playSFX(sfxType) {
+                // Jangan mainkan efek suara jika toggle Suara & Musik dimatikan
+                if(!state.musicEnabled) return; 
+                
+                let sfxSrc = '';
+                if(sfxType === 'click') sfxSrc = 'sfx-click.mp3';
+                else if(sfxType === 'galaxy') sfxSrc = themeData.galaxy.sfxUrl;
+                else if(sfxType === 'sky') sfxSrc = themeData.sky.sfxUrl;
+                else if(sfxType === 'ocean') sfxSrc = themeData.ocean.sfxUrl;
+                
+                if(sfxSrc) {
+                    const sfxAudio = new Audio(sfxSrc);
+                    sfxAudio.volume = document.getElementById('volume-slider').value;
+                    // Putar SFX, abaikan error jika browser memblokirnya
+                    sfxAudio.play().catch(e => console.log("SFX diblokir browser", e));
+                }
+            }
+        };
+
+        // --- STREAMING_CHUNK:Logika UI dan Navigasi... ---
+        const ui = {
+            showModal(id, contentId) {
+                const modal = document.getElementById(id);
+                const content = document.getElementById(contentId);
+                modal.classList.remove('hidden');
+                // Trigger reflow
+                void modal.offsetWidth;
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            },
+            hideModal(id, contentId) {
+                const modal = document.getElementById(id);
+                const content = document.getElementById(contentId);
+                modal.classList.add('opacity-0');
+                content.classList.remove('scale-100');
+                content.classList.add('scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            },
+            toggleSettings() {
