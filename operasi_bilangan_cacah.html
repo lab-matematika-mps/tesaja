@@ -1,4 +1,37 @@
-[
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operasi Bilangan Cacah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0a0a1a; color: white; font-family: sans-serif; }
+    </style>
+</head>
+<body class="p-10">
+    <h1 class="text-3xl font-bold mb-5">Latihan: Operasi Bilangan Cacah</h1>
+    
+    <!-- Tempat untuk menampilkan soal nanti -->
+    <div id="soal-container"></div>
+
+    <script>
+        // MASUKKAN KODE JSON DI SINI
+        const daftarSoal = [
+            {
+                "id": 1,
+                "jenis_soal": "Pilihan Ganda",
+                "pertanyaan": "Dalam rangka Hari Literasi, SD Harapan membagikan buku cerita kepada siswa kelas 6. Kelas A berjumlah 30 siswa, Kelas B 34 siswa, dan Kelas C 32 siswa. Setiap siswa memperoleh 2 buku. Jika satu kardus berisi 24 buku, banyak kardus yang diperlukan adalah ....",
+                "opsi": { "A": "6 kardus", "B": "7 kardus", "C": "8 kardus", "D": "9 kardus" },
+                "jawaban_benar": ["C"]
+            },
+            // ... (lanjutkan sisa soal lainnya di sini)
+        ];
+
+        // Ini untuk tes saja: Cek apakah soal sudah masuk
+        console.log("Jumlah soal:", daftarSoal.length);
+    </script>
+  [
   {
     "id": 1,
     "jenis_soal": "Pilihan Ganda",
@@ -126,3 +159,5 @@
     "jawaban_benar": ["A", "B", "D"]
   }
 ]
+</body>
+</html>
