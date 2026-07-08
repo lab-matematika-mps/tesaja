@@ -693,6 +693,9 @@
         const app = {
             setTheme(themeName) {
                 state.currentTheme = themeName;
+    localStorage.setItem('savedTheme', themeName); // TAMBAHKAN INI
+    document.body.className = `theme-${themeName}`;
+    // ... sisa kode lainnya
                 document.body.className = `theme-${themeName}`;
                 document.querySelectorAll('.theme-card').forEach(el => el.classList.remove('active'));
                 document.getElementById(`btn-theme-${themeName}`).classList.add('active');
