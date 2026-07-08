@@ -407,12 +407,12 @@
                             <span class="badge-count">6 Materi</span>
                         </div>
                         <ul class="topic-list">
-                            <li>Operasi Bilangan Cacah</li>
-                            <li>KPK dan FPB</li>
-                            <li>Mengubah Bentuk Pecahan</li>
-                            <li>Pecahan Senilai</li>
-                            <li>Perbandingan Pecahan</li>
-                            <li class="last-item">Operasi Bilangan Pecahan</li>
+                            <li onclick="app.openMateri('operasi_bilangan_cacah')">Operasi Bilangan Cacah</li>
+                            <li onclick="app.openMateri('kpk_dan_fpb')">KPK dan FPB</li>
+                            <li onclick="app.openMateri('mengubah_bentuk_pecahan')">Mengubah Bentuk Pecahan</li>
+                            <li onclick="app.openMateri('pecahan_senilai')">Pecahan Senilai</li>
+                            <li onclick="app.openMateri('perbandingan_pecahan')">Perbandingan Pecahan</li>
+                            <li class="last-item" onclick="app.openMateri('operasi_bilangan_pecahan')">Operasi Bilangan Pecahan</li>
                         </ul>
                     </div>
 
@@ -422,15 +422,15 @@
                             <span class="badge-count">9 Materi</span>
                         </div>
                         <ul class="topic-list">
-                            <li>Satuan Panjang</li>
-                            <li>Hubungan Satuan Panjang</li>
-                            <li>Satuan Berat</li>
-                            <li>Hubungan Satuan Berat</li>
-                            <li>Satuan Volume</li>
-                            <li>Hubungan Satuan Volume</li>
-                            <li>Satuan Waktu</li>
-                            <li>Hubungan Antar Satuan Waktu</li>
-                            <li class="last-item">Laju (Kecepatan)</li>
+                            <li onclick="app.openMateri('satuan_panjang')">Satuan Panjang</li>
+                            <li onclick="app.openMateri('hubungan_satuan_panjang')">Hubungan Satuan Panjang</li>
+                            <li onclick="app.openMateri('satuan_berat')">Satuan Berat</li>
+                            <li onclick="app.openMateri('hubungan_satuan_berat')">Hubungan Satuan Berat</li>
+                            <li onclick="app.openMateri('satuan_volume')">Satuan Volume</li>
+                            <li onclick="app.openMateri('hubungan_satuan_volume')">Hubungan Satuan Volume</li>
+                            <li onclick="app.openMateri('satuan_waktu')">Satuan Waktu</li>
+                            <li onclick="app.openMateri('hubungan_antar_satuan_waktu')">Hubungan Antar Satuan Waktu</li>
+                            <li class="last-item" onclick="app.openMateri('laju_kecepatan')">Laju (Kecepatan)</li>
                         </ul>
                     </div>
 
@@ -440,11 +440,11 @@
                             <span class="badge-count">5 Materi</span>
                         </div>
                         <ul class="topic-list">
-                            <li>Bentuk Bangun Datar</li>
-                            <li>Besar Sudut</li>
-                            <li>Keliling dan Luas Bangun Datar</li>
-                            <li>Konstruksi Bangun Ruang</li>
-                            <li class="last-item">Volume Bangun Ruang</li>
+                            <li onclick="app.openMateri('bentuk_bangun_datar')">Bentuk Bangun Datar</li>
+                            <li onclick="app.openMateri('besar_sudut')">Besar Sudut</li>
+                            <li onclick="app.openMateri('keliling_dan_luas_bangun_datar')">Keliling dan Luas Bangun Datar</li>
+                            <li onclick="app.openMateri('konstruksi_bangun_ruang')">Konstruksi Bangun Ruang</li>
+                            <li class="last-item" onclick="app.openMateri('volume_bangun_ruang')">Volume Bangun Ruang</li>
                         </ul>
                     </div>
 
@@ -454,7 +454,7 @@
                             <span class="badge-count">1 Materi</span>
                         </div>
                         <ul class="topic-list">
-                            <li class="last-item">Penyajian Data</li>
+                            <li class="last-item" onclick="app.openMateri('penyajian_data')">Penyajian Data</li>
                         </ul>
                     </div>
 
@@ -533,6 +533,38 @@
             studentName: '',
             particlesEnabled: true,
             musicEnabled: false
+        };
+
+        // DATA STATUS KETERSEDIAAN FILE TIAP MATERI
+        const materiData = {
+            // 📘 Bilangan
+            "operasi_bilangan_cacah": { title: "Operasi Bilangan Cacah", url: "operasi_bilangan_cacah.html", tersedia: false },
+            "kpk_dan_fpb": { title: "KPK dan FPB", url: "kpk_dan_fpb.html", tersedia: false },
+            "mengubah_bentuk_pecahan": { title: "Mengubah Bentuk Pecahan", url: "mengubah_bentuk_pecahan.html", tersedia: false },
+            "pecahan_senilai": { title: "Pecahan Senilai", url: "pecahan_senilai.html", tersedia: false },
+            "perbandingan_pecahan": { title: "Perbandingan Pecahan", url: "perbandingan_pecahan.html", tersedia: false },
+            "operasi_bilangan_pecahan": { title: "Operasi Bilangan Pecahan", url: "operasi_bilangan_pecahan.html", tersedia: false },
+
+            // 📗 Pengukuran
+            "satuan_panjang": { title: "Satuan Panjang", url: "satuan_panjang.html", tersedia: false },
+            "hubungan_satuan_panjang": { title: "Hubungan Satuan Panjang", url: "hubungan_satuan_panjang.html", tersedia: false },
+            "satuan_berat": { title: "Satuan Berat", url: "satuan_berat.html", tersedia: false },
+            "hubungan_satuan_berat": { title: "Hubungan Satuan Berat", url: "hubungan_satuan_berat.html", tersedia: false },
+            "satuan_volume": { title: "Satuan Volume", url: "satuan_volume.html", tersedia: false },
+            "hubungan_satuan_volume": { title: "Hubungan Satuan Volume", url: "hubungan_satuan_volume.html", tersedia: false },
+            "satuan_waktu": { title: "Satuan Waktu", url: "satuan_waktu.html", tersedia: false },
+            "hubungan_antar_satuan_waktu": { title: "Hubungan Antar Satuan Waktu", url: "hubungan_antar_satuan_waktu.html", tersedia: false },
+            "laju_kecepatan": { title: "Laju (Kecepatan)", url: "laju_kecepatan.html", tersedia: false },
+
+            // 📙 Geometri
+            "bentuk_bangun_datar": { title: "Bentuk Bangun Datar", url: "bentuk_bangun_datar.html", tersedia: false },
+            "besar_sudut": { title: "Besar Sudut", url: "besar_sudut.html", tersedia: false },
+            "keliling_dan_luas_bangun_datar": { title: "Keliling dan Luas Bangun Datar", url: "keliling_dan_luas_bangun_datar.html", tersedia: false },
+            "konstruksi_bangun_ruang": { title: "Konstruksi Bangun Ruang", url: "konstruksi_bangun_ruang.html", tersedia: false },
+            "volume_bangun_ruang": { title: "Volume Bangun Ruang", url: "volume_bangun_ruang.html", tersedia: false },
+
+            // 📕 Pengolahan Data
+            "penyajian_data": { title: "Penyajian Data", url: "penyajian_data.html", tersedia: false }
         };
 
         const themeData = {
@@ -743,6 +775,23 @@
                 } else {
                     backBtn.classList.add('hidden');
                     backBtn.classList.remove('fade-enter');
+                }
+            },
+
+            // FUNGSI NAVIGASI UNTUK MEMBUKA FILE MATERI / COMING SOON
+            openMateri(materiId) {
+                const materi = materiData[materiId];
+                if (!materi) return;
+
+                if (materi.tersedia) {
+                    if (state.musicEnabled) audioSys.playSFX('click');
+                    window.location.href = materi.url;
+                } else {
+                    ui.showAlert(
+                        "Coming Soon!", 
+                        `Materi "${materi.title}" sedang dalam tahap penyusunan. Terus semangat belajar ya!`,
+                        "fas fa-rocket"
+                    );
                 }
             }
         };
