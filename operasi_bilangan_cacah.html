@@ -3,161 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Operasi Bilangan Cacah</title>
+    <title>Latihan Soal: Operasi Bilangan Cacah</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #0a0a1a; color: white; font-family: sans-serif; }
+        body { background: #0a0a1a; color: white; font-family: 'Space Grotesk', sans-serif; }
+        .glass-panel { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
     </style>
 </head>
-<body class="p-10">
-    <h1 class="text-3xl font-bold mb-5">Latihan: Operasi Bilangan Cacah</h1>
-    
-    <!-- Tempat untuk menampilkan soal nanti -->
-    <div id="soal-container"></div>
+<body class="p-4 md:p-10">
+
+    <div class="max-w-3xl mx-auto">
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-cyan-400">Operasi Bilangan Cacah</h1>
+            <p class="text-gray-400 mt-2">Jawablah pertanyaan berikut dengan teliti.</p>
+        </header>
+
+        <!-- Tempat Soal Akan Muncul -->
+        <div id="soal-container" class="space-y-6"></div>
+        
+        <div class="mt-10 text-center">
+            <a href="index.html" class="px-6 py-2 bg-gray-800 rounded-full hover:bg-gray-700 transition">Kembali ke Beranda</a>
+        </div>
+    </div>
 
     <script>
-        // MASUKKAN KODE JSON DI SINI
-        const daftarSoal = [
-            {
-                "id": 1,
-                "jenis_soal": "Pilihan Ganda",
-                "pertanyaan": "Dalam rangka Hari Literasi, SD Harapan membagikan buku cerita kepada siswa kelas 6. Kelas A berjumlah 30 siswa, Kelas B 34 siswa, dan Kelas C 32 siswa. Setiap siswa memperoleh 2 buku. Jika satu kardus berisi 24 buku, banyak kardus yang diperlukan adalah ....",
-                "opsi": { "A": "6 kardus", "B": "7 kardus", "C": "8 kardus", "D": "9 kardus" },
-                "jawaban_benar": ["C"]
-            },
-            // ... (lanjutkan sisa soal lainnya di sini)
+        // DATA SOAL
+        const soalData = [
+            { "id": 1, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Dalam rangka Hari Literasi, SD Harapan membagikan buku cerita kepada siswa kelas 6. Kelas A berjumlah 30 siswa, Kelas B 34 siswa, dan Kelas C 32 siswa. Setiap siswa memperoleh 2 buku. Jika satu kardus berisi 24 buku, banyak kardus yang diperlukan adalah ....", "opsi": { "A": "6 kardus", "B": "7 kardus", "C": "8 kardus", "D": "9 kardus" }, "jawaban_benar": ["C"] },
+            { "id": 2, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Sebuah komunitas mengumpulkan 540 botol plastik bekas. Botol tersebut akan dimasukkan ke dalam kantong yang masing-masing berisi 15 botol. Banyak kantong yang diperlukan adalah ....", "opsi": { "A": "32 kantong", "B": "34 kantong", "C": "36 kantong", "D": "38 kantong" }, "jawaban_benar": ["C"] },
+            { "id": 3, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Sebanyak 144 peserta mengikuti kegiatan Pramuka. Mereka dibagi menjadi beberapa regu yang masing-masing terdiri atas 12 peserta. Setiap regu menerima 5 bendera kecil. Jumlah seluruh bendera kecil yang dibutuhkan adalah ....", "opsi": { "A": "50 bendera", "B": "55 bendera", "C": "60 bendera", "D": "65 bendera" }, "jawaban_benar": ["C"] },
+            { "id": 4, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Kantin sekolah menyediakan 18 kotak makanan. Setiap kotak berisi 24 roti. Pada saat istirahat, terjual 395 roti. Banyak roti yang masih tersisa adalah ....", "opsi": { "A": "27 roti", "B": "32 roti", "C": "37 roti", "D": "41 roti" }, "jawaban_benar": ["C"] },
+            { "id": 5, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Pada lomba mewarnai tersedia 420 lembar gambar. Sebanyak 168 peserta masing-masing menerima 2 lembar gambar. Sisa gambar yang belum dibagikan adalah ....", "opsi": { "A": "74 lembar", "B": "82 lembar", "C": "84 lembar", "D": "92 lembar" }, "jawaban_benar": ["C"] },
+            { "id": 6, "jenis_soal": "Benar atau Salah", "pertanyaan": "Seorang pedagang memiliki 18 dus air mineral. Setiap dus berisi 24 botol. Jumlah seluruh botol adalah 432 botol.", "opsi": { "A": "Benar", "B": "Salah" }, "jawaban_benar": ["A"] },
+            { "id": 7, "jenis_soal": "Benar atau Salah", "pertanyaan": "Perpustakaan memiliki 360 buku. Buku tersebut disusun sama banyak ke dalam 12 rak. Setiap rak berisi 28 buku.", "opsi": { "A": "Benar", "B": "Salah" }, "jawaban_benar": ["B"] },
+            { "id": 8, "jenis_soal": "Benar atau Salah", "pertanyaan": "Pada kegiatan menanam pohon, tersedia 25 baris. Setiap baris ditanami 18 pohon. Jumlah seluruh pohon adalah 450 pohon.", "opsi": { "A": "Benar", "B": "Salah" }, "jawaban_benar": ["A"] },
+            { "id": 9, "jenis_soal": "Pilihan Ganda Kompleks", "pertanyaan": "Pak Guru memiliki 240 pensil yang akan dibagikan sama banyak kepada beberapa kelas. Manakah pernyataan berikut yang benar? (Jawaban benar lebih dari satu.)", "opsi": { "A": "Jika dibagikan kepada 12 kelas, setiap kelas memperoleh 20 pensil.", "B": "Jika dibagikan kepada 15 kelas, setiap kelas memperoleh 16 pensil.", "C": "Jika dibagikan kepada 24 kelas, setiap kelas memperoleh 10 pensil.", "D": "Jika dibagikan kepada 20 kelas, setiap kelas memperoleh 14 pensil." }, "jawaban_benar": ["A", "B", "C"] },
+            { "id": 10, "jenis_soal": "Pilihan Ganda Kompleks", "pertanyaan": "Sebuah toko memiliki 480 bungkus makanan. Pernyataan yang benar adalah .... (Jawaban benar lebih dari satu.)", "opsi": { "A": "Jika setiap kardus berisi 24 bungkus, diperlukan 20 kardus.", "B": "Jika setiap kardus berisi 12 bungkus, diperlukan 40 kardus.", "C": "Jika setiap kardus berisi 30 bungkus, diperlukan 18 kardus.", "D": "Jika setiap kardus berisi 16 bungkus, diperlukan 30 kardus." }, "jawaban_benar": ["A", "B", "D"] },
+            { "id": 11, "jenis_soal": "Pilihan Ganda Kompleks", "pertanyaan": "Jumlah siswa kelas VI adalah 128 orang. Pernyataan berikut yang benar adalah .... (Jawaban benar lebih dari satu.)", "opsi": { "A": "Jika setiap kelompok terdiri atas 8 siswa, terbentuk 16 kelompok.", "B": "Jika setiap kelompok terdiri atas 16 siswa, terbentuk 8 kelompok.", "C": "Jika setiap kelompok terdiri atas 10 siswa, terbentuk tepat 12 kelompok.", "D": "Jika setiap kelompok terdiri atas 32 siswa, terbentuk 4 kelompok." }, "jawaban_benar": ["A", "B", "D"] }
         ];
 
-        // Ini untuk tes saja: Cek apakah soal sudah masuk
-        console.log("Jumlah soal:", daftarSoal.length);
+        // RENDER SOAL KE LAYAR
+        const container = document.getElementById('soal-container');
+
+        soalData.forEach((soal, index) => {
+            let opsiHtml = '';
+            for (const [key, value] of Object.entries(soal.opsi)) {
+                opsiHtml += `
+                    <label class="block p-3 mb-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
+                        <input type="radio" name="soal${soal.id}" value="${key}" class="mr-2">
+                        ${key}. ${value}
+                    </label>
+                `;
+            }
+
+            const soalCard = `
+                <div class="glass-panel p-6 rounded-2xl shadow-xl">
+                    <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">${soal.jenis_soal}</span>
+                    <p class="text-lg mt-2 mb-4">${soal.id}. ${soal.pertanyaan}</p>
+                    <div class="space-y-2">
+                        ${opsiHtml}
+                    </div>
+                </div>
+            `;
+            container.innerHTML += soalCard;
+        });
     </script>
-  [
-  {
-    "id": 1,
-    "jenis_soal": "Pilihan Ganda",
-    "pertanyaan": "Dalam rangka Hari Literasi, SD Harapan membagikan buku cerita kepada siswa kelas 6. Kelas A berjumlah 30 siswa, Kelas B 34 siswa, dan Kelas C 32 siswa. Setiap siswa memperoleh 2 buku. Jika satu kardus berisi 24 buku, banyak kardus yang diperlukan adalah ....",
-    "opsi": {
-      "A": "6 kardus",
-      "B": "7 kardus",
-      "C": "8 kardus",
-      "D": "9 kardus"
-    },
-    "jawaban_benar": ["C"]
-  },
-  {
-    "id": 2,
-    "jenis_soal": "Pilihan Ganda",
-    "pertanyaan": "Sebuah komunitas mengumpulkan 540 botol plastik bekas. Botol tersebut akan dimasukkan ke dalam kantong yang masing-masing berisi 15 botol. Banyak kantong yang diperlukan adalah ....",
-    "opsi": {
-      "A": "32 kantong",
-      "B": "34 kantong",
-      "C": "36 kantong",
-      "D": "38 kantong"
-    },
-    "jawaban_benar": ["C"]
-  },
-  {
-    "id": 3,
-    "jenis_soal": "Pilihan Ganda",
-    "pertanyaan": "Sebanyak 144 peserta mengikuti kegiatan Pramuka. Mereka dibagi menjadi beberapa regu yang masing-masing terdiri atas 12 peserta. Setiap regu menerima 5 bendera kecil. Jumlah seluruh bendera kecil yang dibutuhkan adalah ....",
-    "opsi": {
-      "A": "50 bendera",
-      "B": "55 bendera",
-      "C": "60 bendera",
-      "D": "65 bendera"
-    },
-    "jawaban_benar": ["C"]
-  },
-  {
-    "id": 4,
-    "jenis_soal": "Pilihan Ganda",
-    "pertanyaan": "Kantin sekolah menyediakan 18 kotak makanan. Setiap kotak berisi 24 roti. Pada saat istirahat, terjual 395 roti. Banyak roti yang masih tersisa adalah ....",
-    "opsi": {
-      "A": "27 roti",
-      "B": "32 roti",
-      "C": "37 roti",
-      "D": "41 roti"
-    },
-    "jawaban_benar": ["C"]
-  },
-  {
-    "id": 5,
-    "jenis_soal": "Pilihan Ganda",
-    "pertanyaan": "Pada lomba mewarnai tersedia 420 lembar gambar. Sebanyak 168 peserta masing-masing menerima 2 lembar gambar. Sisa gambar yang belum dibagikan adalah ....",
-    "opsi": {
-      "A": "74 lembar",
-      "B": "82 lembar",
-      "C": "84 lembar",
-      "D": "92 lembar"
-    },
-    "jawaban_benar": ["C"]
-  },
-  {
-    "id": 6,
-    "jenis_soal": "Benar atau Salah",
-    "pertanyaan": "Seorang pedagang memiliki 18 dus air mineral. Setiap dus berisi 24 botol. Jumlah seluruh botol adalah 432 botol.",
-    "opsi": {
-      "A": "Benar",
-      "B": "Salah"
-    },
-    "jawaban_benar": ["A"]
-  },
-  {
-    "id": 7,
-    "jenis_soal": "Benar atau Salah",
-    "pertanyaan": "Perpustakaan memiliki 360 buku. Buku tersebut disusun sama banyak ke dalam 12 rak. Setiap rak berisi 28 buku.",
-    "opsi": {
-      "A": "Benar",
-      "B": "Salah"
-    },
-    "jawaban_benar": ["B"]
-  },
-  {
-    "id": 8,
-    "jenis_soal": "Benar atau Salah",
-    "pertanyaan": "Pada kegiatan menanam pohon, tersedia 25 baris. Setiap baris ditanami 18 pohon. Jumlah seluruh pohon adalah 450 pohon.",
-    "opsi": {
-      "A": "Benar",
-      "B": "Salah"
-    },
-    "jawaban_benar": ["A"]
-  },
-  {
-    "id": 9,
-    "jenis_soal": "Pilihan Ganda Kompleks",
-    "pertanyaan": "Pak Guru memiliki 240 pensil yang akan dibagikan sama banyak kepada beberapa kelas. Manakah pernyataan berikut yang benar? (Jawaban benar lebih dari satu.)",
-    "opsi": {
-      "A": "Jika dibagikan kepada 12 kelas, setiap kelas memperoleh 20 pensil.",
-      "B": "Jika dibagikan kepada 15 kelas, setiap kelas memperoleh 16 pensil.",
-      "C": "Jika dibagikan kepada 24 kelas, setiap kelas memperoleh 10 pensil.",
-      "D": "Jika dibagikan kepada 20 kelas, setiap kelas memperoleh 14 pensil."
-    },
-    "jawaban_benar": ["A", "B", "C"]
-  },
-  {
-    "id": 10,
-    "jenis_soal": "Pilihan Ganda Kompleks",
-    "pertanyaan": "Sebuah toko memiliki 480 bungkus makanan. Pernyataan yang benar adalah .... (Jawaban benar lebih dari satu.)",
-    "opsi": {
-      "A": "Jika setiap kardus berisi 24 bungkus, diperlukan 20 kardus.",
-      "B": "Jika setiap kardus berisi 12 bungkus, diperlukan 40 kardus.",
-      "C": "Jika setiap kardus berisi 30 bungkus, diperlukan 18 kardus.",
-      "D": "Jika setiap kardus berisi 16 bungkus, diperlukan 30 kardus."
-    },
-    "jawaban_benar": ["A", "B", "D"]
-  },
-  {
-    "id": 11,
-    "jenis_soal": "Pilihan Ganda Kompleks",
-    "pertanyaan": "Jumlah siswa kelas VI adalah 128 orang. Pernyataan berikut yang benar adalah .... (Jawaban benar lebih dari satu.)",
-    "opsi": {
-      "A": "Jika setiap kelompok terdiri atas 8 siswa, terbentuk 16 kelompok.",
-      "B": "Jika setiap kelompok terdiri atas 16 siswa, terbentuk 8 kelompok.",
-      "C": "Jika setiap kelompok terdiri atas 10 siswa, terbentuk tepat 12 kelompok.",
-      "D": "Jika setiap kelompok terdiri atas 32 siswa, terbentuk 4 kelompok."
-    },
-    "jawaban_benar": ["A", "B", "D"]
-  }
-]
 </body>
 </html>
