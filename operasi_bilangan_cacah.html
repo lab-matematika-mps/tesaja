@@ -3,32 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latihan Soal: Operasi Bilangan Cacah</title>
+    <title>Latihan TKA - Mugeb</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #0a0a1a; color: white; font-family: 'Space Grotesk', sans-serif; }
-        .glass-panel { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        /* Menggunakan style dari index agar konsisten */
+        body { transition: background 0.5s ease; min-height: 100vh; padding: 20px; }
+        .theme-galaxy { background: linear-gradient(135deg, #0a0a1a, #1a0b2e); color: white; }
+        .theme-sky { background: linear-gradient(135deg, #ffe5d9, #ffcad4); color: #2b2d42; }
+        .theme-ocean { background: linear-gradient(135deg, #001220, #004d7a); color: white; }
+        .glass-panel { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 1rem; padding: 20px; }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="theme-galaxy"> <!-- Default class -->
 
-    <div class="max-w-3xl mx-auto">
-        <header class="mb-8 text-center">
-            <h1 class="text-3xl font-bold text-cyan-400">Operasi Bilangan Cacah</h1>
-            <p class="text-gray-400 mt-2">Jawablah pertanyaan berikut dengan teliti.</p>
-        </header>
+    <div class="max-w-2xl mx-auto">
+        <!-- Progress Bar -->
+        <div class="mb-6">
+            <div id="progress-text" class="text-sm mb-2 font-bold">Soal 1 dari 11</div>
+            <div class="w-full bg-white/20 h-2 rounded-full">
+                <div id="progress-bar" class="bg-cyan-400 h-2 rounded-full transition-all duration-300" style="width: 9%"></div>
+            </div>
+        </div>
 
-        <!-- Tempat Soal Akan Muncul -->
-        <div id="soal-container" class="space-y-6"></div>
-        
-        <div class="mt-10 text-center">
-            <a href="index.html" class="px-6 py-2 bg-gray-800 rounded-full hover:bg-gray-700 transition">Kembali ke Beranda</a>
+        <!-- Container Soal -->
+        <div id="quiz-container" class="glass-panel">
+            <div id="question-area">
+                <!-- Soal akan muncul di sini via JavaScript -->
+            </div>
+            
+            <div class="flex justify-between mt-8">
+                <button id="prev-btn" onclick="quiz.prev()" class="px-6 py-2 bg-white/10 rounded-full hover:bg-white/20 disabled:opacity-50">Sebelumnya</button>
+                <button id="next-btn" onclick="quiz.next()" class="px-6 py-2 bg-cyan-500 rounded-full font-bold">Selanjutnya</button>
+            </div>
+        </div>
+
+        <!-- Container Hasil (Awalnya tersembunyi) -->
+        <div id="result-container" class="glass-panel hidden text-center">
+            <h2 class="text-3xl font-bold mb-4">Hasil Latihan</h2>
+            <p id="score-text" class="text-5xl font-black mb-6"></p>
+            <div id="wrong-answers" class="text-left text-sm mb-6"></div>
+            <a href="index.html" class="px-8 py-3 bg-cyan-500 rounded-full font-bold">Kembali ke Beranda</a>
         </div>
     </div>
 
     <script>
-        // DATA SOAL
+        // 1. Terapkan Tema yang Disimpan
+        const savedTheme = localStorage.getItem('savedTheme') || 'galaxy';
+        document.body.className = `theme-${savedTheme}`;
+
+        // 2. Data Soal
         const soalData = [
+            // (Masukkan data JSON soal kamu di sini, persis seperti yang kita buat tadi)
             { "id": 1, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Dalam rangka Hari Literasi, SD Harapan membagikan buku cerita kepada siswa kelas 6. Kelas A berjumlah 30 siswa, Kelas B 34 siswa, dan Kelas C 32 siswa. Setiap siswa memperoleh 2 buku. Jika satu kardus berisi 24 buku, banyak kardus yang diperlukan adalah ....", "opsi": { "A": "6 kardus", "B": "7 kardus", "C": "8 kardus", "D": "9 kardus" }, "jawaban_benar": ["C"] },
             { "id": 2, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Sebuah komunitas mengumpulkan 540 botol plastik bekas. Botol tersebut akan dimasukkan ke dalam kantong yang masing-masing berisi 15 botol. Banyak kantong yang diperlukan adalah ....", "opsi": { "A": "32 kantong", "B": "34 kantong", "C": "36 kantong", "D": "38 kantong" }, "jawaban_benar": ["C"] },
             { "id": 3, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Sebanyak 144 peserta mengikuti kegiatan Pramuka. Mereka dibagi menjadi beberapa regu yang masing-masing terdiri atas 12 peserta. Setiap regu menerima 5 bendera kecil. Jumlah seluruh bendera kecil yang dibutuhkan adalah ....", "opsi": { "A": "50 bendera", "B": "55 bendera", "C": "60 bendera", "D": "65 bendera" }, "jawaban_benar": ["C"] },
@@ -42,31 +67,78 @@
             { "id": 11, "jenis_soal": "Pilihan Ganda Kompleks", "pertanyaan": "Jumlah siswa kelas VI adalah 128 orang. Pernyataan berikut yang benar adalah .... (Jawaban benar lebih dari satu.)", "opsi": { "A": "Jika setiap kelompok terdiri atas 8 siswa, terbentuk 16 kelompok.", "B": "Jika setiap kelompok terdiri atas 16 siswa, terbentuk 8 kelompok.", "C": "Jika setiap kelompok terdiri atas 10 siswa, terbentuk tepat 12 kelompok.", "D": "Jika setiap kelompok terdiri atas 32 siswa, terbentuk 4 kelompok." }, "jawaban_benar": ["A", "B", "D"] }
         ];
 
-        // RENDER SOAL KE LAYAR
-        const container = document.getElementById('soal-container');
+        // 3. Logika Quiz
+        let currentIdx = 0;
+        let userAnswers = {}; // Menyimpan jawaban user
 
-        soalData.forEach((soal, index) => {
+        function renderQuestion() {
+            const soal = soalData[currentIdx];
+            const container = document.getElementById('question-area');
+            
+            // Update Progress
+            document.getElementById('progress-text').innerText = `Soal ${currentIdx + 1} dari ${soalData.length}`;
+            document.getElementById('progress-bar').style.width = `${((currentIdx + 1) / soalData.length) * 100}%`;
+
+            // Opsi HTML
             let opsiHtml = '';
-            for (const [key, value] of Object.entries(soal.opsi)) {
-                opsiHtml += `
-                    <label class="block p-3 mb-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer">
-                        <input type="radio" name="soal${soal.id}" value="${key}" class="mr-2">
-                        ${key}. ${value}
-                    </label>
-                `;
+            for (const [key, val] of Object.entries(soal.opsi)) {
+                const isChecked = userAnswers[soal.id] && userAnswers[soal.id].includes(key) ? 'checked' : '';
+                // Gunakan checkbox agar bisa mendukung Pilihan Ganda Kompleks
+                opsiHtml += `<label class="block p-3 mb-2 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10">
+                    <input type="checkbox" value="${key}" ${isChecked} onchange="saveAnswer(${soal.id}, '${key}', this.checked)" class="mr-2">
+                    ${key}. ${val}
+                </label>`;
             }
 
-            const soalCard = `
-                <div class="glass-panel p-6 rounded-2xl shadow-xl">
-                    <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">${soal.jenis_soal}</span>
-                    <p class="text-lg mt-2 mb-4">${soal.id}. ${soal.pertanyaan}</p>
-                    <div class="space-y-2">
-                        ${opsiHtml}
-                    </div>
-                </div>
-            `;
-            container.innerHTML += soalCard;
-        });
+            container.innerHTML = `<h3 class="text-xl font-bold mb-4">${soal.id}. ${soal.pertanyaan}</h3>${opsiHtml}`;
+            
+            // Tombol Navigasi
+            document.getElementById('prev-btn').disabled = currentIdx === 0;
+            document.getElementById('next-btn').innerText = currentIdx === soalData.length - 1 ? 'Submit' : 'Selanjutnya';
+        }
+
+        function saveAnswer(soalId, opsi, isChecked) {
+            if(!userAnswers[soalId]) userAnswers[soalId] = [];
+            if(isChecked) userAnswers[soalId].push(opsi);
+            else userAnswers[soalId] = userAnswers[soalId].filter(a => a !== opsi);
+        }
+
+        const quiz = {
+            next() {
+                if(currentIdx < soalData.length - 1) {
+                    currentIdx++;
+                    renderQuestion();
+                } else {
+                    submitQuiz();
+                }
+            },
+            prev() {
+                if(currentIdx > 0) {
+                    currentIdx--;
+                    renderQuestion();
+                }
+            }
+        };
+
+        function submitQuiz() {
+            let score = 0;
+            let wrongItems = "";
+
+            soalData.forEach(soal => {
+                const user = (userAnswers[soal.id] || []).sort().join('');
+                const correct = soal.jawaban_benar.sort().join('');
+                
+                if(user === correct) score++;
+                else wrongItems += `<p class="mb-2 text-red-400">Soal ${soal.id}: Jawaban benar adalah ${soal.jawaban_benar.join(', ')}</p>`;
+            });
+
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('result-container').classList.remove('hidden');
+            document.getElementById('score-text').innerText = `Skor: ${score} / ${soalData.length}`;
+            document.getElementById('wrong-answers').innerHTML = wrongItems || "Selamat! Semua jawabanmu benar.";
+        }
+
+        renderQuestion();
     </script>
 </body>
 </html>
