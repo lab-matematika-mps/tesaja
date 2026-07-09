@@ -81,9 +81,9 @@
 </head>
 <body class="theme-galaxy">
 
-    <!-- HALAMAN LOADING BARU -->
-    <div id="loading-screen" class="fixed inset-0 bg-[#0a0a1a] z-[9999] flex flex-col items-center justify-center transition-opacity duration-1000">
-        <!-- Tulisan Elegan Diperkecil -->
+    <!-- HALAMAN LOADING DIPERCEPAT -->
+    <div id="loading-screen" class="fixed inset-0 bg-[#0a0a1a] z-[9999] flex flex-col items-center justify-center transition-opacity duration-500">
+        <!-- Tulisan Elegan -->
         <h1 class="text-2xl md:text-4xl font-light text-transparent bg-clip-text bg-gradient-to-r from-[#00f3ff] to-[#b900ff] mb-12 tracking-[0.2em] md:tracking-[0.3em] uppercase drop-shadow-lg text-center px-4">Selamat Datang</h1>
         
         <!-- Animasi Loading Ring Futuristik -->
@@ -105,9 +105,9 @@
             </div>
         </div>
 
-        <!-- Teks Berjalan Lebih Smooth & Lambat -->
+        <!-- Teks Berjalan -->
         <div class="h-8 flex items-center justify-center">
-            <p id="loading-text" class="text-gray-300 font-light text-sm md:text-base text-center transition-opacity duration-700 opacity-0 italic tracking-wide"></p>
+            <p id="loading-text" class="text-gray-300 font-light text-sm md:text-base text-center transition-opacity duration-300 opacity-0 italic tracking-wide"></p>
         </div>
     </div>
     <!-- AKHIR HALAMAN LOADING -->
@@ -152,7 +152,6 @@
                 <div class="mb-10 w-full">
                     <p class="text-[10px] md:text-xs uppercase tracking-widest text-[var(--text-muted)] mb-4 font-semibold">Pilih Tema Perjalananmu</p>
                     <div class="grid grid-cols-3 gap-2 md:gap-4 max-w-md mx-auto">
-                        <!-- Ikon Tema Dinamis (Revisi 3) -->
                         <div class="theme-card glass-btn p-3 md:p-4 rounded-xl active flex flex-col items-center gap-2 group" onclick="app.setTheme('galaxy')" id="btn-theme-galaxy">
                             <i class="fa-solid fa-atom text-xl md:text-3xl text-cyan-400 group-hover:rotate-180 transition-transform duration-700"></i>
                             <span class="text-[10px] md:text-xs font-medium">Galaksi</span>
@@ -350,7 +349,7 @@
     </div>
 
     <script>
-        // --- LOGIKA LOADING SCREEN DIPERLAMBAT & SMOOTH ---
+        // --- LOGIKA LOADING SCREEN CEPAT ---
         window.addEventListener('load', () => {
             let progress = 0;
             const loadingBar = document.getElementById('loading-bar');
@@ -369,23 +368,23 @@
             
             let textIdx = 0;
             textDisplay.innerText = texts[0];
-            setTimeout(() => { textDisplay.style.opacity = 1; }, 100);
+            setTimeout(() => { textDisplay.style.opacity = 1; }, 50);
 
-            // Pergantian teks lebih pelan dan smooth (setiap 2.5 detik)
+            // Pergantian teks lebih gesit (tiap 900ms)
             const textInterval = setInterval(() => {
-                textDisplay.style.opacity = 0; // Fade out
+                textDisplay.style.opacity = 0; 
                 setTimeout(() => {
                     textIdx++;
                     if (textIdx < texts.length) {
                         textDisplay.innerText = texts[textIdx];
-                        textDisplay.style.opacity = 1; // Fade in
+                        textDisplay.style.opacity = 1; 
                     }
-                }, 700); 
-            }, 2500); 
+                }, 300); 
+            }, 900); 
 
-            // Progress bar butuh waktu sekitar 12-14 detik untuk penuh
+            // Loading bar sekitar 3-4 detik
             const progressInterval = setInterval(() => {
-                progress += Math.floor(Math.random() * 3) + 1; 
+                progress += Math.floor(Math.random() * 5) + 3; 
                 if (progress > 100) progress = 100;
                 
                 loadingBar.style.width = progress + '%';
@@ -398,15 +397,15 @@
                     setTimeout(() => { 
                         textDisplay.innerText = texts[texts.length-1]; 
                         textDisplay.style.opacity = 1; 
-                    }, 700);
+                    }, 300);
                     
                     setTimeout(() => {
                         loadingScreen.classList.add('opacity-0');
-                        setTimeout(() => loadingScreen.classList.add('hidden'), 1000);
+                        setTimeout(() => loadingScreen.classList.add('hidden'), 500);
                         bgEngine.init();
-                    }, 2500); // Tahan di 100% sebentar agar teks terakhir terbaca
+                    }, 1000); 
                 }
-            }, 250); 
+            }, 120); 
         });
 
         const state = {
@@ -446,7 +445,6 @@
         };
 
         const audioSys = {
-            // Audio ini dijamin jalan (publik lo-fi). Nanti bisa diganti link lagumu
             bgm: new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3'),
             isSetup: false,
             setup() { if(this.isSetup) return; this.bgm.loop = true; this.bgm.volume = document.getElementById('volume-slider').value; this.isSetup = true; },
@@ -516,7 +514,7 @@
                     currentEl.classList.add('hidden'); currentEl.classList.remove('fade-exit', 'fade-enter');
                     targetEl.classList.remove('hidden'); targetEl.classList.add('fade-enter');
                     state.viewHistory.push(targetViewId); this.updateBackButton();
-                    window.scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL TO TOP MOBILE FIX
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); 
                 }, 400); 
             },
             goBack() {
@@ -529,7 +527,7 @@
                     currentEl.classList.add('hidden'); currentEl.classList.remove('fade-exit', 'fade-enter');
                     targetEl.classList.remove('hidden'); targetEl.classList.add('fade-enter');
                     this.updateBackButton();
-                    window.scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL TO TOP MOBILE FIX
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); 
                 }, 400);
             },
             updateBackButton() {
@@ -553,11 +551,9 @@
                 this.particles = []; const w = this.canvas.width, h = this.canvas.height, theme = state.currentTheme;
                 if (theme === 'galaxy') {
                     for (let i = 0; i < 150; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.5 + 0.5, alpha: Math.random(), alphaChange: (Math.random()*0.02)-0.01, type: 'star' });
-                    // Komet lebih besar (Revisi 5)
                     for (let i = 0; i < 4; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, length: Math.random()*100+50, speedX: (Math.random()*3+2)*(Math.random()>0.5?1:-1), speedY: Math.random()*3+2, type: 'comet' });
                 } else if (theme === 'sky') {
                     for (let i = 0; i < 40; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*4+2, speedX: Math.random()*2-1, speedY: Math.random()*1.5+0.5, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'petal' });
-                    // Tambahan daun bervariasi (Revisi 11)
                     for (let i = 0; i < 15; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*8+4, speedX: Math.random()*2-1, speedY: Math.random()*2+1, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'leaf', color: Math.random() > 0.5 ? 'rgba(144, 238, 144, 0.7)' : 'rgba(255, 215, 0, 0.7)' });
                 } else if (theme === 'ocean') {
                     for (let i = 0; i < 80; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*3+1, speedX: Math.random()*0.5-0.25, speedY: -(Math.random()*2+0.5), type: 'bubble' });
@@ -571,7 +567,7 @@
                     if(p.type === 'star') {
                         this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
                         this.ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
-                        this.ctx.shadowBlur = 10; this.ctx.shadowColor = 'rgba(0, 243, 255, 0.9)'; // Bintang bersinar terang (Revisi 5)
+                        this.ctx.shadowBlur = 10; this.ctx.shadowColor = 'rgba(0, 243, 255, 0.9)';
                         this.ctx.fill(); this.ctx.shadowBlur = 0; 
                         p.alpha += p.alphaChange; if(p.alpha <= 0 || p.alpha >= 1) p.alphaChange *= -1;
                     } 
