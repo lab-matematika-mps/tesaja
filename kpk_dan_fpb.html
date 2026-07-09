@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Soal - Mugeb TKA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-top: #0a0a1a; --bg-bottom: #1a0b2e; --primary: #00f3ff; --primary-hover: #00d0ff; --secondary: #b900ff;
+            --text-main: #ffffff; --text-muted: #a0a0b8; --glass-bg: rgba(20, 20, 40, 0.4); --glass-border: rgba(0, 243, 255, 0.2);
+            --font-main: 'Space Grotesk', sans-serif;
+        }
+        body.theme-sky {
+            --bg-top: #ffe5d9; --bg-bottom: #ffcad4; --primary: #f28482; --primary-hover: #f0716f; --secondary: #84a59d;
+            --text-main: #2b2d42; --text-muted: #5c677d; --glass-bg: rgba(255, 255, 255, 0.5); --glass-border: rgba(242, 132, 130, 0.4);
+        }
+        body.theme-ocean {
+            --bg-top: #001220; --bg-bottom: #004d7a; --primary: #00d4ff; --primary-hover: #00b0ff; --secondary: #00ff88;
+            --text-main: #ffffff; --text-muted: #b3e5fc; --glass-bg: rgba(0, 30, 60, 0.4); --glass-border: rgba(0, 212, 255, 0.3);
+        }
+        
+        body { font-family: var(--font-main); color: var(--text-main); background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom)); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; margin: 0; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 1.5rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; }
+        .glass-btn { background: var(--glass-bg); backdrop-filter: blur(8px); border: 1px solid var(--glass-border); color: var(--text-main); transition: all 0.3s ease; cursor: pointer; }
+        .glass-btn:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .glass-btn.locked { opacity: 0.6; cursor: not-allowed; }
+        .glass-btn.locked:hover { transform: none; border-color: var(--glass-border); }
+        
+        .primary-btn { background: var(--primary); color: #000; font-weight: 700; border: none; transition: all 0.3s; }
+        body.theme-sky .primary-btn { color: #fff; }
+        .primary-btn:hover { background: var(--primary-hover); transform: scale(1.02); box-shadow: 0 0 15px var(--primary-hover); }
+        
+        .glass-input { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--text-main); transition: all 0.3s; outline: none; }
+        .glass-input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); background: rgba(255, 255, 255, 0.1); }
+
+        input[type="radio"], input[type="checkbox"] { accent-color: var(--primary); transform: scale(1.2); margin-right: 12px; cursor: pointer; flex-shrink: 0; }
+        .nav-box { border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); transition: all 0.3s; cursor: pointer; }
+        .nav-box.answered { background: var(--primary); color: #000; font-weight: bold; border-color: var(--primary); }
+        body.theme-sky .nav-box.answered { color: #fff; }
+        .nav-box.active { border-color: var(--primary); box-shadow: 0 0 10px var(--primary); transform: scale(1.1); }
+        
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+        .pulse-slow { animation: pulseGlow 2s infinite; }
+        @keyframes pulseGlow { 0% { opacity: 0.8; } 50% { opacity: 1; text-shadow: 0 0 10px var(--primary); } 100% { opacity: 0.8; } }
+        
+        .fade-in { animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="theme-galaxy">
+
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- TOMBOL PENGATURAN -->
+    <div class="fixed top-4 right-4 z-50">
+        <button onclick="ui.toggleSettings()" class="glass-btn p-3 md:p-4 rounded-full flex items-center justify-center w-10 h-10 md:w-12 md:h-12" aria-label="Pengaturan">
+            <i class="fas fa-cog text-base md:text-xl"></i>
+        </button>
+    </div>
+
+    <!-- CONTAINER UTAMA -->
+    <div class="container mx-auto px-4 py-6 md:py-10 flex-1 max-w-4xl relative z-10 w-full flex flex-col justify-center items-center">
+        
+        <!-- VIEW 1: AKSES KODE -->
+        <div id="view-access" class="glass-panel p-8 md:p-12 text-center w-full max-w-md fade-in">
+            <div class="inline-block p-4 rounded-full bg-[var(--primary)]/20 mb-6 border border-[var(--primary)]/30">
+                <i class="fas fa-lock text-3xl md:text-4xl text-[var(--primary)]"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold mb-2">Area Terkunci</h2>
+            <p class="text-sm md:text-base text-[var(--text-muted)] mb-8">Masukkan kode akses untuk membuka soal KPK dan FPB.</p>
+            
+            <input type="password" id="access-code" class="glass-input w-full py-3 px-4 rounded-xl text-center text-lg mb-6 tracking-[0.2em]" placeholder="KODE AKSES" autocomplete="off">
+            <button onclick="gate.checkCode()" class="primary-btn w-full py-3 rounded-xl font-bold text-lg flex items-center justify-center gap-2">
+                <i class="fas fa-key"></i> Buka Akses
+            </button>
+            <div class="mt-6">
+                <a href="index.html" class="text-xs text-[var(--text-muted)] hover:text-[var(--primary)] transition"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+            </div>
+        </div>
+
+        <!-- VIEW 2: PILIH PAKET SOAL -->
+        <div id="view-paket" class="w-full hidden fade-in">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl md:text-4xl font-bold mb-2 text-[var(--primary)]">KPK dan FPB</h2>
+                <p class="text-sm md:text-base text-[var(--text-muted)]">Pilih paket soal yang ingin kamu kerjakan hari ini.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-3xl mx-auto">
+                <div onclick="gate.startPaket(1)" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center group border-t-4 border-t-[var(--primary)]">
+                    <i class="fas fa-box-open text-4xl mb-4 text-[var(--primary)] group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-xl font-bold mb-2">Paket 1</h3>
+                    <p class="text-xs text-[var(--text-muted)] mb-4">11 Soal Latihan</p>
+                    <div class="px-4 py-1 bg-[var(--primary)] text-black rounded-full text-xs font-bold w-full">MULAI KERJAKAN</div>
+                </div>
+
+                <div onclick="gate.startPaket(2)" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center group border-t-4 border-t-[var(--secondary)]">
+                    <i class="fas fa-box-open text-4xl mb-4 text-[var(--secondary)] group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-xl font-bold mb-2">Paket 2</h3>
+                    <p class="text-xs text-[var(--text-muted)] mb-4">11 Soal Latihan</p>
+                    <div class="px-4 py-1 bg-white/20 text-white rounded-full text-xs font-bold w-full hover:bg-[var(--secondary)] hover:text-black transition">MULAI KERJAKAN</div>
+                </div>
+
+                <div onclick="gate.startPaket(3)" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center group border-t-4 border-t-[#00ff88]">
+                    <i class="fas fa-box-open text-4xl mb-4 text-[#00ff88] group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-xl font-bold mb-2">Paket 3</h3>
+                    <p class="text-xs text-[var(--text-muted)] mb-4">11 Soal Latihan</p>
+                    <div class="px-4 py-1 bg-white/20 text-white rounded-full text-xs font-bold w-full hover:bg-[#00ff88] hover:text-black transition">MULAI KERJAKAN</div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-10">
+                <a href="index.html" class="px-6 py-2 rounded-full border border-[var(--glass-border)] hover:bg-white/10 transition text-sm"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+            </div>
+        </div>
+
+        <!-- VIEW 3: AREA KUIS UTAMA -->
+        <div id="view-quiz" class="w-full hidden fade-in flex-col items-center">
+            
+            <div id="quiz-header" class="flex justify-between items-center w-full mb-6 bg-[var(--glass-bg)] p-4 md:p-5 rounded-2xl backdrop-blur-md border border-[var(--glass-border)] shadow-lg">
+                <div>
+                    <h1 class="text-base md:text-2xl font-bold mb-1">KPK dan FPB <span id="paket-label" class="text-[var(--primary)] text-sm md:text-lg"></span></h1>
+                    <p class="text-[10px] md:text-sm text-[var(--text-muted)]"><i class="fas fa-info-circle text-[var(--primary)] mr-1"></i> Kerjakan dengan santai dan teliti.</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] md:text-xs uppercase tracking-widest text-[var(--text-muted)] font-bold mb-1">Sisa Waktu</p>
+                    <div id="timer-display" class="text-lg md:text-3xl font-mono font-bold text-[var(--primary)] pulse-slow bg-black/20 px-3 py-1 rounded-lg">10:00</div>
+                </div>
+            </div>
+
+            <div id="quiz-area" class="glass-panel p-5 md:p-8 w-full">
+                <div class="mb-6 md:mb-8 pb-5 md:pb-6 border-b border-[var(--glass-border)]">
+                    <p class="text-[10px] md:text-sm mb-3 font-semibold text-[var(--text-muted)]">Pilih Nomor Soal (Kotak warna = sudah dijawab):</p>
+                    <div id="nav-grid" class="flex flex-wrap gap-2 justify-center md:justify-start"></div>
+                </div>
+
+                <div class="mb-6 md:mb-8">
+                    <div class="inline-block px-3 py-1 bg-[var(--primary)]/20 text-[var(--primary)] border border-[var(--primary)]/30 rounded-full text-[10px] md:text-xs font-bold tracking-wider mb-4" id="tipe-soal">TIPE SOAL</div>
+                    <h2 id="nomor-soal-header" class="text-base md:text-xl font-bold mb-3 text-[var(--primary)] border-l-4 border-[var(--primary)] pl-3">Soal nomor 01</h2>
+                    <p id="teks-soal" class="text-sm md:text-lg font-normal leading-relaxed text-gray-100"></p>
+                </div>
+
+                <div id="opsi-container" class="space-y-3 mb-6 md:mb-8"></div>
+
+                <div class="flex justify-between items-center mt-4 md:mt-6 pt-4 md:pt-6 border-t border-[var(--glass-border)]">
+                    <button id="btn-prev" onclick="kuis.prev()" class="px-4 py-2 md:px-6 md:py-3 rounded-full border border-[var(--glass-border)] hover:bg-white/10 transition text-xs md:text-base font-medium">❮ Sebelumnya</button>
+                    <button id="btn-next" onclick="kuis.next()" class="primary-btn px-5 py-2 md:px-8 md:py-3 rounded-full text-xs md:text-base">Selanjutnya ❯</button>
+                </div>
+            </div>
+
+            <div id="result-area" class="glass-panel p-6 md:p-10 hidden text-center w-full">
+                <i class="fas fa-award text-5xl md:text-6xl text-[var(--primary)] mb-4 md:mb-6 pulse-slow"></i>
+                <h2 class="text-2xl md:text-4xl font-bold mb-2">Latihan Selesai!</h2>
+                <p class="text-[var(--text-muted)] mb-6 md:mb-8 text-xs md:text-base">Waktu pengerjaanmu telah dicatat. Ini dia hasilnya!</p>
+                
+                <div class="inline-block p-6 md:p-8 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-3xl mb-8 md:mb-10 shadow-[0_0_20px_rgba(0,0,0,0.3)] w-48 md:w-64">
+                    <p class="text-[10px] md:text-sm uppercase tracking-widest font-bold mb-2 text-[var(--text-muted)]">Skor Akhir</p>
+                    <p id="score-text" class="text-5xl md:text-8xl font-black text-[var(--primary)] drop-shadow-md">0</p>
+                </div>
+
+                <h3 class="text-base md:text-xl font-bold mb-4 md:mb-6 text-left border-b border-[var(--glass-border)] pb-2 md:pb-3"><i class="fas fa-clipboard-check mr-2 text-[var(--primary)]"></i> Evaluasi Belajarmu</h3>
+                <div id="eval-container" class="space-y-4 text-left mb-8 md:mb-10 w-full"></div>
+
+                <div class="flex flex-col md:flex-row gap-4 justify-center">
+                    <button onclick="gate.backToPaket()" class="px-6 py-2 md:px-8 md:py-3 rounded-full border border-[var(--glass-border)] hover:bg-white/10 transition font-bold">Pilih Paket Lain</button>
+                    <a href="index.html" class="primary-btn px-6 py-2 md:px-8 md:py-3 rounded-full text-sm md:text-lg font-bold shadow-lg">Kembali ke Beranda</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PENGATURAN & ALERT (Sama seperti sebelumnya) -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-11/12 max-w-xs md:max-w-sm p-5 md:p-6 transform scale-95 transition-transform duration-300" id="settings-content">
+            <div class="flex justify-between items-center mb-4 md:mb-6 border-b border-white/10 pb-2 md:pb-3">
+                <h3 class="text-lg md:text-xl font-bold"><i class="fas fa-sliders-h mr-2"></i> Pengaturan</h3>
+                <button onclick="ui.toggleSettings()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-lg md:text-xl"></i></button>
+            </div>
+            <div class="space-y-4 md:space-y-5">
+                <div class="flex justify-between items-center"><span class="font-medium text-xs md:text-sm"><i class="fas fa-music mr-2 w-4 md:w-5"></i> Suara & Musik</span><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="toggle-music" class="sr-only peer" onchange="settings.toggleMusic()"><div class="w-9 h-5 md:w-11 md:h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div></label></div>
+                <div class="flex justify-between items-center"><span class="font-medium text-xs md:text-sm"><i class="fas fa-volume-up mr-2 w-4 md:w-5"></i> Volume</span><input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" class="w-20 md:w-24 accent-[var(--primary)] cursor-pointer" onchange="settings.changeVolume(this.value)"></div>
+                <div class="flex justify-between items-center"><span class="font-medium text-xs md:text-sm"><i class="fas fa-magic mr-2 w-4 md:w-5"></i> Animasi</span><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="toggle-particles" class="sr-only peer" checked onchange="settings.toggleParticles()"><div class="w-9 h-5 md:w-11 md:h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div></label></div>
+                <div class="flex justify-between items-center"><span class="font-medium text-xs md:text-sm"><i class="fas fa-expand mr-2 w-4 md:w-5"></i> Fullscreen</span><button onclick="settings.toggleFullscreen()" class="px-2 py-1 md:px-3 md:py-1 bg-white/10 rounded-md text-[10px] md:text-xs hover:bg-[var(--primary)] hover:text-black transition">Beralih</button></div>
+            </div>
+            <button onclick="ui.toggleSettings()" class="primary-btn w-full mt-5 md:mt-6 py-2 rounded-lg font-bold text-sm md:text-base">Simpan</button>
+        </div>
+    </div>
+    
+    <div id="alert-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-11/12 max-w-xs md:max-w-sm p-6 md:p-8 text-center transform scale-95 transition-transform duration-300" id="alert-content">
+            <div id="alert-icon" class="text-3xl md:text-4xl mb-3 md:mb-4 text-[var(--primary)]"></div>
+            <h3 id="alert-title" class="text-lg md:text-xl font-bold mb-2"></h3>
+            <p id="alert-msg" class="text-[var(--text-muted)] mb-5 md:mb-6 text-xs md:text-sm"></p>
+            <button onclick="ui.closeAlert()" class="primary-btn px-5 md:px-6 py-2 rounded-full font-bold text-sm md:text-base">Mengerti</button>
+        </div>
+    </div>
+
+    <script>
+        const currentTheme = localStorage.getItem('savedTheme') || 'galaxy';
+        document.body.className = `theme-${currentTheme}`;
+
+        // ENGINE ANIMASI
+        const bgEngine = {
+            canvas: document.getElementById('bg-canvas'), ctx: null, particles: [],
+            init() { this.ctx = this.canvas.getContext('2d'); this.resize(); window.addEventListener('resize', () => this.resize()); this.initParticles(); this.animate(); },
+            resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; this.initParticles(); },
+            initParticles() {
+                this.particles = []; const w = this.canvas.width, h = this.canvas.height, theme = currentTheme;
+                if (theme === 'galaxy') {
+                    for (let i = 0; i < 150; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.5 + 0.5, alpha: Math.random(), alphaChange: (Math.random()*0.02)-0.01, type: 'star' });
+                    for (let i = 0; i < 4; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, length: Math.random()*100+50, speedX: (Math.random()*3+2)*(Math.random()>0.5?1:-1), speedY: Math.random()*3+2, type: 'comet' });
+                } else if (theme === 'sky') {
+                    for (let i = 0; i < 40; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*4+2, speedX: Math.random()*2-1, speedY: Math.random()*1.5+0.5, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'petal' });
+                    for (let i = 0; i < 15; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*8+4, speedX: Math.random()*2-1, speedY: Math.random()*2+1, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'leaf', color: Math.random() > 0.5 ? 'rgba(144, 238, 144, 0.7)' : 'rgba(255, 215, 0, 0.7)' });
+                } else if (theme === 'ocean') {
+                    for (let i = 0; i < 80; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*3+1, speedX: Math.random()*0.5-0.25, speedY: -(Math.random()*2+0.5), type: 'bubble' });
+                }
+            },
+            animate() {
+                if(!document.getElementById('toggle-particles') || document.getElementById('toggle-particles').checked) {
+                    const w = this.canvas.width, h = this.canvas.height; this.ctx.clearRect(0, 0, w, h);
+                    for(let i = 0; i < this.particles.length; i++) {
+                        let p = this.particles[i];
+                        if(p.type === 'star') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; this.ctx.shadowBlur = 10; this.ctx.shadowColor = 'rgba(0, 243, 255, 0.9)'; this.ctx.fill(); this.ctx.shadowBlur = 0; p.alpha += p.alphaChange; if(p.alpha <= 0 || p.alpha >= 1) p.alphaChange *= -1; } 
+                        else if(p.type === 'comet') { this.ctx.beginPath(); this.ctx.moveTo(p.x, p.y); this.ctx.lineTo(p.x - (p.speedX * (p.length/10)), p.y - (p.speedY * (p.length/10))); this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.9)'; this.ctx.lineWidth = 3; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.x < 0 || p.x > w || p.y > h || p.y < 0) { p.x = Math.random() * w; p.y = -20; } }
+                        else if(p.type === 'petal' || p.type === 'leaf') { this.ctx.save(); this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle); this.ctx.beginPath(); if(p.type === 'petal') { this.ctx.ellipse(0, 0, p.r, p.r/1.5, 0, 0, Math.PI * 2); this.ctx.fillStyle = 'rgba(255, 183, 197, 0.8)'; } else { this.ctx.ellipse(0, 0, p.r, p.r/2, 0, 0, Math.PI * 2); this.ctx.fillStyle = p.color; } this.ctx.fill(); this.ctx.restore(); p.x += p.speedX; p.y += p.speedY; p.angle += p.spin; if(p.y > h + 20) { p.y = -20; p.x = Math.random() * w; } }
+                        else if(p.type === 'bubble') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.y < -20) { p.y = h + 20; p.x = Math.random() * w; } }
+                    }
+                }
+                requestAnimationFrame(() => this.animate());
+            }
+        };
+        bgEngine.init();
+
+        const audioSys = {
+            bgm: new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3'),
+            isSetup: false,
+            setup() { if(this.isSetup) return; this.bgm.loop = true; this.bgm.volume = document.getElementById('volume-slider').value; this.isSetup = true; },
+            playMusic() { if(!document.getElementById('toggle-music').checked) return this.pauseMusic(); this.setup(); this.bgm.play().catch(e => console.log("Audio diblokir")); },
+            pauseMusic() { if(this.isSetup) this.bgm.pause(); },
+            setVolume(val) { if(this.isSetup) this.bgm.volume = val; },
+            playSFX() { 
+                if(!document.getElementById('toggle-music').checked) return; 
+                try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.type = 'sine'; osc.frequency.setValueAtTime(800, ctx.currentTime); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {}
+            }
+        };
+
+        const ui = {
+            showModal(id, contentId) { const m = document.getElementById(id), c = document.getElementById(contentId); m.classList.remove('hidden', 'opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); },
+            hideModal(id, contentId) { const m = document.getElementById(id), c = document.getElementById(contentId); m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); },
+            toggleSettings() { const m = document.getElementById('settings-modal'); if(m.classList.contains('hidden')) this.showModal('settings-modal', 'settings-content'); else this.hideModal('settings-modal', 'settings-content'); },
+            showAlert(title, msg, iconClass = 'fas fa-exclamation-circle') { document.getElementById('alert-title').innerText = title; document.getElementById('alert-msg').innerText = msg; document.getElementById('alert-icon').className = `text-3xl md:text-4xl mb-4 ${iconClass} text-[var(--primary)]`; this.showModal('alert-modal', 'alert-content'); },
+            closeAlert() { this.hideModal('alert-modal', 'alert-content'); }
+        };
+
+        const settings = {
+            toggleMusic() { if(document.getElementById('toggle-music').checked) audioSys.playMusic(); else audioSys.pauseMusic(); },
+            changeVolume(val) { audioSys.setVolume(val); },
+            toggleParticles() { if(!document.getElementById('toggle-particles').checked) bgEngine.ctx.clearRect(0, 0, bgEngine.canvas.width, bgEngine.canvas.height); },
+            toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(e=>console.log(e)); else if (document.exitFullscreen) document.exitFullscreen(); }
+        };
+
+        // KUMPULAN DATA PAKET SOAL KPK & FPB
+        const dataPaket1 = [
+            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "Kelompok ronda di Kampung Damai dibagi menjadi dua tim. Tim Ronda A bertugas setiap 6 hari sekali, sedangkan Tim Ronda B bertugas setiap 8 hari sekali. Jika hari ini kedua tim berjaga bersamaan, setiap berapa hari sekalikah kedua tim akan bertemu di jadwal yang sama?", opsi: { A: "24 hari", B: "12 hari", C: "16 hari", D: "48 hari" }, jawaban_benar: ["A"] },
+            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Ibu membelikan adik 24 buah apel dan 36 buah jeruk. Ibu ingin membagikan buah-buahan tersebut ke dalam beberapa kantong plastik secara merata tanpa ada sisa. Berapakah jumlah kantong plastik terbanyak yang harus disiapkan Ibu?", opsi: { A: "6 kantong", B: "12 kantong", C: "18 kantong", D: "24 kantong" }, jawaban_benar: ["B"] },
+            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "Roni dan Susi mengikuti les matematika di tempat yang sama. Roni pergi les setiap 4 hari sekali, sedangkan Susi setiap 6 hari sekali. Jika mereka pertama kali bertemu pada hari Selasa, pada hari apakah mereka akan les bersama-sama untuk kedua kalinya?", opsi: { A: "Kamis", B: "Jumat", C: "Sabtu", D: "Minggu" }, jawaban_benar: ["D"] },
+            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Dika sedang belajar mengenai struktur bilangan dalam pelajaran matematika. Guru meminta Dika mencari bentuk perkalian faktor-faktor prima (faktorisasi prima) dari bilangan 60. Bentuk faktorisasi prima yang benar adalah...", opsi: { A: "2 × 3 × 5", B: "2² × 3 × 5", C: "2 × 3² × 5", D: "2² × 3² × 5" }, jawaban_benar: ["B"] },
+            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "Seorang petani memanen 45 kg buah mangga dan 75 kg buah rambutan. Buah-buah tersebut akan dimasukkan ke dalam beberapa keranjang dengan jumlah yang sama banyak untuk setiap jenisnya. Berapa berat buah mangga yang ada di dalam setiap keranjang?", opsi: { A: "3 kg", B: "5 kg", C: "15 kg", D: "25 kg" }, jawaban_benar: ["A"] },
+            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Dalam sebuah kuis matematika, siswa diminta menentukan hubungan antar bilangan asli. Salah satu pernyataannya adalah: Bilangan 15 merupakan salah satu faktor dari bilangan 45.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "Bus Maju Jaya berangkat dari terminal setiap 15 menit sekali, sedangkan Bus Sumber Makmur berangkat setiap 20 menit sekali. Jika kedua bus berangkat bersamaan pada pukul 08.00, maka mereka akan berangkat bersamaan kembali pada pukul 09.20.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Seorang guru meminta siswa mencari Faktor Persekutuan Terbesar (FPB) dari dua buah bilangan untuk menyederhanakan pecahan. Nilai FPB dari bilangan 36 dan 54 adalah 18.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Ali mengunjungi rumah neneknya setiap 6 hari sekali, sementara Budi mengunjunginya setiap 8 hari sekali. Jika hari ini mereka tidak sengaja bertemu di rumah nenek, pada hari ke berapakah mereka bisa bertemu kembali di sana? (Pilihlah 2 jawaban yang benar!)", opsi: { A: "24 hari lagi", B: "36 hari lagi", C: "48 hari lagi", D: "60 hari lagi" }, jawaban_benar: ["A", "C"] },
+            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Toko Grosir Jaya memiliki dua jenis papan kayu dengan panjang masing-masing 24 meter dan 32 meter. Tukang kayu ingin memotong kedua papan menjadi beberapa bagian yang sama panjang tanpa sisa. Ukuran panjang potongan kayu yang mungkin adalah... (Pilihlah 2 jawaban yang benar!)", opsi: { A: "3 meter", B: "4 meter", C: "6 meter", D: "8 meter" }, jawaban_benar: ["B", "D"] },
+            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Pada sebuah lampu hias, lampu merah berkedip setiap 4 detik dan lampu hijau berkedip setiap 6 detik. Di antara bilangan berikut, manakah yang merupakan waktu (detik) di mana kedua lampu menyala bersamaan sebelum detik ke-40? (Pilihlah 3 jawaban yang benar!)", opsi: { A: "12", B: "18", C: "24", D: "36" }, jawaban_benar: ["A", "C", "D"] }
+        ];
+
+        const dataPaket2 = [
+            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "Dalam sesi pemanasan, atlet A berlari mengelilingi lapangan setiap 12 menit sekali, dan atlet B setiap 18 menit sekali. Kelipatan persekutuan terkecil (KPK) dari waktu berlari kedua atlet tersebut adalah...", opsi: { A: "36", B: "54", C: "72", D: "108" }, jawaban_benar: ["A"] },
+            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Panitia baksos OSIS mengumpulkan 50 buku tulis dan 75 pensil untuk diberikan kepada anak-anak panti asuhan. Setiap anak akan menerima paket alat tulis dengan jumlah yang sama banyak. Berapakah jumlah anak maksimal yang bisa menerima paket tersebut?", opsi: { A: "5 anak", B: "15 anak", C: "25 anak", D: "50 anak" }, jawaban_benar: ["C"] },
+            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "Tiga buah jam beker di kamar pameran diatur untuk berdering berkala. Jam pertama berdering setiap 10 menit, jam kedua setiap 15 menit, dan jam ketiga setiap 20 menit. Setiap berapa menit sekalikah ketiga jam tersebut akan berdering bersamaan?", opsi: { A: "60 menit", B: "30 menit", C: "45 menit", D: "90 menit" }, jawaban_benar: ["A"] },
+            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Andi ditugaskan mencari Faktor Persekutuan Terbesar (FPB) dari jumlah kelereng merah dan kelereng biru miliknya. Jika jumlah kelereng merah adalah 28 dan kelereng biru adalah 42, berapakah nilai FPB-nya?", opsi: { A: "7", B: "14", C: "21", D: "28" }, jawaban_benar: ["B"] },
+            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "Dina menyiram tanaman bunga mawar setiap 3 hari sekali dan melati setiap 4 hari sekali. Jika pada tanggal 1 Juni Dina menyiram kedua tanaman tersebut bersama-sama, pada tanggal berapakah ia akan menyiram bersamaan lagi?", opsi: { A: "7 Juni", B: "12 Juni", C: "13 Juni", D: "15 Juni" }, jawaban_benar: ["C"] },
+            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Sebuah toko kue ingin mengemas 40 kue sus dan 60 kue lemper ke dalam wadah kotak plastik. Jumlah wadah terbanyak yang bisa dibuat dengan isi kue sama rata per jenisnya adalah 20 wadah.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "Pada materi kelipatan bilangan asli di kelas 4, guru memberikan tebakan angka. Salah satu tebakannya adalah: Bilangan 28 merupakan salah satu bilangan kelipatan dari 6.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Tiga orang anak berlatih memanah di lapangan. Anak pertama memanah setiap 8 detik, anak kedua setiap 12 detik, dan anak ketiga setiap 16 detik. Kelipatan Persekutuan Terkecil (KPK) dari waktu memanah ketiga anak tersebut adalah 32.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Dalam materi pengenalan faktor bilangan asli, siswa diminta mencari angka-angka yang dapat membagi habis suatu bilangan. Bilangan berikut ini yang merupakan faktor dari 48 adalah... (Pilihlah 2 jawaban yang benar!)", opsi: { A: "6", B: "9", C: "12", D: "14" }, jawaban_benar: ["A", "C"] },
+            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Jadwal periksa pos ronda Kampung A dilakukan setiap 4 hari sekali, sedangkan Kampung B setiap 5 hari sekali. Jika petugas dari kedua kampung melakukan ronda bersama pada malam hari ini, mereka akan ronda bersama lagi pada malam ke-... (Pilihlah 2 jawaban yang benar!)", opsi: { A: "20", B: "30", C: "40", D: "50" }, jawaban_benar: ["A", "C"] },
+            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Seorang guru olahraga ingin membagikan 24 bola kasti dan 36 peluit kepada beberapa kelompok siswa secara merata untuk praktik. Jumlah kelompok siswa yang mungkin dibentuk oleh guru tersebut adalah... (Pilihlah 2 jawaban yang benar!)", opsi: { A: "4 kelompok", B: "6 kelompok", C: "8 kelompok", D: "9 kelompok" }, jawaban_benar: ["A", "B"] }
+        ];
+
+        const dataPaket3 = [
+            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "Dua buah tali memiliki panjang masing-masing 18 meter dan 24 meter. Tali tersebut akan dipotong menjadi beberapa bagian yang sama panjang. Faktor persekutuan terbesar (FPB) atau panjang maksimal dari potongan tali tersebut adalah...", opsi: { A: "3 meter", B: "4 meter", C: "6 meter", D: "8 meter" }, jawaban_benar: ["C"] },
+            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Ayah menjadwalkan untuk menguras akuarium A setiap 8 hari sekali dan akuarium B setiap 12 hari sekali. Jika hari ini kedua akuarium dikuras secara bersamaan, berapa hari lagikah Ayah akan menguras kedua akuarium tersebut bersama-sama kembali?", opsi: { A: "16 hari", B: "24 hari", C: "32 hari", D: "48 hari" }, jawaban_benar: ["B"] },
+            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "Siska memiliki 30 manik-manik merah dan 45 manik-manik biru untuk dibuat menjadi beberapa gelang hias. Setiap gelang harus memiliki kombinasi jumlah warna yang sama. Berapakah jumlah manik-manik biru pada setiap gelang jika Siska membuat gelang sebanyak-banyaknya?", opsi: { A: "2 manik-manik", B: "3 manik-manik", C: "5 manik-manik", D: "15 manik-manik" }, jawaban_benar: ["B"] },
+            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Dua buah alarm disetel dengan interval waktu berbeda. Alarm pertama berbunyi setiap 9 menit, dan alarm kedua setiap 15 menit. Kelipatan persekutuan terkecil (KPK) dari waktu berbunyi kedua alarm tersebut adalah...", opsi: { A: "3", B: "30", C: "45", D: "90" }, jawaban_benar: ["C"] },
+            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "Pak Doni memiliki 42 bibit pohon cabai dan 56 bibit pohon tomat. Ia ingin menanam bibit-bibit tersebut dalam beberapa barisan di kebunnya dengan jumlah pohon yang sama banyak di tiap barisnya. Berapa baris maksimal yang dapat dibuat Pak Doni?", opsi: { A: "7 baris", B: "14 baris", C: "28 baris", D: "42 baris" }, jawaban_benar: ["B"] },
+            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Dalam teori bilangan matematika asli, terdapat aturan mengenai Faktor Persekutuan Terbesar (FPB). Nilai FPB dari dua bilangan prima yang berbeda angka nilainya selalu sama dengan 1.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "Dua buah sirine di pabrik berbunyi berkala. Jika Kelipatan Persekutuan Terkecil (KPK) waktu berbunyi dari dua sirine tersebut adalah 30 menit, maka waktu pertemuan/berbunyi bersamaan berikutnya setelah itu adalah pada menit ke-45.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Siswa kelas 5 sedang mendaftar seluruh bilangan pembagi dari angka 24. Deretan angka: 1, 2, 3, 4, 6, 8, 12, dan 24 adalah seluruh faktor pelengkap yang dimiliki oleh bilangan 24.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Sebuah kapal kargo dengan rute A berlayar setiap 9 hari sekali, sedangkan kapal kargo dengan rute B berlayar setiap 12 hari sekali. Jika kedua kapal berangkat bersamaan dari pelabuhan hari ini, mereka akan terjadwal berangkat bersama kembali setelah... hari. (Pilihlah 2 jawaban yang benar!)", opsi: { A: "36", B: "54", C: "72", D: "90" }, jawaban_benar: ["A", "C"] },
+            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Diberikan dua buah bilangan asli yaitu 60 dan 90. Di antara pernyataan-pernyataan matematika berikut ini, manakah pernyataan yang bernilai benar mengenai kedua bilangan tersebut? (Pilihlah 2 jawaban yang benar!)", opsi: { A: "Faktor Persekutuan Terbesar (FPB) kedua bilangan adalah 30.", B: "Kelipatan Persekutuan Terkecil (KPK) kedua bilangan adalah 120.", C: "Faktor persekutuan terbesar keduanya adalah 30.", D: "Kelipatan persekutuan terkecil keduanya adalah 150." }, jawaban_benar: ["A", "C"] },
+            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Pak Guru meminta siswa mencari angka kelipatan persekutuan dari angka 3 dan 5. Di antara bilangan berikut, manakah yang merupakan kelipatan persekutuan dari 3 dan 5 yang letaknya di antara angka 20 dan 70? (Pilihlah 3 jawaban yang benar!)", opsi: { A: "30", B: "40", C: "45", D: "60" }, jawaban_benar: ["A", "C", "D"] }
+        ];
+
+        // SISTEM NAVIGASI GATE (Gerbang Masuk)
+        const gate = {
+            checkCode() {
+                const input = document.getElementById('access-code').value.toLowerCase().trim();
+                audioSys.playSFX();
+                if(input === 'sdmugeb') {
+                    document.getElementById('view-access').classList.add('hidden');
+                    document.getElementById('view-paket').classList.remove('hidden');
+                } else {
+                    ui.showAlert("Akses Ditolak", "Kode yang kamu masukkan salah. Silakan coba lagi.", "fas fa-lock");
+                }
+            },
+            startPaket(paketNum) {
+                audioSys.playSFX();
+                document.getElementById('view-paket').classList.add('hidden');
+                document.getElementById('view-quiz').classList.remove('hidden');
+                document.getElementById('view-quiz').classList.add('flex');
+                
+                document.getElementById('paket-label').innerText = `- Paket ${paketNum}`;
+                
+                // Pilih data sesuai paket yang ditekan
+                if(paketNum === 1) kuis.dataSoal = dataPaket1;
+                else if(paketNum === 2) kuis.dataSoal = dataPaket2;
+                else if(paketNum === 3) kuis.dataSoal = dataPaket3;
+                
+                kuis.init();
+            },
+            backToPaket() {
+                audioSys.playSFX();
+                document.getElementById('view-quiz').classList.add('hidden');
+                document.getElementById('view-quiz').classList.remove('flex');
+                
+                document.getElementById('result-area').classList.add('hidden');
+                document.getElementById('quiz-header').classList.remove('hidden');
+                document.getElementById('quiz-area').classList.remove('hidden');
+                
+                document.getElementById('view-paket').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+
+        // ENGINE KUIS
+        const kuis = {
+            dataSoal: [], idx: 0, jawabanSiswa: {}, waktuSisa: 600, timerId: null,
+
+            init() { 
+                this.idx = 0; this.jawabanSiswa = {}; this.waktuSisa = 600; 
+                clearInterval(this.timerId);
+                this.renderNavBoxes(); this.loadSoal(); this.startTimer(); 
+            },
+
+            startTimer() {
+                this.timerId = setInterval(() => {
+                    this.waktuSisa--;
+                    let m = Math.floor(this.waktuSisa / 60).toString().padStart(2, '0');
+                    let s = (this.waktuSisa % 60).toString().padStart(2, '0');
+                    document.getElementById('timer-display').innerText = `${m}:${s}`;
+                    if (this.waktuSisa <= 0) { clearInterval(this.timerId); alert("Waktu habis! Kuis otomatis dikumpulkan."); this.submit(); }
+                }, 1000);
+            },
+
+            renderNavBoxes() {
+                const grid = document.getElementById('nav-grid'); grid.innerHTML = '';
+                this.dataSoal.forEach((s, i) => {
+                    const box = document.createElement('div');
+                    box.className = `nav-box w-7 h-7 md:w-10 md:h-10 flex items-center justify-center rounded-lg text-xs md:text-sm`;
+                    box.innerText = i + 1;
+                    if (this.jawabanSiswa[s.id] && this.jawabanSiswa[s.id].length > 0) box.classList.add('answered');
+                    if (i === this.idx) box.classList.add('active');
+                    box.onclick = () => { audioSys.playSFX(); this.idx = i; this.loadSoal(); };
+                    grid.appendChild(box);
+                });
+            },
+
+            loadSoal() {
+                const soal = this.dataSoal[this.idx];
+                document.getElementById('tipe-soal').innerText = soal.jenis_soal;
+                document.getElementById('nomor-soal-header').innerText = `Soal nomor ${(this.idx + 1).toString().padStart(2, '0')}`;
+                document.getElementById('teks-soal').innerText = soal.pertanyaan;
+
+                const isSingle = (soal.jenis_soal === "Pilihan Ganda" || soal.jenis_soal === "Benar atau Salah");
+                const inputType = isSingle ? 'radio' : 'checkbox';
+                const opsiContainer = document.getElementById('opsi-container'); opsiContainer.innerHTML = '';
+
+                for (const [key, value] of Object.entries(soal.opsi)) {
+                    const isChecked = this.jawabanSiswa[soal.id] && this.jawabanSiswa[soal.id].includes(key) ? 'checked' : '';
+                    const label = document.createElement('label');
+                    label.className = "flex items-start p-3 md:p-4 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl cursor-pointer hover:border-[var(--primary)] transition";
+                    label.innerHTML = `
+                        <input type="${inputType}" name="soal_${soal.id}" value="${key}" ${isChecked} 
+                               onchange="kuis.saveAnswer(${soal.id}, '${key}', this.checked, ${isSingle})">
+                        <span class="text-xs md:text-base font-normal mt-[2px] leading-relaxed">${key}. ${value}</span>
+                    `;
+                    opsiContainer.appendChild(label);
+                }
+
+                document.getElementById('btn-prev').style.visibility = this.idx === 0 ? 'hidden' : 'visible';
+                const btnNext = document.getElementById('btn-next');
+                
+                if (this.idx === this.dataSoal.length - 1) {
+                    btnNext.innerText = "Kumpulkan ✓";
+                    btnNext.className = "px-5 py-2 md:px-8 md:py-3 rounded-full font-bold bg-green-500 hover:bg-green-600 text-white transition text-xs md:text-base";
+                    btnNext.onclick = () => { audioSys.playSFX(); this.confirmSubmit(); };
+                } else {
+                    btnNext.innerText = "Selanjutnya ❯";
+                    btnNext.className = "primary-btn px-5 py-2 md:px-8 md:py-3 rounded-full text-xs md:text-base";
+                    btnNext.onclick = () => { audioSys.playSFX(); this.next(); };
+                }
+                
+                this.renderNavBoxes();
+                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            },
+
+            saveAnswer(id, key, isChecked, isSingle) {
+                if (!this.jawabanSiswa[id]) this.jawabanSiswa[id] = [];
+                if (isSingle) { this.jawabanSiswa[id] = [key]; } 
+                else { if (isChecked) this.jawabanSiswa[id].push(key); else this.jawabanSiswa[id] = this.jawabanSiswa[id].filter(k => k !== key); }
+                this.renderNavBoxes();
+                audioSys.playSFX();
+            },
+
+            next() { if (this.idx < this.dataSoal.length - 1) { this.idx++; this.loadSoal(); } },
+            prev() { if (this.idx > 0) { this.idx--; this.loadSoal(); } },
+
+            confirmSubmit() {
+                let belum = this.dataSoal.filter(s => !this.jawabanSiswa[s.id] || this.jawabanSiswa[s.id].length === 0).length;
+                if(belum > 0) { if(confirm(`Masih ada ${belum} soal yang kosong. Yakin kumpulkan sekarang?`)) this.submit(); } 
+                else this.submit();
+            },
+
+            submit() {
+                clearInterval(this.timerId);
+                document.getElementById('quiz-header').classList.add('hidden');
+                document.getElementById('quiz-area').classList.add('hidden');
+                
+                let totalBenar = 0; let pesanEvaluasi = "";
+                this.dataSoal.forEach((soal, i) => {
+                    const ansSiswa = [...(this.jawabanSiswa[soal.id] || [])].sort().join('');
+                    const ansKunci = [...soal.jawaban_benar].sort().join('');
+                    
+                    if (ansSiswa === ansKunci && ansSiswa !== "") { totalBenar++; } 
+                    else {
+                        pesanEvaluasi += `
+                            <div class="p-4 md:p-5 border-l-4 border-[#ff4757] bg-black/20 rounded-r-xl border-t border-r border-b border-white/5 w-full">
+                                <p class="font-bold text-[#ff4757] text-xs md:text-base">Wah, sayang sekali di Soal Nomor ${i + 1} masih kurang tepat. 🥺</p>
+                                <p class="text-xs md:text-sm mt-2 mb-3 text-gray-300">${soal.pertanyaan}</p>
+                                <div class="bg-[var(--glass-bg)] p-3 rounded-lg border border-[var(--primary)]/30">
+                                    <p class="text-[10px] md:text-sm text-[var(--primary)] font-semibold">💡 Jawaban yang benar adalah: ${soal.jawaban_benar.join(', ')}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                document.getElementById('score-text').innerText = Math.round((totalBenar / this.dataSoal.length) * 100);
+                const evalContainer = document.getElementById('eval-container');
+                if (pesanEvaluasi === "") evalContainer.innerHTML = `<div class="p-6 border border-[#2ed573] bg-[#2ed573]/10 text-[#2ed573] font-bold rounded-2xl text-center text-sm md:text-lg shadow-[0_0_15px_rgba(46,213,115,0.2)]">🎉 Luar biasa sempurna! Seluruh jawabanmu benar tanpa ada yang salah! Pertahankan belajarmu ya!</div>`;
+                else evalContainer.innerHTML = `<p class="text-xs md:text-base mb-4 text-[var(--text-muted)]">Yuk, kita cek bagian mana yang masih bisa ditingkatkan:</p>` + pesanEvaluasi;
+
+                document.getElementById('result-area').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            }
+        };
+
+        // Otomatis fokus ke input kode akses
+        window.addEventListener('load', () => { document.getElementById('access-code').focus(); });
+    </script>
+</body>
+</html>
