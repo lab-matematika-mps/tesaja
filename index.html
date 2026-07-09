@@ -10,152 +10,70 @@
 
     <style>
         :root {
-            /* Tema Default (Galaksi) */
-            --bg-top: #0a0a1a;
-            --bg-bottom: #1a0b2e;
-            --primary: #00f3ff;
-            --primary-hover: #00d0ff;
-            --secondary: #b900ff;
-            --text-main: #ffffff;
-            --text-muted: #a0a0b8;
-            --glass-bg: rgba(20, 20, 40, 0.4);
-            --glass-border: rgba(0, 243, 255, 0.2);
-            --glow-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
-            --font-main: 'Space Grotesk', sans-serif;
+            --bg-top: #0a0a1a; --bg-bottom: #1a0b2e;
+            --primary: #00f3ff; --primary-hover: #00d0ff; --secondary: #b900ff;
+            --text-main: #ffffff; --text-muted: #a0a0b8;
+            --glass-bg: rgba(20, 20, 40, 0.4); --glass-border: rgba(0, 243, 255, 0.2);
+            --glow-shadow: 0 0 20px rgba(0, 243, 255, 0.5); --font-main: 'Space Grotesk', sans-serif;
         }
-
-        /* Tema Langit */
         body.theme-sky {
-            --bg-top: #ffe5d9;
-            --bg-bottom: #ffcad4;
-            --primary: #f28482;
-            --primary-hover: #f0716f;
-            --secondary: #84a59d;
-            --text-main: #2b2d42;
-            --text-muted: #5c677d;
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --glass-border: rgba(242, 132, 130, 0.3);
+            --bg-top: #ffe5d9; --bg-bottom: #ffcad4;
+            --primary: #f28482; --primary-hover: #f0716f; --secondary: #84a59d;
+            --text-main: #2b2d42; --text-muted: #5c677d;
+            --glass-bg: rgba(255, 255, 255, 0.5); --glass-border: rgba(242, 132, 130, 0.4);
             --glow-shadow: 0 10px 25px rgba(242, 132, 130, 0.4);
         }
-
-        /* Tema Samudra */
         body.theme-ocean {
-            --bg-top: #001220;
-            --bg-bottom: #004d7a;
-            --primary: #00d4ff;
-            --primary-hover: #00b0ff;
-            --secondary: #00ff88;
-            --text-main: #ffffff;
-            --text-muted: #b3e5fc;
-            --glass-bg: rgba(0, 30, 60, 0.4);
-            --glass-border: rgba(0, 212, 255, 0.3);
+            --bg-top: #001220; --bg-bottom: #004d7a;
+            --primary: #00d4ff; --primary-hover: #00b0ff; --secondary: #00ff88;
+            --text-main: #ffffff; --text-muted: #b3e5fc;
+            --glass-bg: rgba(0, 30, 60, 0.4); --glass-border: rgba(0, 212, 255, 0.3);
             --glow-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
         }
 
-        body {
-            font-family: var(--font-main);
-            color: var(--text-main);
-            background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom));
-            background-attachment: fixed;
-            min-height: 100vh;
-            overflow-x: hidden;
-            transition: background 1s ease, color 0.5s ease;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        ::-webkit-scrollbar { width: 8px; }
+        body { font-family: var(--font-main); color: var(--text-main); background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom)); background-attachment: fixed; min-height: 100vh; overflow-x: hidden; transition: background 1s ease, color 0.5s ease; margin: 0; display: flex; flex-direction: column; }
+        
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
 
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 1.5rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            transition: all 0.4s ease;
-        }
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 1.5rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.4s ease; }
+        .glass-btn { background: var(--glass-bg); backdrop-filter: blur(8px); border: 1px solid var(--glass-border); color: var(--text-main); transition: all 0.3s ease; }
+        .glass-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: var(--glow-shadow); border-color: var(--primary); }
 
-        .glass-btn {
-            background: var(--glass-bg);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            transition: all 0.3s ease;
-        }
-
-        .glass-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: var(--glow-shadow);
-            border-color: var(--primary);
-        }
-
-        .primary-btn {
-            background: var(--primary);
-            color: #000; 
-            font-weight: 700;
-            border: none;
-            box-shadow: 0 0 15px var(--primary);
-            transition: all 0.3s ease;
-        }
+        .primary-btn { background: var(--primary); color: #000; font-weight: 700; border: none; box-shadow: 0 0 15px var(--primary); transition: all 0.3s ease; }
         body.theme-sky .primary-btn { color: #fff; }
-        .primary-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px var(--primary-hover);
-            background: var(--primary-hover);
-        }
+        .primary-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--primary-hover); background: var(--primary-hover); }
 
-        .glass-input {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            transition: all 0.3s;
-        }
-        .glass-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-            background: rgba(255, 255, 255, 0.1);
-        }
+        .glass-input { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--text-main); transition: all 0.3s; }
+        .glass-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); background: rgba(255, 255, 255, 0.1); }
 
-        .text-gradient {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .text-gradient { background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .fade-enter { opacity: 0; transform: translateY(20px); animation: fadeIn 0.6s ease forwards; }
+        .fade-enter { opacity: 0; transform: translateY(20px); animation: fadeIn 0.5s ease forwards; }
         .fade-exit { animation: fadeOut 0.4s ease forwards; }
         @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeOut { to { opacity: 0; transform: translateY(-20px); } }
 
         .pulse-slow { animation: pulseGlow 2.5s infinite; }
-        @keyframes pulseGlow {
-            0% { box-shadow: 0 0 10px var(--primary); transform: scale(1); }
-            50% { box-shadow: 0 0 25px var(--primary); transform: scale(1.02); }
-            100% { box-shadow: 0 0 10px var(--primary); transform: scale(1); }
-        }
-
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 10px var(--primary); transform: scale(1); } 50% { box-shadow: 0 0 25px var(--primary); transform: scale(1.02); } 100% { box-shadow: 0 0 10px var(--primary); transform: scale(1); } }
+        
         .float-anim { animation: floating 4s ease-in-out infinite; }
         @keyframes floating { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
 
-        .theme-card { border: 2px solid transparent; cursor: pointer; }
-        .theme-card.active { border-color: var(--primary); box-shadow: var(--glow-shadow); transform: scale(1.05); }
+        .theme-card { border: 2px solid transparent; cursor: pointer; transition: all 0.3s ease; }
+        .theme-card.active { border-color: var(--primary); box-shadow: var(--glow-shadow); transform: scale(1.05); background: var(--glass-border); }
 
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
         .main-wrapper { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 10; }
 
-        /* DAFTAR MATERI STYLES */
-        .topic-category { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 1rem; padding: 1.25rem; transition: all 0.3s ease; }
+        .topic-category { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 1rem; padding: 1rem; transition: all 0.3s ease; }
         .topic-category:hover { background: rgba(255, 255, 255, 0.06); border-color: var(--primary); box-shadow: var(--glow-shadow); }
-        .topic-header { display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; font-weight: 700; color: var(--text-main); border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.8rem; margin-bottom: 1rem; }
-        .badge-count { font-size: 0.75rem; padding: 0.2rem 0.6rem; background: rgba(255, 255, 255, 0.1); border-radius: 999px; font-weight: 600; }
+        .topic-header { display: flex; justify-content: space-between; align-items: center; font-size: 1rem; font-weight: 700; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.8rem; margin-bottom: 1rem; }
+        .badge-count { font-size: 0.7rem; padding: 0.2rem 0.6rem; background: rgba(255, 255, 255, 0.1); border-radius: 999px; }
         .topic-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
-        .topic-list li { position: relative; padding-left: 1.8rem; color: var(--text-main); opacity: 0.8; cursor: pointer; font-size: 0.9rem; transition: all 0.3s ease; }
-        .topic-list li::before { content: '├──'; position: absolute; left: 0; color: var(--glass-border); font-family: monospace; transition: all 0.3s ease; }
+        .topic-list li { position: relative; padding-left: 1.5rem; opacity: 0.8; cursor: pointer; font-size: 0.85rem; transition: all 0.3s; }
+        .topic-list li::before { content: '├──'; position: absolute; left: 0; color: var(--glass-border); font-family: monospace; }
         .topic-list li.last-item::before { content: '└──'; }
         .topic-list li:hover { opacity: 1; color: var(--primary); transform: translateX(5px); }
         .topic-list li:hover::before { color: var(--primary); }
@@ -163,149 +81,158 @@
 </head>
 <body class="theme-galaxy">
 
-    <!-- HALAMAN LOADING -->
+    <!-- HALAMAN LOADING BARU -->
     <div id="loading-screen" class="fixed inset-0 bg-[#0a0a1a] z-[9999] flex flex-col items-center justify-center transition-opacity duration-1000">
-        <h1 class="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00f3ff] to-[#b900ff] mb-8 pulse-slow tracking-widest">MPS</h1>
+        <!-- Tulisan Elegan -->
+        <h1 class="text-4xl md:text-6xl font-light text-transparent bg-clip-text bg-gradient-to-r from-[#00f3ff] to-[#b900ff] mb-12 tracking-[0.2em] md:tracking-[0.3em] uppercase drop-shadow-lg text-center px-4">Selamat Datang</h1>
         
-        <!-- Lingkaran Loading -->
-        <div class="relative w-20 h-20 mb-8">
-            <div class="absolute inset-0 border-4 border-[#00f3ff]/20 rounded-full"></div>
-            <div class="absolute inset-0 border-4 border-[#00f3ff] border-t-transparent rounded-full animate-spin"></div>
+        <!-- Animasi Loading Ring Futuristik -->
+        <div class="relative w-28 h-28 mb-12">
+            <div class="absolute inset-0 border-t-4 border-b-4 border-[#00f3ff] rounded-full animate-[spin_2s_linear_infinite] shadow-[0_0_15px_#00f3ff]"></div>
+            <div class="absolute inset-3 border-l-4 border-r-4 border-[#b900ff] rounded-full animate-[spin_1.5s_linear_infinite_reverse] shadow-[0_0_15px_#b900ff]"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <i class="fas fa-satellite text-[#00f3ff] text-3xl animate-pulse"></i>
+            </div>
         </div>
 
-        <!-- Bar Loading -->
-        <div class="w-64 bg-white/10 rounded-full h-3 mb-2 overflow-hidden shadow-[0_0_15px_rgba(0,243,255,0.3)]">
-            <div id="loading-bar" class="bg-gradient-to-r from-[#00f3ff] to-[#b900ff] h-full rounded-full w-0 transition-all duration-300"></div>
+        <!-- Bar Loading & Persentase (Berdampingan) -->
+        <div class="flex items-center gap-4 mb-6 w-full max-w-md px-6">
+            <div class="flex-1 bg-white/10 rounded-full h-2 md:h-3 overflow-hidden shadow-[0_0_15px_rgba(0,243,255,0.2)]">
+                <div id="loading-bar" class="bg-gradient-to-r from-[#00f3ff] to-[#b900ff] h-full rounded-full w-0 transition-all duration-300"></div>
+            </div>
+            <p id="loading-percent" class="text-[#00f3ff] font-mono font-bold text-lg md:text-xl w-12 text-right">0%</p>
         </div>
-        <p id="loading-percent" class="text-[#00f3ff] font-mono mb-8 font-bold text-xl">0%</p>
 
-        <!-- Pesan Pembuka -->
-        <div class="text-center max-w-md px-6 text-gray-300 space-y-3">
-            <p class="font-light">Mempersiapkan modul pembelajaran interaktif untuk pengalaman belajar yang menyenangkan...</p>
-            <p class="font-bold text-white text-lg drop-shadow-md">Mugeb TKA Learning Center siap memandumu!</p>
-        </div>
+        <!-- Teks Berjalan -->
+        <p id="loading-text" class="text-gray-300 font-light text-sm md:text-base text-center h-6 transition-opacity duration-300 italic tracking-wide"></p>
     </div>
-    <!-- AKHIR HALAMAN LOADING -->
 
+    <!-- CANVAS BACKGROUND -->
     <canvas id="bg-canvas"></canvas>
 
+    <!-- TOMBOL PENGATURAN -->
     <div class="fixed top-4 right-4 z-50">
-        <button onclick="ui.toggleSettings()" class="glass-btn p-3 rounded-full flex items-center justify-center w-12 h-12" aria-label="Pengaturan">
-            <i class="fas fa-cog text-xl"></i>
+        <button onclick="ui.toggleSettings()" class="glass-btn p-3 md:p-4 rounded-full flex items-center justify-center w-10 h-10 md:w-12 md:h-12" aria-label="Pengaturan">
+            <i class="fas fa-cog text-lg md:text-xl"></i>
         </button>
     </div>
 
-    <div class="main-wrapper container mx-auto px-4 py-8">
+    <div class="main-wrapper container mx-auto px-4 py-8 md:py-12">
         
+        <!-- SECTION: LANDING PAGE -->
         <section id="view-landing" class="view-section flex flex-col items-center justify-center max-w-3xl mx-auto w-full text-center">
-            <div class="glass-panel p-8 md:p-12 w-full mt-10 float-anim">
+            <div class="glass-panel p-6 md:p-12 w-full mt-6 float-anim">
                 <div class="mb-8">
-                    <div class="inline-block p-4 rounded-full bg-white/5 mb-4 border border-white/10">
-                        <i class="fas fa-graduation-cap text-4xl text-gradient"></i>
+                    <!-- Ikon Utama Modern -->
+                    <div class="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] p-1 mb-6 shadow-lg shadow-[var(--primary)]/30">
+                        <div class="w-full h-full bg-[var(--bg-top)] rounded-full flex items-center justify-center">
+                            <i class="fas fa-laptop-code text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)]"></i>
+                        </div>
                     </div>
-                    <h1 class="text-4xl md:text-5xl font-bold mb-3 tracking-tight">
+                    <h1 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight leading-tight">
                         Mugeb <span class="text-gradient">TKA</span> Learning Center
                     </h1>
-                    <p class="text-lg text-[var(--text-muted)] font-light">
+                    <p class="text-sm md:text-lg text-[var(--text-muted)] font-light px-4">
                         Berlatih TKA dengan pengalaman belajar yang menyenangkan.
                     </p>
                 </div>
 
-                <div class="mb-8 w-full max-w-md mx-auto">
+                <div class="mb-8 w-full max-w-sm mx-auto">
                     <div class="relative">
                         <i class="fas fa-user absolute left-4 top-1/2 transform -translate-y-1/2 text-[var(--text-muted)]"></i>
-                        <input type="text" id="student-name" class="glass-input w-full py-4 pl-12 pr-4 rounded-xl text-lg text-center font-medium" placeholder="Masukkan nama kamu..." autocomplete="off">
+                        <input type="text" id="student-name" class="glass-input w-full py-3 md:py-4 pl-12 pr-4 rounded-xl text-base md:text-lg text-center font-medium" placeholder="Masukkan nama kamu..." autocomplete="off">
                     </div>
                 </div>
 
-                <div class="mb-10">
-                    <p class="text-sm uppercase tracking-widest text-[var(--text-muted)] mb-4 font-semibold">Pilih Tema Perjalananmu</p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="theme-card glass-btn p-4 rounded-xl active flex flex-col items-center gap-2" onclick="app.setTheme('galaxy')" id="btn-theme-galaxy">
-                            <span class="text-3xl">🌌</span>
-                            <span class="font-medium">Galaksi</span>
+                <div class="mb-10 w-full">
+                    <p class="text-xs md:text-sm uppercase tracking-widest text-[var(--text-muted)] mb-4 font-semibold">Pilih Tema Perjalananmu</p>
+                    <div class="grid grid-cols-3 gap-3 md:gap-4 max-w-lg mx-auto">
+                        <!-- Ikon Tema Diperbarui -->
+                        <div class="theme-card glass-btn p-3 md:p-4 rounded-xl active flex flex-col items-center gap-2 group" onclick="app.setTheme('galaxy')" id="btn-theme-galaxy">
+                            <i class="fa-solid fa-atom text-2xl md:text-3xl text-cyan-400 group-hover:rotate-180 transition-transform duration-700"></i>
+                            <span class="text-xs md:text-sm font-medium">Galaksi</span>
                         </div>
-                        <div class="theme-card glass-btn p-4 rounded-xl flex flex-col items-center gap-2" onclick="app.setTheme('sky')" id="btn-theme-sky">
-                            <span class="text-3xl">🌅</span>
-                            <span class="font-medium">Langit</span>
+                        <div class="theme-card glass-btn p-3 md:p-4 rounded-xl flex flex-col items-center gap-2 group" onclick="app.setTheme('sky')" id="btn-theme-sky">
+                            <i class="fa-solid fa-cloud-sun text-2xl md:text-3xl text-yellow-400 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-xs md:text-sm font-medium">Langit</span>
                         </div>
-                        <div class="theme-card glass-btn p-4 rounded-xl flex flex-col items-center gap-2" onclick="app.setTheme('ocean')" id="btn-theme-ocean">
-                            <span class="text-3xl">🌊</span>
-                            <span class="font-medium">Samudra</span>
+                        <div class="theme-card glass-btn p-3 md:p-4 rounded-xl flex flex-col items-center gap-2 group" onclick="app.setTheme('ocean')" id="btn-theme-ocean">
+                            <i class="fa-solid fa-water text-2xl md:text-3xl text-blue-400 group-hover:-translate-y-2 transition-transform"></i>
+                            <span class="text-xs md:text-sm font-medium">Samudra</span>
                         </div>
                     </div>
                 </div>
 
-                <button onclick="app.startLearning()" class="primary-btn pulse-slow w-full md:w-auto px-10 py-4 rounded-full text-xl flex items-center justify-center gap-3 mx-auto">
+                <button onclick="app.startLearning()" class="primary-btn pulse-slow w-full sm:w-auto px-8 md:px-10 py-3 md:py-4 rounded-full text-base md:text-xl flex items-center justify-center gap-3 mx-auto">
                     <i class="fas fa-rocket"></i> Mulai Belajar
                 </button>
             </div>
         </section>
 
-        <!-- BAGIAN SUBJECT -->
+        <!-- SECTION: PILIH MAPEL -->
         <section id="view-subject" class="view-section hidden flex-col items-center justify-center max-w-4xl mx-auto w-full">
-            <div class="glass-panel p-6 md:p-8 w-full mb-8 relative overflow-hidden">
-                <div class="absolute -right-10 -top-10 opacity-10 text-9xl">
+            <div class="glass-panel p-5 md:p-8 w-full mb-6 md:mb-8 relative overflow-hidden">
+                <div class="absolute -right-5 -top-5 md:-right-10 md:-top-10 opacity-10 text-7xl md:text-9xl">
                     <i id="narration-icon" class="fas fa-user-astronaut"></i>
                 </div>
-                <div class="relative z-10 flex gap-4 items-start">
-                    <div class="text-3xl text-[var(--primary)] mt-1">
+                <div class="relative z-10 flex gap-3 md:gap-4 items-start">
+                    <div class="text-2xl md:text-3xl text-[var(--primary)] mt-1">
                         <i class="fas fa-quote-left"></i>
                     </div>
-                    <p id="greeting-text" class="text-lg md:text-xl font-light leading-relaxed"></p>
+                    <p id="greeting-text" class="text-base md:text-xl font-light leading-relaxed"></p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                <div onclick="app.navigate('view-math')" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group">
-                    <div class="w-20 h-20 rounded-full bg-[var(--primary)]/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-calculator text-4xl text-[var(--primary)]"></i>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 w-full">
+                <div onclick="app.navigate('view-math')" class="glass-btn p-6 md:p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group">
+                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--primary)]/20 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-calculator text-3xl md:text-4xl text-[var(--primary)]"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-2">Matematika</h3>
-                    <p class="text-[var(--text-muted)] text-sm">Logika, Berhitung & Analisis</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Matematika</h3>
+                    <p class="text-[var(--text-muted)] text-xs md:text-sm">Logika, Berhitung & Analisis</p>
                 </div>
 
-                <div onclick="ui.showComingSoon()" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group">
-                    <div class="w-20 h-20 rounded-full bg-[var(--secondary)]/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                        <i class="fas fa-book-open text-4xl text-[var(--secondary)]"></i>
+                <div onclick="ui.showComingSoon()" class="glass-btn p-6 md:p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group">
+                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-[var(--secondary)]/20 flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-book-open text-3xl md:text-4xl text-[var(--secondary)]"></i>
                     </div>
-                    <h3 class="text-2xl font-bold mb-2">Bahasa Indonesia</h3>
-                    <p class="text-[var(--text-muted)] text-sm">Literasi & Pemahaman Bacaan</p>
+                    <h3 class="text-xl md:text-2xl font-bold mb-2">Bahasa Indonesia</h3>
+                    <p class="text-[var(--text-muted)] text-xs md:text-sm">Literasi & Pemahaman Bacaan</p>
                 </div>
             </div>
         </section>
 
-        <!-- BAGIAN MATH MENU -->
+        <!-- SECTION: MATH MENU -->
         <section id="view-math" class="view-section hidden flex-col items-center justify-center max-w-4xl mx-auto w-full">
-            <div class="mb-8 text-center">
-                <h2 class="text-3xl font-bold mb-2 text-gradient">Matematika</h2>
-                <p class="text-[var(--text-muted)]">Pilih mode latihan yang kamu inginkan.</p>
+            <div class="mb-6 md:mb-8 text-center">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 text-gradient">Matematika</h2>
+                <p class="text-[var(--text-muted)] text-sm md:text-base">Pilih mode latihan yang kamu inginkan.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-                <div onclick="app.navigate('view-math-topics')" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group border-t-4 border-t-[var(--primary)]">
-                    <i class="fas fa-tasks text-4xl mb-4 text-[var(--primary)]"></i>
-                    <h3 class="text-xl font-bold mb-2">Latihan Per Materi</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 w-full">
+                <div onclick="app.navigate('view-math-topics')" class="glass-btn p-6 md:p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group border-t-4 border-t-[var(--primary)]">
+                    <i class="fas fa-tasks text-3xl md:text-4xl mb-4 text-[var(--primary)]"></i>
+                    <h3 class="text-lg md:text-xl font-bold mb-2">Latihan Per Materi</h3>
                     <div class="mt-4 px-4 py-1 bg-[var(--primary)]/20 text-[var(--primary)] rounded-full text-xs font-bold tracking-wider">BUKA MATERI</div>
                 </div>
 
-                <div onclick="ui.showComingSoon()" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group border-t-4 border-t-[var(--secondary)]">
-                    <i class="fas fa-stopwatch text-4xl mb-4 text-[var(--secondary)]"></i>
-                    <h3 class="text-xl font-bold mb-2">Simulasi TKA</h3>
+                <div onclick="ui.showComingSoon()" class="glass-btn p-6 md:p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group border-t-4 border-t-[var(--secondary)]">
+                    <i class="fas fa-stopwatch text-3xl md:text-4xl mb-4 text-[var(--secondary)]"></i>
+                    <h3 class="text-lg md:text-xl font-bold mb-2">Simulasi TKA</h3>
                     <div class="mt-4 px-4 py-1 bg-white/10 rounded-full text-xs font-semibold tracking-wider">COMING SOON</div>
                 </div>
             </div>
         </section>
 
-        <!-- BAGIAN MATH TOPICS -->
+        <!-- SECTION: MATH TOPICS (DAFTAR MATERI) -->
         <section id="view-math-topics" class="view-section hidden flex-col items-center justify-center max-w-4xl mx-auto w-full">
-            <div class="mb-8 text-center">
-                <h2 class="text-3xl font-bold mb-2 text-gradient">Latihan Per Materi</h2>
-                <p class="text-[var(--text-muted)]">Pilih bab dan materi yang ingin kamu kuasai hari ini!</p>
+            <div class="mb-6 md:mb-8 text-center">
+                <h2 class="text-2xl md:text-3xl font-bold mb-2 text-gradient">Latihan Per Materi</h2>
+                <p class="text-[var(--text-muted)] text-sm md:text-base">Pilih bab dan materi yang ingin kamu kuasai hari ini!</p>
             </div>
 
-            <div class="glass-panel p-6 w-full mb-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass-panel p-4 md:p-6 w-full mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     
                     <div class="topic-category">
                         <div class="topic-header">
@@ -366,29 +293,25 @@
                 </div>
             </div>
         </section>
-
     </div>
 
     <!-- TOMBOL KEMBALI -->
-    <div id="back-btn-container" class="hidden pb-10 flex justify-center z-20">
-        <button onclick="app.goBack()" class="glass-btn px-6 py-3 rounded-full flex items-center gap-2 hover:bg-white/10">
+    <div id="back-btn-container" class="hidden pb-8 md:pb-10 flex justify-center z-20">
+        <button onclick="app.goBack()" class="glass-btn px-6 py-2 md:py-3 rounded-full flex items-center gap-2 hover:bg-white/10 text-sm md:text-base">
             <i class="fas fa-arrow-left"></i> Kembali
         </button>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="w-full text-center p-6 border-t border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md z-20 mt-auto">
+    <!-- FOOTER BEBAS IKLAN -->
+    <footer class="w-full text-center p-4 md:p-6 border-t border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md z-20 mt-auto">
         <div class="container mx-auto">
-            <p class="font-bold text-sm md:text-base text-gradient mb-1">Berakhlak Mulia dan Berprestasi</p>
-            <p class="text-xs text-[var(--text-muted)] mb-2">Website dibuat khusus sebagai media latihan TKA.</p>
-            <p class="text-xs text-[var(--text-muted)] mb-2">&copy; 2026 Mugeb Primary School (SD Muhammadiyah 1 GKB)</p>
-            <div class="mt-3 inline-block px-4 py-2 bg-white/5 border border-white/10 rounded-full">
-                <p class="text-xs font-semibold text-[var(--primary)]">🌟 Bergabunglah bersama Mugeb Primary School - Pilihan Tepat untuk Masa Depan Berprestasi! 🌟</p>
-            </div>
+            <p class="font-bold text-xs md:text-sm text-gradient mb-1">Berakhlak Mulia dan Berprestasi</p>
+            <p class="text-[10px] md:text-xs text-[var(--text-muted)] mb-1">Website dibuat khusus sebagai media latihan TKA.</p>
+            <p class="text-[10px] md:text-xs text-[var(--text-muted)]">&copy; 2026 Mugeb Primary School (SD Muhammadiyah 1 GKB)</p>
         </div>
     </footer>
 
-    <!-- MODAL PENGATURAN & ALERT -->
+    <!-- MODAL PENGATURAN -->
     <div id="settings-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
         <div class="glass-panel w-11/12 max-w-sm p-6 transform scale-95 transition-transform duration-300" id="settings-content">
             <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-3">
@@ -396,30 +319,35 @@
                 <button onclick="ui.toggleSettings()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
             
-            <div class="space-y-4">
+            <div class="space-y-5">
                 <div class="flex justify-between items-center">
-                    <span class="font-medium"><i class="fas fa-music mr-2 w-5"></i> Suara & Musik</span>
+                    <span class="font-medium text-sm md:text-base"><i class="fas fa-music mr-2 w-5 text-center"></i> Suara & Musik</span>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="toggle-music" class="sr-only peer" onchange="settings.toggleMusic()">
                         <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div>
                     </label>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="font-medium"><i class="fas fa-volume-up mr-2 w-5"></i> Volume</span>
+                    <span class="font-medium text-sm md:text-base"><i class="fas fa-volume-up mr-2 w-5 text-center"></i> Volume</span>
                     <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" class="w-24 accent-[var(--primary)] cursor-pointer" onchange="settings.changeVolume(this.value)">
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="font-medium"><i class="fas fa-magic mr-2 w-5"></i> Efek Animasi</span>
+                    <span class="font-medium text-sm md:text-base"><i class="fas fa-magic mr-2 w-5 text-center"></i> Efek Animasi</span>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="toggle-particles" class="sr-only peer" checked onchange="settings.toggleParticles()">
                         <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div>
                     </label>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-medium text-sm md:text-base"><i class="fas fa-expand mr-2 w-5 text-center"></i> Layar Penuh</span>
+                    <button onclick="settings.toggleFullscreen()" class="px-3 py-1 bg-white/10 rounded-md text-xs hover:bg-[var(--primary)] hover:text-black transition">Beralih</button>
                 </div>
             </div>
             <button onclick="ui.toggleSettings()" class="primary-btn w-full mt-6 py-2 rounded-lg font-bold">Simpan</button>
         </div>
     </div>
 
+    <!-- MODAL ALERT -->
     <div id="alert-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
         <div class="glass-panel w-11/12 max-w-sm p-8 text-center transform scale-95 transition-transform duration-300" id="alert-content">
             <div id="alert-icon" class="text-4xl mb-4 text-[var(--primary)]"></div>
@@ -436,34 +364,53 @@
             const loadingBar = document.getElementById('loading-bar');
             const loadingPercent = document.getElementById('loading-percent');
             const loadingScreen = document.getElementById('loading-screen');
+            const textDisplay = document.getElementById('loading-text');
             
-            const interval = setInterval(() => {
-                progress += Math.floor(Math.random() * 15) + 5;
+            const texts = [
+                "Menghubungkan ke Galaksi Belajar...",
+                "Menyiapkan Guru Terbaik...",
+                "Menghubungkan ke dunia tak terbatas...",
+                "Menyiapkan Materi TKA...",
+                "Hampir Selesai...",
+                "Selamat Datang di Mugeb School!"
+            ];
+            
+            let textIdx = 0;
+            textDisplay.innerText = texts[0];
+            const textInterval = setInterval(() => {
+                textIdx++;
+                if (textIdx < texts.length) {
+                    textDisplay.style.opacity = 0;
+                    setTimeout(() => { textDisplay.innerText = texts[textIdx]; textDisplay.style.opacity = 1; }, 300);
+                }
+            }, 1200);
+
+            const progressInterval = setInterval(() => {
+                progress += Math.floor(Math.random() * 10) + 2;
                 if (progress > 100) progress = 100;
                 
                 loadingBar.style.width = progress + '%';
                 loadingPercent.innerText = progress + '%';
                 
                 if (progress === 100) {
-                    clearInterval(interval);
+                    clearInterval(progressInterval);
+                    clearInterval(textInterval);
+                    textDisplay.style.opacity = 0;
+                    setTimeout(() => { textDisplay.innerText = texts[texts.length-1]; textDisplay.style.opacity = 1; }, 300);
+                    
                     setTimeout(() => {
                         loadingScreen.classList.add('opacity-0');
                         setTimeout(() => loadingScreen.classList.add('hidden'), 1000);
-                        bgEngine.init(); // Inisiasi animasi saat loading selesai
-                    }, 500);
+                        bgEngine.init();
+                    }, 800);
                 }
-            }, 150);
+            }, 100);
         });
 
         const state = {
-            viewHistory: ['view-landing'],
-            currentTheme: localStorage.getItem('savedTheme') || 'galaxy', // Baca tema tersimpan
-            studentName: '',
-            particlesEnabled: true,
-            musicEnabled: false
+            viewHistory: ['view-landing'], currentTheme: localStorage.getItem('savedTheme') || 'galaxy',
+            studentName: '', particlesEnabled: true, musicEnabled: false
         };
-
-        // Set tema awal saat load
         document.body.className = `theme-${state.currentTheme}`;
 
         const materiData = {
@@ -491,12 +438,47 @@
         };
 
         const themeData = {
-            galaxy: { icon: 'fa-user-astronaut', sfxUrl: 'sfx-galaxy.mp3', getGreeting: (name) => `Halo, <strong>${name}</strong>!<br>Selamat datang di pusat pelatihan TKA Mugeb. Aku akan menjadi teman perjalananmu menjelajahi galaksi ilmu. Siap memulai misi hari ini?` },
-            sky: { icon: 'fa-sun', sfxUrl: 'sfx-sky.mp3', getGreeting: (name) => `Halo, <strong>${name}</strong>!<br>Selamat datang. Seperti matahari yang perlahan terbit, kemampuanmu juga akan berkembang sedikit demi sedikit. Mari belajar bersama dengan semangat.` },
-            ocean: { icon: 'fa-water', sfxUrl: 'sfx-ocean.mp3', getGreeting: (name) => `Halo, <strong>${name}</strong>!<br>Selamat datang di dunia bawah laut pengetahuan. Mari menyelam bersama untuk menemukan berbagai kemampuan baru.` }
+            galaxy: { icon: 'fa-user-astronaut', getGreeting: (name) => `Halo, <strong>${name}</strong>!<br>Selamat datang di pusat pelatihan TKA Mugeb. Aku akan menjadi teman perjalananmu menjelajahi galaksi ilmu. Siap memulai misi hari ini?` },
+            sky: { icon: 'fa-sun', getGreeting: (name) => `Halo, <strong>${name}</strong>!<br>Selamat datang. Seperti matahari yang perlahan terbit, kemampuanmu juga akan berkembang sedikit demi sedikit. Mari belajar bersama dengan semangat.` },
+            ocean: { icon: 'fa-water', getGreeting: (name) => `Halo, <strong>${name}</strong>!<br>Selamat datang di dunia bawah laut pengetahuan. Mari menyelam bersama untuk menemukan berbagai kemampuan baru.` }
         };
 
-        const audioSys = { /* Setup audio disingkat agar hemat tempat, fungsionalitas tetap sama */ };
+        const audioSys = {
+            // Menggunakan audio Lo-fi publik agar dijamin menyala untuk testing. Nanti ganti urlnya.
+            bgm: new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3'),
+            isSetup: false,
+            setup() {
+                if(this.isSetup) return;
+                this.bgm.loop = true;
+                this.bgm.volume = document.getElementById('volume-slider').value;
+                this.isSetup = true;
+            },
+            playMusic() {
+                if(!state.musicEnabled) return this.pauseMusic();
+                this.setup();
+                this.bgm.play().catch(e => {
+                    console.log("Autoplay diblokir browser, butuh interaksi user.");
+                    ui.showAlert("Info Audio", "Browser memblokir pemutaran otomatis. Sentuh layar atau tombol apapun agar lagu bisa berbunyi.", "fas fa-music");
+                });
+            },
+            pauseMusic() { if(this.isSetup) this.bgm.pause(); },
+            setVolume(val) { if(this.isSetup) this.bgm.volume = val; },
+            playSFX() { 
+                if(!state.musicEnabled) return; 
+                // Efek klik sederhana (beep pendek). Digenerate pakai Web Audio API agar tidak perlu file eksternal
+                try {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(800, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+                    osc.start(); osc.stop(ctx.currentTime + 0.1);
+                } catch(e) {}
+            }
+        };
+
         const ui = {
             showModal(id, contentId) { const m = document.getElementById(id), c = document.getElementById(contentId); m.classList.remove('hidden', 'opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); },
             hideModal(id, contentId) { const m = document.getElementById(id), c = document.getElementById(contentId); m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); },
@@ -506,14 +488,25 @@
             showComingSoon() { this.showAlert("Fitur Sedang Dikembangkan", "Nantikan pembaruan berikutnya dari Mugeb Primary School.", "fas fa-tools"); }
         };
 
+        const settings = {
+            toggleMusic() { state.musicEnabled = document.getElementById('toggle-music').checked; if(state.musicEnabled) audioSys.playMusic(); else audioSys.pauseMusic(); },
+            changeVolume(val) { audioSys.setVolume(val); },
+            toggleParticles() { state.particlesEnabled = document.getElementById('toggle-particles').checked; if(!state.particlesEnabled) bgEngine.ctx.clearRect(0, 0, bgEngine.canvas.width, bgEngine.canvas.height); },
+            toggleFullscreen() {
+                if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(e => console.log(e)); } 
+                else { if (document.exitFullscreen) document.exitFullscreen(); }
+            }
+        };
+
         const app = {
             setTheme(themeName) {
                 state.currentTheme = themeName;
-                localStorage.setItem('savedTheme', themeName); // Simpan tema untuk dipakai di halaman soal
+                localStorage.setItem('savedTheme', themeName);
                 document.body.className = `theme-${themeName}`;
-                document.querySelectorAll('.theme-card').forEach(el => el.classList.remove('active'));
-                document.getElementById(`btn-theme-${themeName}`).classList.add('active');
+                document.querySelectorAll('.theme-card').forEach(el => el.classList.remove('active', 'bg-[var(--glass-border)]'));
+                document.getElementById(`btn-theme-${themeName}`).classList.add('active', 'bg-[var(--glass-border)]');
                 bgEngine.initParticles();
+                audioSys.playSFX();
             },
             startLearning() {
                 const nameInput = document.getElementById('student-name').value.trim();
@@ -521,6 +514,8 @@
                 state.studentName = nameInput;
                 this.updateGreeting();
                 this.navigate('view-subject');
+                audioSys.playSFX();
+                if(state.musicEnabled && !audioSys.isSetup) { audioSys.setup(); audioSys.playMusic(); }
             },
             updateGreeting() {
                 const data = themeData[state.currentTheme];
@@ -532,10 +527,12 @@
                 if(currentViewId === targetViewId) return;
                 const currentEl = document.getElementById(currentViewId), targetEl = document.getElementById(targetViewId);
                 currentEl.classList.add('fade-exit');
+                audioSys.playSFX();
                 setTimeout(() => {
                     currentEl.classList.add('hidden'); currentEl.classList.remove('fade-exit', 'fade-enter');
                     targetEl.classList.remove('hidden'); targetEl.classList.add('fade-enter');
                     state.viewHistory.push(targetViewId); this.updateBackButton();
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL TO TOP MOBILE FIX
                 }, 400); 
             },
             goBack() {
@@ -543,10 +540,12 @@
                 const currentViewId = state.viewHistory.pop(), targetViewId = state.viewHistory[state.viewHistory.length - 1];
                 const currentEl = document.getElementById(currentViewId), targetEl = document.getElementById(targetViewId);
                 currentEl.classList.add('fade-exit');
+                audioSys.playSFX();
                 setTimeout(() => {
                     currentEl.classList.add('hidden'); currentEl.classList.remove('fade-exit', 'fade-enter');
                     targetEl.classList.remove('hidden'); targetEl.classList.add('fade-enter');
                     this.updateBackButton();
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL TO TOP MOBILE FIX
                 }, 400);
             },
             updateBackButton() {
@@ -557,22 +556,23 @@
             openMateri(materiId) {
                 const materi = materiData[materiId];
                 if (!materi) return;
-                if (materi.tersedia) window.location.href = materi.url;
+                if (materi.tersedia) { audioSys.playSFX(); window.location.href = materi.url; }
                 else ui.showAlert("Coming Soon!", `Materi "${materi.title}" sedang dalam tahap penyusunan. Terus semangat belajar ya!`, "fas fa-rocket");
             }
         };
 
         const bgEngine = {
-            canvas: document.getElementById('bg-canvas'), ctx: null, particles: [], animationId: null,
+            canvas: document.getElementById('bg-canvas'), ctx: null, particles: [],
             init() { this.ctx = this.canvas.getContext('2d'); this.resize(); window.addEventListener('resize', () => this.resize()); this.initParticles(); this.animate(); },
             resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; this.initParticles(); },
             initParticles() {
                 this.particles = []; const w = this.canvas.width, h = this.canvas.height, theme = state.currentTheme;
                 if (theme === 'galaxy') {
-                    for (let i = 0; i < 150; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.5, alpha: Math.random(), alphaChange: (Math.random()*0.02)-0.01, type: 'star' });
-                    for (let i = 0; i < 3; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, length: Math.random()*80+20, speedX: (Math.random()*2+1)*(Math.random()>0.5?1:-1), speedY: Math.random()*2+1, type: 'comet' });
+                    for (let i = 0; i < 150; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.5 + 0.5, alpha: Math.random(), alphaChange: (Math.random()*0.02)-0.01, type: 'star' });
+                    for (let i = 0; i < 4; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, length: Math.random()*100+40, speedX: (Math.random()*3+2)*(Math.random()>0.5?1:-1), speedY: Math.random()*3+2, type: 'comet' });
                 } else if (theme === 'sky') {
-                    for (let i = 0; i < 60; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*4+2, speedX: Math.random()*2-1, speedY: Math.random()*1.5+0.5, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'petal' });
+                    for (let i = 0; i < 40; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*4+2, speedX: Math.random()*2-1, speedY: Math.random()*1.5+0.5, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'petal' });
+                    for (let i = 0; i < 15; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*6+6, speedX: Math.random()*2-1, speedY: Math.random()*2+1, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'leaf', color: Math.random() > 0.5 ? 'rgba(144, 238, 144, 0.7)' : 'rgba(255, 215, 0, 0.7)' });
                 } else if (theme === 'ocean') {
                     for (let i = 0; i < 80; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*3+1, speedX: Math.random()*0.5-0.25, speedY: -(Math.random()*2+0.5), type: 'bubble' });
                 }
@@ -582,18 +582,36 @@
                 const w = this.canvas.width, h = this.canvas.height; this.ctx.clearRect(0, 0, w, h);
                 for(let i = 0; i < this.particles.length; i++) {
                     let p = this.particles[i];
-                    if(p.type === 'star') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; this.ctx.fill(); p.alpha += p.alphaChange; if(p.alpha <= 0 || p.alpha >= 1) p.alphaChange *= -1; } 
-                    else if(p.type === 'comet') { this.ctx.beginPath(); this.ctx.moveTo(p.x, p.y); this.ctx.lineTo(p.x - p.speedX * 10, p.y - p.speedY * 10); this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.5)'; this.ctx.lineWidth = 2; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.x < 0 || p.x > w || p.y > h || p.y < 0) { p.x = Math.random() * w; p.y = -20; } }
-                    else if(p.type === 'petal') { this.ctx.save(); this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle); this.ctx.beginPath(); this.ctx.ellipse(0, 0, p.r, p.r/1.5, 0, 0, Math.PI * 2); this.ctx.fillStyle = 'rgba(255, 183, 197, 0.8)'; this.ctx.fill(); this.ctx.restore(); p.x += p.speedX; p.y += p.speedY; p.angle += p.spin; if(p.y > h + 20) { p.y = -20; p.x = Math.random() * w; } }
-                    else if(p.type === 'bubble') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.y < -20) { p.y = h + 20; p.x = Math.random() * w; } }
+                    if(p.type === 'star') {
+                        this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                        this.ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+                        this.ctx.shadowBlur = 8; this.ctx.shadowColor = 'rgba(0, 243, 255, 0.8)';
+                        this.ctx.fill(); this.ctx.shadowBlur = 0; // REVISI 5: Glowing Star
+                        p.alpha += p.alphaChange; if(p.alpha <= 0 || p.alpha >= 1) p.alphaChange *= -1;
+                    } 
+                    else if(p.type === 'comet') {
+                        this.ctx.beginPath(); this.ctx.moveTo(p.x, p.y); this.ctx.lineTo(p.x - (p.speedX * (p.length/10)), p.y - (p.speedY * (p.length/10)));
+                        this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.9)'; this.ctx.lineWidth = 3; this.ctx.stroke(); // REVISI 5: Big Comet
+                        p.x += p.speedX; p.y += p.speedY; if(p.x < 0 || p.x > w || p.y > h || p.y < 0) { p.x = Math.random() * w; p.y = -20; }
+                    }
+                    else if(p.type === 'petal' || p.type === 'leaf') {
+                        this.ctx.save(); this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle); this.ctx.beginPath();
+                        if(p.type === 'petal') { this.ctx.ellipse(0, 0, p.r, p.r/1.5, 0, 0, Math.PI * 2); this.ctx.fillStyle = 'rgba(255, 183, 197, 0.8)'; }
+                        else { this.ctx.ellipse(0, 0, p.r, p.r/2, 0, 0, Math.PI * 2); this.ctx.fillStyle = p.color; } // REVISI 11: Daun Langit
+                        this.ctx.fill(); this.ctx.restore();
+                        p.x += p.speedX; p.y += p.speedY; p.angle += p.spin; if(p.y > h + 20) { p.y = -20; p.x = Math.random() * w; }
+                    }
+                    else if(p.type === 'bubble') {
+                        this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; this.ctx.stroke();
+                        p.x += p.speedX; p.y += p.speedY; if(p.y < -20) { p.y = h + 20; p.x = Math.random() * w; }
+                    }
                 }
-                this.animationId = requestAnimationFrame(() => this.animate());
+                requestAnimationFrame(() => this.animate());
             }
         };
 
-        // Select tema saat init untuk tombol
-        document.querySelectorAll('.theme-card').forEach(el => el.classList.remove('active'));
-        document.getElementById(`btn-theme-${state.currentTheme}`).classList.add('active');
+        document.querySelectorAll('.theme-card').forEach(el => el.classList.remove('active', 'bg-[var(--glass-border)]'));
+        document.getElementById(`btn-theme-${state.currentTheme}`).classList.add('active', 'bg-[var(--glass-border)]');
     </script>
 </body>
 </html>
