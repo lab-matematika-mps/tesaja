@@ -9,14 +9,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* Warna Tema yang Sama dengan Index */
             --bg-top: #0a0a1a; --bg-bottom: #1a0b2e; --primary: #00f3ff; --primary-hover: #00d0ff; --secondary: #b900ff;
             --text-main: #ffffff; --text-muted: #a0a0b8; --glass-bg: rgba(20, 20, 40, 0.4); --glass-border: rgba(0, 243, 255, 0.2);
             --font-main: 'Space Grotesk', sans-serif;
         }
         body.theme-sky {
             --bg-top: #ffe5d9; --bg-bottom: #ffcad4; --primary: #f28482; --primary-hover: #f0716f; --secondary: #84a59d;
-            --text-main: #2b2d42; --text-muted: #5c677d; --glass-bg: rgba(255, 255, 255, 0.4); --glass-border: rgba(242, 132, 130, 0.3);
+            --text-main: #2b2d42; --text-muted: #5c677d; --glass-bg: rgba(255, 255, 255, 0.5); --glass-border: rgba(242, 132, 130, 0.4);
         }
         body.theme-ocean {
             --bg-top: #001220; --bg-bottom: #004d7a; --primary: #00d4ff; --primary-hover: #00b0ff; --secondary: #00ff88;
@@ -24,110 +23,159 @@
         }
         
         body { font-family: var(--font-main); color: var(--text-main); background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom)); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; margin: 0; }
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 1.5rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 1.5rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; }
+        .glass-btn { background: var(--glass-bg); backdrop-filter: blur(8px); border: 1px solid var(--glass-border); color: var(--text-main); transition: all 0.3s ease; }
+        .glass-btn:hover { border-color: var(--primary); }
+        
         .primary-btn { background: var(--primary); color: #000; font-weight: 700; border: none; transition: all 0.3s; }
         body.theme-sky .primary-btn { color: #fff; }
-        .primary-btn:hover { background: var(--primary-hover); transform: scale(1.02); }
+        .primary-btn:hover { background: var(--primary-hover); transform: scale(1.02); box-shadow: 0 0 15px var(--primary-hover); }
         
-        /* Checkbox dan Radio Custom */
-        input[type="radio"], input[type="checkbox"] { accent-color: var(--primary); transform: scale(1.2); margin-right: 10px; cursor: pointer; }
+        input[type="radio"], input[type="checkbox"] { accent-color: var(--primary); transform: scale(1.2); margin-right: 12px; cursor: pointer; flex-shrink: 0; mt: 2px;}
         .nav-box { border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); transition: all 0.3s; cursor: pointer; }
         .nav-box.answered { background: var(--primary); color: #000; font-weight: bold; border-color: var(--primary); }
         body.theme-sky .nav-box.answered { color: #fff; }
         .nav-box.active { border-color: var(--primary); box-shadow: 0 0 10px var(--primary); transform: scale(1.1); }
         
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+        .pulse-slow { animation: pulseGlow 2s infinite; }
+        @keyframes pulseGlow { 0% { opacity: 0.8; } 50% { opacity: 1; text-shadow: 0 0 10px var(--primary); } 100% { opacity: 0.8; } }
     </style>
 </head>
 <body class="theme-galaxy">
 
     <canvas id="bg-canvas"></canvas>
 
-    <div class="container mx-auto px-4 py-8 flex-1 max-w-3xl relative z-10">
+    <!-- TOMBOL PENGATURAN -->
+    <div class="fixed top-4 right-4 z-50">
+        <button onclick="ui.toggleSettings()" class="glass-btn p-3 md:p-4 rounded-full flex items-center justify-center w-10 h-10 md:w-12 md:h-12" aria-label="Pengaturan">
+            <i class="fas fa-cog text-lg md:text-xl"></i>
+        </button>
+    </div>
+
+    <div class="container mx-auto px-4 py-6 md:py-10 flex-1 max-w-4xl relative z-10">
         
-        <!-- HEADER KUIS (Judul & Timer) -->
-        <div class="flex justify-between items-center mb-6 bg-black/20 p-4 rounded-xl backdrop-blur-md border border-white/10">
+        <!-- HEADER KUIS -->
+        <div class="flex justify-between items-center mb-6 bg-[var(--glass-bg)] p-4 md:p-5 rounded-2xl backdrop-blur-md border border-[var(--glass-border)] shadow-lg mt-10 md:mt-0">
             <div>
-                <h1 class="text-xl md:text-2xl font-bold">Operasi Bilangan Cacah</h1>
-                <p class="text-sm text-[var(--text-muted)]">Kerjakan dengan teliti ya!</p>
+                <h1 class="text-lg md:text-2xl font-bold mb-1">Operasi Bilangan Cacah</h1>
+                <p class="text-xs md:text-sm text-[var(--text-muted)]"><i class="fas fa-info-circle text-[var(--primary)] mr-1"></i> Kerjakan dengan santai dan teliti.</p>
             </div>
             <div class="text-right">
-                <p class="text-xs uppercase tracking-widest text-[var(--text-muted)] font-bold">Sisa Waktu</p>
-                <div id="timer-display" class="text-2xl font-mono font-bold text-[var(--primary)] pulse-slow">10:00</div>
+                <p class="text-[10px] md:text-xs uppercase tracking-widest text-[var(--text-muted)] font-bold mb-1">Sisa Waktu</p>
+                <div id="timer-display" class="text-xl md:text-3xl font-mono font-bold text-[var(--primary)] pulse-slow bg-black/20 px-3 py-1 rounded-lg">10:00</div>
             </div>
         </div>
 
         <!-- AREA KUIS UTAMA -->
-        <div id="quiz-area" class="glass-panel p-6 md:p-8">
+        <div id="quiz-area" class="glass-panel p-5 md:p-8">
             
-            <!-- Kotak Navigasi Nomor -->
             <div class="mb-8 pb-6 border-b border-[var(--glass-border)]">
-                <p class="text-sm mb-3 font-semibold">Pilih Nomor Soal:</p>
+                <p class="text-xs md:text-sm mb-3 font-semibold text-[var(--text-muted)]">Pilih Nomor Soal (Kotak warna menandakan sudah dijawab):</p>
                 <div id="nav-grid" class="flex flex-wrap gap-2 justify-center md:justify-start">
-                    <!-- Kotak nomor akan digenerate dari JS -->
+                    <!-- Kotak nomor JS -->
                 </div>
             </div>
 
             <!-- Teks Soal -->
-            <div class="mb-6">
-                <div class="inline-block px-3 py-1 bg-[var(--primary)]/20 text-[var(--primary)] rounded-full text-xs font-bold tracking-wider mb-4" id="tipe-soal">
+            <div class="mb-8">
+                <div class="inline-block px-3 py-1 bg-[var(--primary)]/20 text-[var(--primary)] border border-[var(--primary)]/30 rounded-full text-xs font-bold tracking-wider mb-4" id="tipe-soal">
                     TIPE SOAL
                 </div>
-                <h2 id="nomor-soal-header" class="text-xl font-bold mb-3 text-[var(--primary)]">Soal nomor 01</h2>
-                <p id="teks-soal" class="text-lg font-light leading-relaxed"></p>
+                <h2 id="nomor-soal-header" class="text-lg md:text-xl font-bold mb-3 text-[var(--primary)] border-l-4 border-[var(--primary)] pl-3">Soal nomor 01</h2>
+                
+                <!-- Font soal dibuat lebih tipis dan santai -->
+                <p id="teks-soal" class="text-base md:text-lg font-normal leading-relaxed text-gray-100"></p>
             </div>
 
             <!-- Opsi Jawaban -->
             <div id="opsi-container" class="space-y-3 mb-8">
-                <!-- Opsi akan digenerate dari JS -->
+                <!-- Opsi JS -->
             </div>
 
             <!-- Tombol Bawah -->
-            <div class="flex justify-between mt-6">
-                <button id="btn-prev" onclick="kuis.prev()" class="px-6 py-2 rounded-full border border-[var(--glass-border)] hover:bg-white/10 transition">❮ Sebelumnya</button>
-                <button id="btn-next" onclick="kuis.next()" class="primary-btn px-8 py-2 rounded-full">Selanjutnya ❯</button>
+            <div class="flex justify-between items-center mt-6 pt-6 border-t border-[var(--glass-border)]">
+                <button id="btn-prev" onclick="kuis.prev()" class="px-4 py-2 md:px-6 md:py-3 rounded-full border border-[var(--glass-border)] hover:bg-white/10 transition text-sm md:text-base font-medium">❮ Sebelumnya</button>
+                <button id="btn-next" onclick="kuis.next()" class="primary-btn px-6 py-2 md:px-8 md:py-3 rounded-full text-sm md:text-base">Selanjutnya ❯</button>
             </div>
         </div>
 
-        <!-- AREA HASIL (Ditampilkan saat selesai) -->
-        <div id="result-area" class="glass-panel p-8 hidden text-center">
-            <i class="fas fa-flag-checkered text-5xl text-[var(--primary)] mb-4"></i>
-            <h2 class="text-3xl font-bold mb-2">Latihan Selesai!</h2>
-            <p class="text-[var(--text-muted)] mb-6">Kerja bagus, kamu telah menyelesaikan semua soal.</p>
+        <!-- AREA HASIL -->
+        <div id="result-area" class="glass-panel p-6 md:p-10 hidden text-center">
+            <i class="fas fa-award text-6xl text-[var(--primary)] mb-6 pulse-slow"></i>
+            <h2 class="text-2xl md:text-4xl font-bold mb-2">Latihan Selesai!</h2>
+            <p class="text-[var(--text-muted)] mb-8 text-sm md:text-base">Waktu pengerjaanmu telah dicatat. Ini dia hasilnya!</p>
             
-            <div class="inline-block p-6 bg-black/20 rounded-2xl mb-8 border border-white/10">
-                <p class="text-sm uppercase tracking-widest font-bold mb-2">Skor Kamu</p>
-                <p id="score-text" class="text-6xl font-black text-[var(--primary)]">0/100</p>
+            <div class="inline-block p-6 md:p-8 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-3xl mb-10 shadow-[0_0_20px_rgba(0,0,0,0.3)]">
+                <p class="text-xs md:text-sm uppercase tracking-widest font-bold mb-2 text-[var(--text-muted)]">Skor Akhir</p>
+                <p id="score-text" class="text-6xl md:text-8xl font-black text-[var(--primary)] drop-shadow-md">0</p>
             </div>
 
-            <h3 class="text-xl font-bold mb-4 text-left border-b border-white/10 pb-2">Evaluasi Jawabanmu:</h3>
-            <div id="eval-container" class="space-y-4 text-left mb-8">
-                <!-- Hasil salah akan muncul di sini -->
+            <h3 class="text-lg md:text-xl font-bold mb-6 text-left border-b border-[var(--glass-border)] pb-3"><i class="fas fa-clipboard-check mr-2 text-[var(--primary)]"></i> Evaluasi Belajarmu</h3>
+            <div id="eval-container" class="space-y-4 text-left mb-10">
+                <!-- Hasil JS -->
             </div>
 
-            <a href="index.html" class="primary-btn inline-block px-10 py-3 rounded-full text-lg">Kembali ke Beranda</a>
+            <a href="index.html" class="primary-btn inline-block px-8 py-3 rounded-full text-base md:text-lg font-bold shadow-lg">Kembali ke Beranda</a>
         </div>
 
     </div>
 
-    <!-- FOOTER -->
-    <footer class="w-full text-center p-6 border-t border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md z-20 mt-auto">
+    <!-- FOOTER BEBAS IKLAN -->
+    <footer class="w-full text-center p-4 md:p-6 border-t border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md z-20 mt-auto">
         <div class="container mx-auto">
-            <p class="font-bold text-sm md:text-base mb-1" style="color: var(--primary)">Berakhlak Mulia dan Berprestasi</p>
-            <p class="text-xs text-[var(--text-muted)] mb-2">Website dibuat khusus sebagai media latihan TKA.</p>
-            <p class="text-xs text-[var(--text-muted)] mb-2">&copy; 2026 Mugeb Primary School (SD Muhammadiyah 1 GKB)</p>
-            <div class="mt-3 inline-block px-4 py-2 bg-white/5 border border-white/10 rounded-full">
-                <p class="text-xs font-semibold text-[var(--primary)]">🌟 Bergabunglah bersama Mugeb Primary School - Pilihan Tepat untuk Masa Depan Berprestasi! 🌟</p>
-            </div>
+            <p class="font-bold text-xs md:text-sm text-gradient mb-1">Berakhlak Mulia dan Berprestasi</p>
+            <p class="text-[10px] md:text-xs text-[var(--text-muted)] mb-1">Website dibuat khusus sebagai media latihan TKA.</p>
+            <p class="text-[10px] md:text-xs text-[var(--text-muted)]">&copy; 2026 Mugeb Primary School (SD Muhammadiyah 1 GKB)</p>
         </div>
     </footer>
 
+    <!-- MODAL PENGATURAN -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-11/12 max-w-sm p-6 transform scale-95 transition-transform duration-300" id="settings-content">
+            <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-3">
+                <h3 class="text-xl font-bold"><i class="fas fa-sliders-h mr-2"></i> Pengaturan</h3>
+                <button onclick="ui.toggleSettings()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            
+            <div class="space-y-5">
+                <div class="flex justify-between items-center">
+                    <span class="font-medium text-sm md:text-base"><i class="fas fa-music mr-2 w-5 text-center"></i> Suara & Musik</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-music" class="sr-only peer" onchange="settings.toggleMusic()">
+                        <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div>
+                    </label>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-medium text-sm md:text-base"><i class="fas fa-volume-up mr-2 w-5 text-center"></i> Volume</span>
+                    <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" class="w-24 accent-[var(--primary)] cursor-pointer" onchange="settings.changeVolume(this.value)">
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-medium text-sm md:text-base"><i class="fas fa-magic mr-2 w-5 text-center"></i> Efek Animasi</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-particles" class="sr-only peer" checked onchange="settings.toggleParticles()">
+                        <div class="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div>
+                    </label>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="font-medium text-sm md:text-base"><i class="fas fa-expand mr-2 w-5 text-center"></i> Layar Penuh</span>
+                    <button onclick="settings.toggleFullscreen()" class="px-3 py-1 bg-white/10 rounded-md text-xs hover:bg-[var(--primary)] hover:text-black transition">Beralih</button>
+                </div>
+            </div>
+            <button onclick="ui.toggleSettings()" class="primary-btn w-full mt-6 py-2 rounded-lg font-bold">Simpan</button>
+        </div>
+    </div>
+
     <script>
-        // 1. TERAPKAN TEMA YANG DISIMPAN DARI INDEX
         const currentTheme = localStorage.getItem('savedTheme') || 'galaxy';
         document.body.className = `theme-${currentTheme}`;
 
-        // 2. BACKGROUND ENGINE (Sama dengan Index agar tema menyatu)
+        // ENGINE ANIMASI (Identik dengan Beranda)
         const bgEngine = {
             canvas: document.getElementById('bg-canvas'), ctx: null, particles: [],
             init() { this.ctx = this.canvas.getContext('2d'); this.resize(); window.addEventListener('resize', () => this.resize()); this.initParticles(); this.animate(); },
@@ -135,10 +183,11 @@
             initParticles() {
                 this.particles = []; const w = this.canvas.width, h = this.canvas.height;
                 if (currentTheme === 'galaxy') {
-                    for (let i = 0; i < 150; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.5, alpha: Math.random(), alphaChange: (Math.random()*0.02)-0.01, type: 'star' });
-                    for (let i = 0; i < 3; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, length: Math.random()*80+20, speedX: (Math.random()*2+1)*(Math.random()>0.5?1:-1), speedY: Math.random()*2+1, type: 'comet' });
+                    for (let i = 0; i < 150; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.5 + 0.5, alpha: Math.random(), alphaChange: (Math.random()*0.02)-0.01, type: 'star' });
+                    for (let i = 0; i < 4; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, length: Math.random()*100+40, speedX: (Math.random()*3+2)*(Math.random()>0.5?1:-1), speedY: Math.random()*3+2, type: 'comet' });
                 } else if (currentTheme === 'sky') {
-                    for (let i = 0; i < 60; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*4+2, speedX: Math.random()*2-1, speedY: Math.random()*1.5+0.5, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'petal' });
+                    for (let i = 0; i < 40; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*4+2, speedX: Math.random()*2-1, speedY: Math.random()*1.5+0.5, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'petal' });
+                    for (let i = 0; i < 15; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*6+6, speedX: Math.random()*2-1, speedY: Math.random()*2+1, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'leaf', color: Math.random() > 0.5 ? 'rgba(144, 238, 144, 0.7)' : 'rgba(255, 215, 0, 0.7)' });
                 } else if (currentTheme === 'ocean') {
                     for (let i = 0; i < 80; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*3+1, speedX: Math.random()*0.5-0.25, speedY: -(Math.random()*2+0.5), type: 'bubble' });
                 }
@@ -147,9 +196,9 @@
                 const w = this.canvas.width, h = this.canvas.height; this.ctx.clearRect(0, 0, w, h);
                 for(let i = 0; i < this.particles.length; i++) {
                     let p = this.particles[i];
-                    if(p.type === 'star') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; this.ctx.fill(); p.alpha += p.alphaChange; if(p.alpha <= 0 || p.alpha >= 1) p.alphaChange *= -1; } 
-                    else if(p.type === 'comet') { this.ctx.beginPath(); this.ctx.moveTo(p.x, p.y); this.ctx.lineTo(p.x - p.speedX * 10, p.y - p.speedY * 10); this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.5)'; this.ctx.lineWidth = 2; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.x < 0 || p.x > w || p.y > h || p.y < 0) { p.x = Math.random() * w; p.y = -20; } }
-                    else if(p.type === 'petal') { this.ctx.save(); this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle); this.ctx.beginPath(); this.ctx.ellipse(0, 0, p.r, p.r/1.5, 0, 0, Math.PI * 2); this.ctx.fillStyle = 'rgba(255, 183, 197, 0.8)'; this.ctx.fill(); this.ctx.restore(); p.x += p.speedX; p.y += p.speedY; p.angle += p.spin; if(p.y > h + 20) { p.y = -20; p.x = Math.random() * w; } }
+                    if(p.type === 'star') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; this.ctx.shadowBlur = 8; this.ctx.shadowColor = 'rgba(0, 243, 255, 0.8)'; this.ctx.fill(); this.ctx.shadowBlur = 0; p.alpha += p.alphaChange; if(p.alpha <= 0 || p.alpha >= 1) p.alphaChange *= -1; } 
+                    else if(p.type === 'comet') { this.ctx.beginPath(); this.ctx.moveTo(p.x, p.y); this.ctx.lineTo(p.x - (p.speedX * (p.length/10)), p.y - (p.speedY * (p.length/10))); this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.9)'; this.ctx.lineWidth = 3; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.x < 0 || p.x > w || p.y > h || p.y < 0) { p.x = Math.random() * w; p.y = -20; } }
+                    else if(p.type === 'petal' || p.type === 'leaf') { this.ctx.save(); this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle); this.ctx.beginPath(); if(p.type === 'petal') { this.ctx.ellipse(0, 0, p.r, p.r/1.5, 0, 0, Math.PI * 2); this.ctx.fillStyle = 'rgba(255, 183, 197, 0.8)'; } else { this.ctx.ellipse(0, 0, p.r, p.r/2, 0, 0, Math.PI * 2); this.ctx.fillStyle = p.color; } this.ctx.fill(); this.ctx.restore(); p.x += p.speedX; p.y += p.speedY; p.angle += p.spin; if(p.y > h + 20) { p.y = -20; p.x = Math.random() * w; } }
                     else if(p.type === 'bubble') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.y < -20) { p.y = h + 20; p.x = Math.random() * w; } }
                 }
                 requestAnimationFrame(() => this.animate());
@@ -157,7 +206,33 @@
         };
         bgEngine.init();
 
-        // 3. DATA SOAL
+        // AUDIO & SETTINGS ENGINE
+        const audioSys = {
+            bgm: new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3'),
+            isSetup: false,
+            setup() { if(this.isSetup) return; this.bgm.loop = true; this.bgm.volume = document.getElementById('volume-slider').value; this.isSetup = true; },
+            playMusic() { if(!document.getElementById('toggle-music').checked) return this.pauseMusic(); this.setup(); this.bgm.play().catch(e => console.log("Audio diblokir")); },
+            pauseMusic() { if(this.isSetup) this.bgm.pause(); },
+            setVolume(val) { if(this.isSetup) this.bgm.volume = val; },
+            playSFX() { 
+                if(!document.getElementById('toggle-music').checked) return; 
+                try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.type = 'sine'; osc.frequency.setValueAtTime(800, ctx.currentTime); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {}
+            }
+        };
+
+        const ui = {
+            showModal(id, contentId) { const m = document.getElementById(id), c = document.getElementById(contentId); m.classList.remove('hidden', 'opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); },
+            hideModal(id, contentId) { const m = document.getElementById(id), c = document.getElementById(contentId); m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); },
+            toggleSettings() { const m = document.getElementById('settings-modal'); if(m.classList.contains('hidden')) this.showModal('settings-modal', 'settings-content'); else this.hideModal('settings-modal', 'settings-content'); },
+        };
+
+        const settings = {
+            toggleMusic() { if(document.getElementById('toggle-music').checked) audioSys.playMusic(); else audioSys.pauseMusic(); },
+            changeVolume(val) { audioSys.setVolume(val); },
+            toggleParticles() { if(!document.getElementById('toggle-particles').checked) bgEngine.ctx.clearRect(0, 0, bgEngine.canvas.width, bgEngine.canvas.height); },
+            toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(e=>console.log(e)); else if (document.exitFullscreen) document.exitFullscreen(); }
+        };
+
         const dataSoal = [
             { "id": 1, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Dalam rangka Hari Literasi, SD Harapan membagikan buku cerita kepada siswa kelas 6. Kelas A berjumlah 30 siswa, Kelas B 34 siswa, dan Kelas C 32 siswa. Setiap siswa memperoleh 2 buku. Jika satu kardus berisi 24 buku, banyak kardus yang diperlukan adalah ....", "opsi": { "A": "6 kardus", "B": "7 kardus", "C": "8 kardus", "D": "9 kardus" }, "jawaban_benar": ["C"] },
             { "id": 2, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Sebuah komunitas mengumpulkan 540 botol plastik bekas. Botol tersebut akan dimasukkan ke dalam kantong yang masing-masing berisi 15 botol. Banyak kantong yang diperlukan adalah ....", "opsi": { "A": "32 kantong", "B": "34 kantong", "C": "36 kantong", "D": "38 kantong" }, "jawaban_benar": ["C"] },
@@ -172,48 +247,34 @@
             { "id": 11, "jenis_soal": "Pilihan Ganda Kompleks", "pertanyaan": "Jumlah siswa kelas VI adalah 128 orang. Pernyataan berikut yang benar adalah .... (Bisa pilih lebih dari satu)", "opsi": { "A": "Jika setiap kelompok terdiri atas 8 siswa, terbentuk 16 kelompok.", "B": "Jika setiap kelompok terdiri atas 16 siswa, terbentuk 8 kelompok.", "C": "Jika setiap kelompok terdiri atas 10 siswa, terbentuk tepat 12 kelompok.", "D": "Jika setiap kelompok terdiri atas 32 siswa, terbentuk 4 kelompok." }, "jawaban_benar": ["A", "B", "D"] }
         ];
 
-        // 4. MESIN KUIS UTAMA
+        // ENGINE KUIS
         const kuis = {
             idx: 0,
-            jawabanSiswa: {}, // Menyimpan jawaban: { "1": ["C"], "9": ["A", "B"] }
-            waktuSisa: 600, // 10 menit (600 detik)
+            jawabanSiswa: {}, 
+            waktuSisa: 600, // 10 menit
             timerId: null,
 
-            init() {
-                this.renderNavBoxes();
-                this.loadSoal();
-                this.startTimer();
-            },
+            init() { this.renderNavBoxes(); this.loadSoal(); this.startTimer(); },
 
             startTimer() {
                 this.timerId = setInterval(() => {
                     this.waktuSisa--;
-                    let menit = Math.floor(this.waktuSisa / 60).toString().padStart(2, '0');
-                    let detik = (this.waktuSisa % 60).toString().padStart(2, '0');
-                    document.getElementById('timer-display').innerText = `${menit}:${detik}`;
-                    
-                    if (this.waktuSisa <= 0) {
-                        clearInterval(this.timerId);
-                        alert("Waktu habis! Kuis akan otomatis dikumpulkan.");
-                        this.submit();
-                    }
+                    let m = Math.floor(this.waktuSisa / 60).toString().padStart(2, '0');
+                    let s = (this.waktuSisa % 60).toString().padStart(2, '0');
+                    document.getElementById('timer-display').innerText = `${m}:${s}`;
+                    if (this.waktuSisa <= 0) { clearInterval(this.timerId); alert("Waktu habis! Kuis otomatis dikumpulkan."); this.submit(); }
                 }, 1000);
             },
 
             renderNavBoxes() {
-                const grid = document.getElementById('nav-grid');
-                grid.innerHTML = '';
+                const grid = document.getElementById('nav-grid'); grid.innerHTML = '';
                 dataSoal.forEach((s, i) => {
                     const box = document.createElement('div');
-                    box.className = `nav-box w-10 h-10 flex items-center justify-center rounded-lg text-sm`;
+                    box.className = `nav-box w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg text-xs md:text-sm`;
                     box.innerText = i + 1;
-                    
-                    // Mewarnai jika sudah dijawab
                     if (this.jawabanSiswa[s.id] && this.jawabanSiswa[s.id].length > 0) box.classList.add('answered');
-                    // Memberi highlight pada kotak aktif
                     if (i === this.idx) box.classList.add('active');
-                    
-                    box.onclick = () => { this.idx = i; this.loadSoal(); };
+                    box.onclick = () => { audioSys.playSFX(); this.idx = i; this.loadSoal(); };
                     grid.appendChild(box);
                 });
             },
@@ -221,120 +282,91 @@
             loadSoal() {
                 const soal = dataSoal[this.idx];
                 document.getElementById('tipe-soal').innerText = soal.jenis_soal;
-                
-                // Format angka misal: 01, 02
-                const noTampil = (this.idx + 1).toString().padStart(2, '0');
-                document.getElementById('nomor-soal-header').innerText = `Soal nomor ${noTampil}`;
+                document.getElementById('nomor-soal-header').innerText = `Soal nomor ${(this.idx + 1).toString().padStart(2, '0')}`;
                 document.getElementById('teks-soal').innerText = soal.pertanyaan;
 
-                // Logika Input (Radio untuk PG/BS, Checkbox untuk PGK)
-                const isSingleChoice = (soal.jenis_soal === "Pilihan Ganda" || soal.jenis_soal === "Benar atau Salah");
-                const inputType = isSingleChoice ? 'radio' : 'checkbox';
-                
-                const opsiContainer = document.getElementById('opsi-container');
-                opsiContainer.innerHTML = '';
+                const isSingle = (soal.jenis_soal === "Pilihan Ganda" || soal.jenis_soal === "Benar atau Salah");
+                const inputType = isSingle ? 'radio' : 'checkbox';
+                const opsiContainer = document.getElementById('opsi-container'); opsiContainer.innerHTML = '';
 
                 for (const [key, value] of Object.entries(soal.opsi)) {
-                    // Cek apakah opsi ini pernah dijawab user
                     const isChecked = this.jawabanSiswa[soal.id] && this.jawabanSiswa[soal.id].includes(key) ? 'checked' : '';
-                    
                     const label = document.createElement('label');
-                    label.className = "flex items-center p-4 bg-white/5 border border-white/10 rounded-xl cursor-pointer hover:bg-white/10 transition";
-                    
+                    label.className = "flex items-start p-3 md:p-4 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl cursor-pointer hover:border-[var(--primary)] transition";
                     label.innerHTML = `
                         <input type="${inputType}" name="soal_${soal.id}" value="${key}" ${isChecked} 
-                               onchange="kuis.saveAnswer(${soal.id}, '${key}', this.checked, ${isSingleChoice})">
-                        <span class="ml-2 font-medium">${key}. ${value}</span>
+                               onchange="kuis.saveAnswer(${soal.id}, '${key}', this.checked, ${isSingle})">
+                        <span class="text-sm md:text-base font-normal mt-[1px] leading-relaxed">${key}. ${value}</span>
                     `;
                     opsiContainer.appendChild(label);
                 }
 
-                // Pengaturan Tombol Navigasi Bawah
                 document.getElementById('btn-prev').style.visibility = this.idx === 0 ? 'hidden' : 'visible';
-                
                 const btnNext = document.getElementById('btn-next');
                 if (this.idx === dataSoal.length - 1) {
-                    btnNext.innerText = "Kumpulkan Kuis ✓";
-                    btnNext.className = "px-8 py-2 rounded-full font-bold bg-green-500 hover:bg-green-600 text-white transition";
-                    btnNext.onclick = () => this.confirmSubmit();
+                    btnNext.innerText = "Kumpulkan ✓";
+                    btnNext.className = "px-6 py-2 md:px-8 md:py-3 rounded-full font-bold bg-green-500 hover:bg-green-600 text-white transition text-sm md:text-base";
+                    btnNext.onclick = () => { audioSys.playSFX(); this.confirmSubmit(); };
                 } else {
                     btnNext.innerText = "Selanjutnya ❯";
-                    btnNext.className = "primary-btn px-8 py-2 rounded-full";
-                    btnNext.onclick = () => this.next();
-                }
-                
-                this.renderNavBoxes(); // Render ulang navigasi atas agar kotak hijau ter-update
-            },
-
-            saveAnswer(soalId, key, isChecked, isSingleChoice) {
-                if (!this.jawabanSiswa[soalId]) this.jawabanSiswa[soalId] = [];
-                
-                if (isSingleChoice) {
-                    this.jawabanSiswa[soalId] = [key]; // Hanya timpa dengan 1 jawaban
-                } else {
-                    if (isChecked) this.jawabanSiswa[soalId].push(key);
-                    else this.jawabanSiswa[soalId] = this.jawabanSiswa[soalId].filter(k => k !== key);
+                    btnNext.className = "primary-btn px-6 py-2 md:px-8 md:py-3 rounded-full text-sm md:text-base";
+                    btnNext.onclick = () => { audioSys.playSFX(); this.next(); };
                 }
                 this.renderNavBoxes();
+                window.scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL TOP MOBILE FIX
             },
 
-            next() {
-                if (this.idx < dataSoal.length - 1) { this.idx++; this.loadSoal(); }
+            saveAnswer(id, key, isChecked, isSingle) {
+                if (!this.jawabanSiswa[id]) this.jawabanSiswa[id] = [];
+                if (isSingle) this.jawabanSiswa[id] = [key]; 
+                else { if (isChecked) this.jawabanSiswa[id].push(key); else this.jawabanSiswa[id] = this.jawabanSiswa[id].filter(k => k !== key); }
+                this.renderNavBoxes();
+                audioSys.playSFX();
             },
-            prev() {
-                if (this.idx > 0) { this.idx--; this.loadSoal(); }
-            },
+
+            next() { if (this.idx < dataSoal.length - 1) { this.idx++; this.loadSoal(); } },
+            prev() { if (this.idx > 0) { this.idx--; this.loadSoal(); } },
 
             confirmSubmit() {
                 let belum = dataSoal.filter(s => !this.jawabanSiswa[s.id] || this.jawabanSiswa[s.id].length === 0).length;
-                if(belum > 0) {
-                    if(confirm(`Masih ada ${belum} soal yang belum dijawab lho. Yakin mau dikumpulkan sekarang?`)) this.submit();
-                } else {
-                    this.submit();
-                }
+                if(belum > 0) { if(confirm(`Masih ada ${belum} soal yang kosong lho. Yakin kumpulkan sekarang?`)) this.submit(); } 
+                else this.submit();
             },
 
             submit() {
                 clearInterval(this.timerId);
                 document.getElementById('quiz-area').classList.add('hidden');
+                document.getElementById('back-btn-container').classList.add('hidden'); // Sembunyikan tombol kembali saat hasil
                 
-                // Menghitung Skor
-                let totalBenar = 0;
-                let pesanEvaluasi = "";
-
+                let totalBenar = 0; let pesanEvaluasi = "";
                 dataSoal.forEach((soal, i) => {
                     const ansSiswa = (this.jawabanSiswa[soal.id] || []).sort().join('');
                     const ansKunci = soal.jawaban_benar.sort().join('');
                     
-                    if (ansSiswa === ansKunci) {
-                        totalBenar++;
-                    } else {
-                        // Desain evaluasi jawaban yang ramah
+                    if (ansSiswa === ansKunci) { totalBenar++; } 
+                    else {
                         pesanEvaluasi += `
-                            <div class="p-4 border-l-4 border-red-400 bg-red-400/10 rounded-r-lg">
-                                <p class="font-bold text-red-400">Oops, di Soal Nomor ${i + 1} sepertinya kurang tepat. 🥺</p>
-                                <p class="text-sm mt-1 mb-2 opacity-80">${soal.pertanyaan}</p>
-                                <p class="text-sm text-[var(--primary)] font-semibold">💡 Jawaban yang benar adalah: ${soal.jawaban_benar.join(', ')}</p>
+                            <div class="p-4 md:p-5 border-l-4 border-[#ff4757] bg-black/20 rounded-r-xl border-t border-r border-b border-white/5">
+                                <p class="font-bold text-[#ff4757] text-sm md:text-base">Wah, sayang sekali di Soal Nomor ${i + 1} masih kurang tepat. 🥺</p>
+                                <p class="text-xs md:text-sm mt-2 mb-3 text-gray-300">${soal.pertanyaan}</p>
+                                <div class="bg-[var(--glass-bg)] p-3 rounded-lg border border-[var(--primary)]/30">
+                                    <p class="text-xs md:text-sm text-[var(--primary)] font-semibold">💡 Jawaban yang benar adalah: ${soal.jawaban_benar.join(', ')}</p>
+                                </div>
                             </div>
                         `;
                     }
                 });
 
-                const nilai = Math.round((totalBenar / dataSoal.length) * 100);
-                document.getElementById('score-text').innerText = `${nilai}`;
-                
+                document.getElementById('score-text').innerText = Math.round((totalBenar / dataSoal.length) * 100);
                 const evalContainer = document.getElementById('eval-container');
-                if (pesanEvaluasi === "") {
-                    evalContainer.innerHTML = `<div class="p-4 border border-green-400 bg-green-400/10 text-green-400 font-bold rounded-lg text-center">🎉 Wow luar biasa! Seluruh jawabanmu benar tanpa ada yang salah! Pertahankan prestasimu!</div>`;
-                } else {
-                    evalContainer.innerHTML = `<p class="text-sm mb-3">Yuk, kita pelajari kembali bagian yang masih keliru:</p>` + pesanEvaluasi;
-                }
+                if (pesanEvaluasi === "") evalContainer.innerHTML = `<div class="p-6 border border-[#2ed573] bg-[#2ed573]/10 text-[#2ed573] font-bold rounded-2xl text-center text-lg shadow-[0_0_15px_rgba(46,213,115,0.2)]">🎉 Luar biasa sempurna! Seluruh jawabanmu benar tanpa ada yang salah! Pertahankan belajarmu ya!</div>`;
+                else evalContainer.innerHTML = `<p class="text-sm md:text-base mb-4 text-[var(--text-muted)]">Yuk, kita cek bagian mana yang masih bisa ditingkatkan:</p>` + pesanEvaluasi;
 
                 document.getElementById('result-area').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' }); // SCROLL TOP MOBILE FIX
             }
         };
 
-        // Jalankan kuis saat halaman dimuat
         window.addEventListener('load', () => kuis.init());
     </script>
 </body>
