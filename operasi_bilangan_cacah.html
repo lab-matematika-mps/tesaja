@@ -3,57 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Latihan TKA - Mugeb</title>
+    <title>Latihan Soal - Mugeb TKA</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Menggunakan style dari index agar konsisten */
-        body { transition: background 0.5s ease; min-height: 100vh; padding: 20px; }
-        .theme-galaxy { background: linear-gradient(135deg, #0a0a1a, #1a0b2e); color: white; }
-        .theme-sky { background: linear-gradient(135deg, #ffe5d9, #ffcad4); color: #2b2d42; }
-        .theme-ocean { background: linear-gradient(135deg, #001220, #004d7a); color: white; }
-        .glass-panel { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 1rem; padding: 20px; }
+        :root {
+            /* Warna Tema yang Sama dengan Index */
+            --bg-top: #0a0a1a; --bg-bottom: #1a0b2e; --primary: #00f3ff; --primary-hover: #00d0ff; --secondary: #b900ff;
+            --text-main: #ffffff; --text-muted: #a0a0b8; --glass-bg: rgba(20, 20, 40, 0.4); --glass-border: rgba(0, 243, 255, 0.2);
+            --font-main: 'Space Grotesk', sans-serif;
+        }
+        body.theme-sky {
+            --bg-top: #ffe5d9; --bg-bottom: #ffcad4; --primary: #f28482; --primary-hover: #f0716f; --secondary: #84a59d;
+            --text-main: #2b2d42; --text-muted: #5c677d; --glass-bg: rgba(255, 255, 255, 0.4); --glass-border: rgba(242, 132, 130, 0.3);
+        }
+        body.theme-ocean {
+            --bg-top: #001220; --bg-bottom: #004d7a; --primary: #00d4ff; --primary-hover: #00b0ff; --secondary: #00ff88;
+            --text-main: #ffffff; --text-muted: #b3e5fc; --glass-bg: rgba(0, 30, 60, 0.4); --glass-border: rgba(0, 212, 255, 0.3);
+        }
+        
+        body { font-family: var(--font-main); color: var(--text-main); background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom)); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; margin: 0; }
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 1.5rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
+        .primary-btn { background: var(--primary); color: #000; font-weight: 700; border: none; transition: all 0.3s; }
+        body.theme-sky .primary-btn { color: #fff; }
+        .primary-btn:hover { background: var(--primary-hover); transform: scale(1.02); }
+        
+        /* Checkbox dan Radio Custom */
+        input[type="radio"], input[type="checkbox"] { accent-color: var(--primary); transform: scale(1.2); margin-right: 10px; cursor: pointer; }
+        .nav-box { border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); transition: all 0.3s; cursor: pointer; }
+        .nav-box.answered { background: var(--primary); color: #000; font-weight: bold; border-color: var(--primary); }
+        body.theme-sky .nav-box.answered { color: #fff; }
+        .nav-box.active { border-color: var(--primary); box-shadow: 0 0 10px var(--primary); transform: scale(1.1); }
+        
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
     </style>
 </head>
-<body class="theme-galaxy"> <!-- Default class -->
+<body class="theme-galaxy">
 
-    <div class="max-w-2xl mx-auto">
-        <!-- Progress Bar -->
-        <div class="mb-6">
-            <div id="progress-text" class="text-sm mb-2 font-bold">Soal 1 dari 11</div>
-            <div class="w-full bg-white/20 h-2 rounded-full">
-                <div id="progress-bar" class="bg-cyan-400 h-2 rounded-full transition-all duration-300" style="width: 9%"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="container mx-auto px-4 py-8 flex-1 max-w-3xl relative z-10">
+        
+        <!-- HEADER KUIS (Judul & Timer) -->
+        <div class="flex justify-between items-center mb-6 bg-black/20 p-4 rounded-xl backdrop-blur-md border border-white/10">
+            <div>
+                <h1 class="text-xl md:text-2xl font-bold">Operasi Bilangan Cacah</h1>
+                <p class="text-sm text-[var(--text-muted)]">Kerjakan dengan teliti ya!</p>
+            </div>
+            <div class="text-right">
+                <p class="text-xs uppercase tracking-widest text-[var(--text-muted)] font-bold">Sisa Waktu</p>
+                <div id="timer-display" class="text-2xl font-mono font-bold text-[var(--primary)] pulse-slow">10:00</div>
             </div>
         </div>
 
-        <!-- Container Soal -->
-        <div id="quiz-container" class="glass-panel">
-            <div id="question-area">
-                <!-- Soal akan muncul di sini via JavaScript -->
-            </div>
+        <!-- AREA KUIS UTAMA -->
+        <div id="quiz-area" class="glass-panel p-6 md:p-8">
             
-            <div class="flex justify-between mt-8">
-                <button id="prev-btn" onclick="quiz.prev()" class="px-6 py-2 bg-white/10 rounded-full hover:bg-white/20 disabled:opacity-50">Sebelumnya</button>
-                <button id="next-btn" onclick="quiz.next()" class="px-6 py-2 bg-cyan-500 rounded-full font-bold">Selanjutnya</button>
+            <!-- Kotak Navigasi Nomor -->
+            <div class="mb-8 pb-6 border-b border-[var(--glass-border)]">
+                <p class="text-sm mb-3 font-semibold">Pilih Nomor Soal:</p>
+                <div id="nav-grid" class="flex flex-wrap gap-2 justify-center md:justify-start">
+                    <!-- Kotak nomor akan digenerate dari JS -->
+                </div>
+            </div>
+
+            <!-- Teks Soal -->
+            <div class="mb-6">
+                <div class="inline-block px-3 py-1 bg-[var(--primary)]/20 text-[var(--primary)] rounded-full text-xs font-bold tracking-wider mb-4" id="tipe-soal">
+                    TIPE SOAL
+                </div>
+                <h2 id="nomor-soal-header" class="text-xl font-bold mb-3 text-[var(--primary)]">Soal nomor 01</h2>
+                <p id="teks-soal" class="text-lg font-light leading-relaxed"></p>
+            </div>
+
+            <!-- Opsi Jawaban -->
+            <div id="opsi-container" class="space-y-3 mb-8">
+                <!-- Opsi akan digenerate dari JS -->
+            </div>
+
+            <!-- Tombol Bawah -->
+            <div class="flex justify-between mt-6">
+                <button id="btn-prev" onclick="kuis.prev()" class="px-6 py-2 rounded-full border border-[var(--glass-border)] hover:bg-white/10 transition">❮ Sebelumnya</button>
+                <button id="btn-next" onclick="kuis.next()" class="primary-btn px-8 py-2 rounded-full">Selanjutnya ❯</button>
             </div>
         </div>
 
-        <!-- Container Hasil (Awalnya tersembunyi) -->
-        <div id="result-container" class="glass-panel hidden text-center">
-            <h2 class="text-3xl font-bold mb-4">Hasil Latihan</h2>
-            <p id="score-text" class="text-5xl font-black mb-6"></p>
-            <div id="wrong-answers" class="text-left text-sm mb-6"></div>
-            <a href="index.html" class="px-8 py-3 bg-cyan-500 rounded-full font-bold">Kembali ke Beranda</a>
+        <!-- AREA HASIL (Ditampilkan saat selesai) -->
+        <div id="result-area" class="glass-panel p-8 hidden text-center">
+            <i class="fas fa-flag-checkered text-5xl text-[var(--primary)] mb-4"></i>
+            <h2 class="text-3xl font-bold mb-2">Latihan Selesai!</h2>
+            <p class="text-[var(--text-muted)] mb-6">Kerja bagus, kamu telah menyelesaikan semua soal.</p>
+            
+            <div class="inline-block p-6 bg-black/20 rounded-2xl mb-8 border border-white/10">
+                <p class="text-sm uppercase tracking-widest font-bold mb-2">Skor Kamu</p>
+                <p id="score-text" class="text-6xl font-black text-[var(--primary)]">0/100</p>
+            </div>
+
+            <h3 class="text-xl font-bold mb-4 text-left border-b border-white/10 pb-2">Evaluasi Jawabanmu:</h3>
+            <div id="eval-container" class="space-y-4 text-left mb-8">
+                <!-- Hasil salah akan muncul di sini -->
+            </div>
+
+            <a href="index.html" class="primary-btn inline-block px-10 py-3 rounded-full text-lg">Kembali ke Beranda</a>
         </div>
+
     </div>
 
-    <script>
-        // 1. Terapkan Tema yang Disimpan
-        const savedTheme = localStorage.getItem('savedTheme') || 'galaxy';
-        document.body.className = `theme-${savedTheme}`;
+    <!-- FOOTER -->
+    <footer class="w-full text-center p-6 border-t border-[var(--glass-border)] bg-[var(--glass-bg)] backdrop-blur-md z-20 mt-auto">
+        <div class="container mx-auto">
+            <p class="font-bold text-sm md:text-base mb-1" style="color: var(--primary)">Berakhlak Mulia dan Berprestasi</p>
+            <p class="text-xs text-[var(--text-muted)] mb-2">Website dibuat khusus sebagai media latihan TKA.</p>
+            <p class="text-xs text-[var(--text-muted)] mb-2">&copy; 2026 Mugeb Primary School (SD Muhammadiyah 1 GKB)</p>
+            <div class="mt-3 inline-block px-4 py-2 bg-white/5 border border-white/10 rounded-full">
+                <p class="text-xs font-semibold text-[var(--primary)]">🌟 Bergabunglah bersama Mugeb Primary School - Pilihan Tepat untuk Masa Depan Berprestasi! 🌟</p>
+            </div>
+        </div>
+    </footer>
 
-        // 2. Data Soal
-        const soalData = [
-            // (Masukkan data JSON soal kamu di sini, persis seperti yang kita buat tadi)
+    <script>
+        // 1. TERAPKAN TEMA YANG DISIMPAN DARI INDEX
+        const currentTheme = localStorage.getItem('savedTheme') || 'galaxy';
+        document.body.className = `theme-${currentTheme}`;
+
+        // 2. BACKGROUND ENGINE (Sama dengan Index agar tema menyatu)
+        const bgEngine = {
+            canvas: document.getElementById('bg-canvas'), ctx: null, particles: [],
+            init() { this.ctx = this.canvas.getContext('2d'); this.resize(); window.addEventListener('resize', () => this.resize()); this.initParticles(); this.animate(); },
+            resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; this.initParticles(); },
+            initParticles() {
+                this.particles = []; const w = this.canvas.width, h = this.canvas.height;
+                if (currentTheme === 'galaxy') {
+                    for (let i = 0; i < 150; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.5, alpha: Math.random(), alphaChange: (Math.random()*0.02)-0.01, type: 'star' });
+                    for (let i = 0; i < 3; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, length: Math.random()*80+20, speedX: (Math.random()*2+1)*(Math.random()>0.5?1:-1), speedY: Math.random()*2+1, type: 'comet' });
+                } else if (currentTheme === 'sky') {
+                    for (let i = 0; i < 60; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*4+2, speedX: Math.random()*2-1, speedY: Math.random()*1.5+0.5, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'petal' });
+                } else if (currentTheme === 'ocean') {
+                    for (let i = 0; i < 80; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*3+1, speedX: Math.random()*0.5-0.25, speedY: -(Math.random()*2+0.5), type: 'bubble' });
+                }
+            },
+            animate() {
+                const w = this.canvas.width, h = this.canvas.height; this.ctx.clearRect(0, 0, w, h);
+                for(let i = 0; i < this.particles.length; i++) {
+                    let p = this.particles[i];
+                    if(p.type === 'star') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; this.ctx.fill(); p.alpha += p.alphaChange; if(p.alpha <= 0 || p.alpha >= 1) p.alphaChange *= -1; } 
+                    else if(p.type === 'comet') { this.ctx.beginPath(); this.ctx.moveTo(p.x, p.y); this.ctx.lineTo(p.x - p.speedX * 10, p.y - p.speedY * 10); this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.5)'; this.ctx.lineWidth = 2; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.x < 0 || p.x > w || p.y > h || p.y < 0) { p.x = Math.random() * w; p.y = -20; } }
+                    else if(p.type === 'petal') { this.ctx.save(); this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle); this.ctx.beginPath(); this.ctx.ellipse(0, 0, p.r, p.r/1.5, 0, 0, Math.PI * 2); this.ctx.fillStyle = 'rgba(255, 183, 197, 0.8)'; this.ctx.fill(); this.ctx.restore(); p.x += p.speedX; p.y += p.speedY; p.angle += p.spin; if(p.y > h + 20) { p.y = -20; p.x = Math.random() * w; } }
+                    else if(p.type === 'bubble') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.y < -20) { p.y = h + 20; p.x = Math.random() * w; } }
+                }
+                requestAnimationFrame(() => this.animate());
+            }
+        };
+        bgEngine.init();
+
+        // 3. DATA SOAL
+        const dataSoal = [
             { "id": 1, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Dalam rangka Hari Literasi, SD Harapan membagikan buku cerita kepada siswa kelas 6. Kelas A berjumlah 30 siswa, Kelas B 34 siswa, dan Kelas C 32 siswa. Setiap siswa memperoleh 2 buku. Jika satu kardus berisi 24 buku, banyak kardus yang diperlukan adalah ....", "opsi": { "A": "6 kardus", "B": "7 kardus", "C": "8 kardus", "D": "9 kardus" }, "jawaban_benar": ["C"] },
             { "id": 2, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Sebuah komunitas mengumpulkan 540 botol plastik bekas. Botol tersebut akan dimasukkan ke dalam kantong yang masing-masing berisi 15 botol. Banyak kantong yang diperlukan adalah ....", "opsi": { "A": "32 kantong", "B": "34 kantong", "C": "36 kantong", "D": "38 kantong" }, "jawaban_benar": ["C"] },
             { "id": 3, "jenis_soal": "Pilihan Ganda", "pertanyaan": "Sebanyak 144 peserta mengikuti kegiatan Pramuka. Mereka dibagi menjadi beberapa regu yang masing-masing terdiri atas 12 peserta. Setiap regu menerima 5 bendera kecil. Jumlah seluruh bendera kecil yang dibutuhkan adalah ....", "opsi": { "A": "50 bendera", "B": "55 bendera", "C": "60 bendera", "D": "65 bendera" }, "jawaban_benar": ["C"] },
@@ -62,83 +167,175 @@
             { "id": 6, "jenis_soal": "Benar atau Salah", "pertanyaan": "Seorang pedagang memiliki 18 dus air mineral. Setiap dus berisi 24 botol. Jumlah seluruh botol adalah 432 botol.", "opsi": { "A": "Benar", "B": "Salah" }, "jawaban_benar": ["A"] },
             { "id": 7, "jenis_soal": "Benar atau Salah", "pertanyaan": "Perpustakaan memiliki 360 buku. Buku tersebut disusun sama banyak ke dalam 12 rak. Setiap rak berisi 28 buku.", "opsi": { "A": "Benar", "B": "Salah" }, "jawaban_benar": ["B"] },
             { "id": 8, "jenis_soal": "Benar atau Salah", "pertanyaan": "Pada kegiatan menanam pohon, tersedia 25 baris. Setiap baris ditanami 18 pohon. Jumlah seluruh pohon adalah 450 pohon.", "opsi": { "A": "Benar", "B": "Salah" }, "jawaban_benar": ["A"] },
-            { "id": 9, "jenis_soal": "Pilihan Ganda Kompleks", "pertanyaan": "Pak Guru memiliki 240 pensil yang akan dibagikan sama banyak kepada beberapa kelas. Manakah pernyataan berikut yang benar? (Jawaban benar lebih dari satu.)", "opsi": { "A": "Jika dibagikan kepada 12 kelas, setiap kelas memperoleh 20 pensil.", "B": "Jika dibagikan kepada 15 kelas, setiap kelas memperoleh 16 pensil.", "C": "Jika dibagikan kepada 24 kelas, setiap kelas memperoleh 10 pensil.", "D": "Jika dibagikan kepada 20 kelas, setiap kelas memperoleh 14 pensil." }, "jawaban_benar": ["A", "B", "C"] },
-            { "id": 10, "jenis_soal": "Pilihan Ganda Kompleks", "pertanyaan": "Sebuah toko memiliki 480 bungkus makanan. Pernyataan yang benar adalah .... (Jawaban benar lebih dari satu.)", "opsi": { "A": "Jika setiap kardus berisi 24 bungkus, diperlukan 20 kardus.", "B": "Jika setiap kardus berisi 12 bungkus, diperlukan 40 kardus.", "C": "Jika setiap kardus berisi 30 bungkus, diperlukan 18 kardus.", "D": "Jika setiap kardus berisi 16 bungkus, diperlukan 30 kardus." }, "jawaban_benar": ["A", "B", "D"] },
-            { "id": 11, "jenis_soal": "Pilihan Ganda Kompleks", "pertanyaan": "Jumlah siswa kelas VI adalah 128 orang. Pernyataan berikut yang benar adalah .... (Jawaban benar lebih dari satu.)", "opsi": { "A": "Jika setiap kelompok terdiri atas 8 siswa, terbentuk 16 kelompok.", "B": "Jika setiap kelompok terdiri atas 16 siswa, terbentuk 8 kelompok.", "C": "Jika setiap kelompok terdiri atas 10 siswa, terbentuk tepat 12 kelompok.", "D": "Jika setiap kelompok terdiri atas 32 siswa, terbentuk 4 kelompok." }, "jawaban_benar": ["A", "B", "D"] }
+            { "id": 9, "jenis_soal": "Pilihan Ganda Kompleks", "pertanyaan": "Pak Guru memiliki 240 pensil yang akan dibagikan sama banyak kepada beberapa kelas. Manakah pernyataan berikut yang benar? (Bisa pilih lebih dari satu)", "opsi": { "A": "Jika dibagikan kepada 12 kelas, setiap kelas memperoleh 20 pensil.", "B": "Jika dibagikan kepada 15 kelas, setiap kelas memperoleh 16 pensil.", "C": "Jika dibagikan kepada 24 kelas, setiap kelas memperoleh 10 pensil.", "D": "Jika dibagikan kepada 20 kelas, setiap kelas memperoleh 14 pensil." }, "jawaban_benar": ["A", "B", "C"] },
+            { "id": 10, "jenis_soal": "Pilihan Ganda Kompleks", "pertanyaan": "Sebuah toko memiliki 480 bungkus makanan. Pernyataan yang benar adalah .... (Bisa pilih lebih dari satu)", "opsi": { "A": "Jika setiap kardus berisi 24 bungkus, diperlukan 20 kardus.", "B": "Jika setiap kardus berisi 12 bungkus, diperlukan 40 kardus.", "C": "Jika setiap kardus berisi 30 bungkus, diperlukan 18 kardus.", "D": "Jika setiap kardus berisi 16 bungkus, diperlukan 30 kardus." }, "jawaban_benar": ["A", "B", "D"] },
+            { "id": 11, "jenis_soal": "Pilihan Ganda Kompleks", "pertanyaan": "Jumlah siswa kelas VI adalah 128 orang. Pernyataan berikut yang benar adalah .... (Bisa pilih lebih dari satu)", "opsi": { "A": "Jika setiap kelompok terdiri atas 8 siswa, terbentuk 16 kelompok.", "B": "Jika setiap kelompok terdiri atas 16 siswa, terbentuk 8 kelompok.", "C": "Jika setiap kelompok terdiri atas 10 siswa, terbentuk tepat 12 kelompok.", "D": "Jika setiap kelompok terdiri atas 32 siswa, terbentuk 4 kelompok." }, "jawaban_benar": ["A", "B", "D"] }
         ];
 
-        // 3. Logika Quiz
-        let currentIdx = 0;
-        let userAnswers = {}; // Menyimpan jawaban user
+        // 4. MESIN KUIS UTAMA
+        const kuis = {
+            idx: 0,
+            jawabanSiswa: {}, // Menyimpan jawaban: { "1": ["C"], "9": ["A", "B"] }
+            waktuSisa: 600, // 10 menit (600 detik)
+            timerId: null,
 
-        function renderQuestion() {
-            const soal = soalData[currentIdx];
-            const container = document.getElementById('question-area');
-            
-            // Update Progress
-            document.getElementById('progress-text').innerText = `Soal ${currentIdx + 1} dari ${soalData.length}`;
-            document.getElementById('progress-bar').style.width = `${((currentIdx + 1) / soalData.length) * 100}%`;
+            init() {
+                this.renderNavBoxes();
+                this.loadSoal();
+                this.startTimer();
+            },
 
-            // Opsi HTML
-            let opsiHtml = '';
-            for (const [key, val] of Object.entries(soal.opsi)) {
-                const isChecked = userAnswers[soal.id] && userAnswers[soal.id].includes(key) ? 'checked' : '';
-                // Gunakan checkbox agar bisa mendukung Pilihan Ganda Kompleks
-                opsiHtml += `<label class="block p-3 mb-2 bg-white/5 rounded-lg cursor-pointer hover:bg-white/10">
-                    <input type="checkbox" value="${key}" ${isChecked} onchange="saveAnswer(${soal.id}, '${key}', this.checked)" class="mr-2">
-                    ${key}. ${val}
-                </label>`;
-            }
+            startTimer() {
+                this.timerId = setInterval(() => {
+                    this.waktuSisa--;
+                    let menit = Math.floor(this.waktuSisa / 60).toString().padStart(2, '0');
+                    let detik = (this.waktuSisa % 60).toString().padStart(2, '0');
+                    document.getElementById('timer-display').innerText = `${menit}:${detik}`;
+                    
+                    if (this.waktuSisa <= 0) {
+                        clearInterval(this.timerId);
+                        alert("Waktu habis! Kuis akan otomatis dikumpulkan.");
+                        this.submit();
+                    }
+                }, 1000);
+            },
 
-            container.innerHTML = `<h3 class="text-xl font-bold mb-4">${soal.id}. ${soal.pertanyaan}</h3>${opsiHtml}`;
-            
-            // Tombol Navigasi
-            document.getElementById('prev-btn').disabled = currentIdx === 0;
-            document.getElementById('next-btn').innerText = currentIdx === soalData.length - 1 ? 'Submit' : 'Selanjutnya';
-        }
+            renderNavBoxes() {
+                const grid = document.getElementById('nav-grid');
+                grid.innerHTML = '';
+                dataSoal.forEach((s, i) => {
+                    const box = document.createElement('div');
+                    box.className = `nav-box w-10 h-10 flex items-center justify-center rounded-lg text-sm`;
+                    box.innerText = i + 1;
+                    
+                    // Mewarnai jika sudah dijawab
+                    if (this.jawabanSiswa[s.id] && this.jawabanSiswa[s.id].length > 0) box.classList.add('answered');
+                    // Memberi highlight pada kotak aktif
+                    if (i === this.idx) box.classList.add('active');
+                    
+                    box.onclick = () => { this.idx = i; this.loadSoal(); };
+                    grid.appendChild(box);
+                });
+            },
 
-        function saveAnswer(soalId, opsi, isChecked) {
-            if(!userAnswers[soalId]) userAnswers[soalId] = [];
-            if(isChecked) userAnswers[soalId].push(opsi);
-            else userAnswers[soalId] = userAnswers[soalId].filter(a => a !== opsi);
-        }
+            loadSoal() {
+                const soal = dataSoal[this.idx];
+                document.getElementById('tipe-soal').innerText = soal.jenis_soal;
+                
+                // Format angka misal: 01, 02
+                const noTampil = (this.idx + 1).toString().padStart(2, '0');
+                document.getElementById('nomor-soal-header').innerText = `Soal nomor ${noTampil}`;
+                document.getElementById('teks-soal').innerText = soal.pertanyaan;
 
-        const quiz = {
-            next() {
-                if(currentIdx < soalData.length - 1) {
-                    currentIdx++;
-                    renderQuestion();
-                } else {
-                    submitQuiz();
+                // Logika Input (Radio untuk PG/BS, Checkbox untuk PGK)
+                const isSingleChoice = (soal.jenis_soal === "Pilihan Ganda" || soal.jenis_soal === "Benar atau Salah");
+                const inputType = isSingleChoice ? 'radio' : 'checkbox';
+                
+                const opsiContainer = document.getElementById('opsi-container');
+                opsiContainer.innerHTML = '';
+
+                for (const [key, value] of Object.entries(soal.opsi)) {
+                    // Cek apakah opsi ini pernah dijawab user
+                    const isChecked = this.jawabanSiswa[soal.id] && this.jawabanSiswa[soal.id].includes(key) ? 'checked' : '';
+                    
+                    const label = document.createElement('label');
+                    label.className = "flex items-center p-4 bg-white/5 border border-white/10 rounded-xl cursor-pointer hover:bg-white/10 transition";
+                    
+                    label.innerHTML = `
+                        <input type="${inputType}" name="soal_${soal.id}" value="${key}" ${isChecked} 
+                               onchange="kuis.saveAnswer(${soal.id}, '${key}', this.checked, ${isSingleChoice})">
+                        <span class="ml-2 font-medium">${key}. ${value}</span>
+                    `;
+                    opsiContainer.appendChild(label);
                 }
+
+                // Pengaturan Tombol Navigasi Bawah
+                document.getElementById('btn-prev').style.visibility = this.idx === 0 ? 'hidden' : 'visible';
+                
+                const btnNext = document.getElementById('btn-next');
+                if (this.idx === dataSoal.length - 1) {
+                    btnNext.innerText = "Kumpulkan Kuis ✓";
+                    btnNext.className = "px-8 py-2 rounded-full font-bold bg-green-500 hover:bg-green-600 text-white transition";
+                    btnNext.onclick = () => this.confirmSubmit();
+                } else {
+                    btnNext.innerText = "Selanjutnya ❯";
+                    btnNext.className = "primary-btn px-8 py-2 rounded-full";
+                    btnNext.onclick = () => this.next();
+                }
+                
+                this.renderNavBoxes(); // Render ulang navigasi atas agar kotak hijau ter-update
+            },
+
+            saveAnswer(soalId, key, isChecked, isSingleChoice) {
+                if (!this.jawabanSiswa[soalId]) this.jawabanSiswa[soalId] = [];
+                
+                if (isSingleChoice) {
+                    this.jawabanSiswa[soalId] = [key]; // Hanya timpa dengan 1 jawaban
+                } else {
+                    if (isChecked) this.jawabanSiswa[soalId].push(key);
+                    else this.jawabanSiswa[soalId] = this.jawabanSiswa[soalId].filter(k => k !== key);
+                }
+                this.renderNavBoxes();
+            },
+
+            next() {
+                if (this.idx < dataSoal.length - 1) { this.idx++; this.loadSoal(); }
             },
             prev() {
-                if(currentIdx > 0) {
-                    currentIdx--;
-                    renderQuestion();
+                if (this.idx > 0) { this.idx--; this.loadSoal(); }
+            },
+
+            confirmSubmit() {
+                let belum = dataSoal.filter(s => !this.jawabanSiswa[s.id] || this.jawabanSiswa[s.id].length === 0).length;
+                if(belum > 0) {
+                    if(confirm(`Masih ada ${belum} soal yang belum dijawab lho. Yakin mau dikumpulkan sekarang?`)) this.submit();
+                } else {
+                    this.submit();
                 }
+            },
+
+            submit() {
+                clearInterval(this.timerId);
+                document.getElementById('quiz-area').classList.add('hidden');
+                
+                // Menghitung Skor
+                let totalBenar = 0;
+                let pesanEvaluasi = "";
+
+                dataSoal.forEach((soal, i) => {
+                    const ansSiswa = (this.jawabanSiswa[soal.id] || []).sort().join('');
+                    const ansKunci = soal.jawaban_benar.sort().join('');
+                    
+                    if (ansSiswa === ansKunci) {
+                        totalBenar++;
+                    } else {
+                        // Desain evaluasi jawaban yang ramah
+                        pesanEvaluasi += `
+                            <div class="p-4 border-l-4 border-red-400 bg-red-400/10 rounded-r-lg">
+                                <p class="font-bold text-red-400">Oops, di Soal Nomor ${i + 1} sepertinya kurang tepat. 🥺</p>
+                                <p class="text-sm mt-1 mb-2 opacity-80">${soal.pertanyaan}</p>
+                                <p class="text-sm text-[var(--primary)] font-semibold">💡 Jawaban yang benar adalah: ${soal.jawaban_benar.join(', ')}</p>
+                            </div>
+                        `;
+                    }
+                });
+
+                const nilai = Math.round((totalBenar / dataSoal.length) * 100);
+                document.getElementById('score-text').innerText = `${nilai}`;
+                
+                const evalContainer = document.getElementById('eval-container');
+                if (pesanEvaluasi === "") {
+                    evalContainer.innerHTML = `<div class="p-4 border border-green-400 bg-green-400/10 text-green-400 font-bold rounded-lg text-center">🎉 Wow luar biasa! Seluruh jawabanmu benar tanpa ada yang salah! Pertahankan prestasimu!</div>`;
+                } else {
+                    evalContainer.innerHTML = `<p class="text-sm mb-3">Yuk, kita pelajari kembali bagian yang masih keliru:</p>` + pesanEvaluasi;
+                }
+
+                document.getElementById('result-area').classList.remove('hidden');
             }
         };
 
-        function submitQuiz() {
-            let score = 0;
-            let wrongItems = "";
-
-            soalData.forEach(soal => {
-                const user = (userAnswers[soal.id] || []).sort().join('');
-                const correct = soal.jawaban_benar.sort().join('');
-                
-                if(user === correct) score++;
-                else wrongItems += `<p class="mb-2 text-red-400">Soal ${soal.id}: Jawaban benar adalah ${soal.jawaban_benar.join(', ')}</p>`;
-            });
-
-            document.getElementById('quiz-container').classList.add('hidden');
-            document.getElementById('result-container').classList.remove('hidden');
-            document.getElementById('score-text').innerText = `Skor: ${score} / ${soalData.length}`;
-            document.getElementById('wrong-answers').innerHTML = wrongItems || "Selamat! Semua jawabanmu benar.";
-        }
-
-        renderQuestion();
+        // Jalankan kuis saat halaman dimuat
+        window.addEventListener('load', () => kuis.init());
     </script>
 </body>
 </html>
