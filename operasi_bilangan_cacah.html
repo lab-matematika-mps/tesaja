@@ -10,19 +10,21 @@
     <style>
         :root {
             --bg-top: #0a0a1a; --bg-bottom: #1a0b2e; --primary: #00f3ff; --primary-hover: #00d0ff; --secondary: #b900ff;
-            --text-main: #ffffff; --text-muted: #a0a0b8; --glass-bg: rgba(20, 20, 40, 0.4); --glass-border: rgba(0, 243, 255, 0.2);
+            --text-main: #ffffff; --text-muted: #a0a0b8; 
+            /* Transparansi disamakan agar tembus pandang */
+            --glass-bg: rgba(20, 20, 40, 0.15); --glass-border: rgba(0, 243, 255, 0.2);
             --font-main: 'Space Grotesk', sans-serif;
         }
         body.theme-sky {
             --bg-top: #ffe5d9; --bg-bottom: #ffcad4; --primary: #f28482; --primary-hover: #f0716f; --secondary: #84a59d;
-            --text-main: #2b2d42; --text-muted: #5c677d; --glass-bg: rgba(255, 255, 255, 0.5); --glass-border: rgba(242, 132, 130, 0.4);
+            --text-main: #2b2d42; --text-muted: #5c677d; --glass-bg: rgba(255, 255, 255, 0.25); --glass-border: rgba(242, 132, 130, 0.4);
         }
         body.theme-ocean {
             --bg-top: #001220; --bg-bottom: #004d7a; --primary: #00d4ff; --primary-hover: #00b0ff; --secondary: #00ff88;
-            --text-main: #ffffff; --text-muted: #b3e5fc; --glass-bg: rgba(0, 30, 60, 0.4); --glass-border: rgba(0, 212, 255, 0.3);
+            --text-main: #ffffff; --text-muted: #b3e5fc; --glass-bg: rgba(0, 30, 60, 0.2); --glass-border: rgba(0, 212, 255, 0.3);
         }
         
-        body { font-family: var(--font-main); color: var(--text-main); background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom)); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; margin: 0; }
+        body { font-family: var(--font-main); color: var(--text-main); background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom)); background-attachment: fixed; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; margin: 0; }
         
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -176,7 +178,13 @@
         </div>
     </div>
 
-    <!-- MODAL PENGATURAN & ALERT (Sama seperti sebelumnya) -->
+    <!-- FOOTER COPYRIGHT -->
+    <footer class="mt-auto py-6 text-center text-[10px] md:text-xs text-[var(--text-muted)] w-full border-t border-[var(--glass-border)] bg-[var(--bg-top)]/30 backdrop-blur-sm z-10 relative">
+        <p class="mb-1">Website dibuat khusus sebagai media latihan TKA oleh Fahilan.</p>
+        <p class="font-semibold text-gray-400">&copy; 2026 Mugeb Primary School (SD Muhammadiyah 1 GKB)</p>
+    </footer>
+
+    <!-- MODAL PENGATURAN -->
     <div id="settings-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
         <div class="glass-panel w-11/12 max-w-xs md:max-w-sm p-5 md:p-6 transform scale-95 transition-transform duration-300" id="settings-content">
             <div class="flex justify-between items-center mb-4 md:mb-6 border-b border-white/10 pb-2 md:pb-3">
@@ -282,7 +290,7 @@
             { "id": 11, "jenis_soal": "Pilihan Ganda Kompleks", "pertanyaan": "Jumlah siswa kelas VI adalah 128 orang. Pernyataan berikut yang benar adalah .... (Bisa pilih lebih dari satu)", "opsi": { "A": "Jika setiap kelompok terdiri atas 8 siswa, terbentuk 16 kelompok.", "B": "Jika setiap kelompok terdiri atas 16 siswa, terbentuk 8 kelompok.", "C": "Jika setiap kelompok terdiri atas 10 siswa, terbentuk tepat 12 kelompok.", "D": "Jika setiap kelompok terdiri atas 32 siswa, terbentuk 4 kelompok." }, "jawaban_benar": ["A", "B", "D"] }
         ];
 
-        // SISTEM NAVIGASI GATE (Gerbang Masuk)
+        // SISTEM NAVIGASI GATE
         const gate = {
             checkCode() {
                 const input = document.getElementById('access-code').value.toLowerCase().trim();
@@ -294,53 +302,38 @@
                     ui.showAlert("Akses Ditolak", "Kode yang kamu masukkan salah. Silakan coba lagi.", "fas fa-lock");
                 }
             },
-            lockedPaket() {
-                audioSys.playSFX();
-                ui.showAlert("Paket Terkunci", "Paket soal ini masih dalam tahap penyusunan. Silakan kerjakan paket yang tersedia.", "fas fa-tools");
-            },
+            lockedPaket() { audioSys.playSFX(); ui.showAlert("Paket Terkunci", "Paket soal ini masih dalam tahap penyusunan. Silakan kerjakan paket yang tersedia.", "fas fa-tools"); },
             startPaket(paketNum) {
                 audioSys.playSFX();
                 document.getElementById('view-paket').classList.add('hidden');
-                document.getElementById('view-quiz').classList.remove('hidden');
-                document.getElementById('view-quiz').classList.add('flex');
-                
-                // Set Label Paket
+                document.getElementById('view-quiz').classList.remove('hidden'); document.getElementById('view-quiz').classList.add('flex');
                 document.getElementById('paket-label').innerText = `- Paket ${paketNum}`;
-                
-                // Hubungkan data soal (Saat ini hanya paket 1 yang terisi)
                 kuis.dataSoal = paketNum === 1 ? dataPaket1 : [];
                 kuis.init();
             },
             backToPaket() {
                 audioSys.playSFX();
-                document.getElementById('view-quiz').classList.add('hidden');
-                document.getElementById('view-quiz').classList.remove('flex');
-                
-                // Reset State Kuis
+                document.getElementById('view-quiz').classList.add('hidden'); document.getElementById('view-quiz').classList.remove('flex');
                 document.getElementById('result-area').classList.add('hidden');
-                document.getElementById('quiz-header').classList.remove('hidden');
-                document.getElementById('quiz-area').classList.remove('hidden');
-                
+                document.getElementById('quiz-header').classList.remove('hidden'); document.getElementById('quiz-area').classList.remove('hidden');
                 document.getElementById('view-paket').classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
 
-        // ENGINE KUIS
+        // ENGINE KUIS (MENAMPILKAN JAWABAN SISWA)
         const kuis = {
             dataSoal: [], idx: 0, jawabanSiswa: {}, waktuSisa: 600, timerId: null,
 
             init() { 
-                this.idx = 0; this.jawabanSiswa = {}; this.waktuSisa = 600; 
-                clearInterval(this.timerId);
+                this.idx = 0; this.jawabanSiswa = {}; this.waktuSisa = 600; clearInterval(this.timerId);
                 this.renderNavBoxes(); this.loadSoal(); this.startTimer(); 
             },
 
             startTimer() {
                 this.timerId = setInterval(() => {
                     this.waktuSisa--;
-                    let m = Math.floor(this.waktuSisa / 60).toString().padStart(2, '0');
-                    let s = (this.waktuSisa % 60).toString().padStart(2, '0');
+                    let m = Math.floor(this.waktuSisa / 60).toString().padStart(2, '0'); let s = (this.waktuSisa % 60).toString().padStart(2, '0');
                     document.getElementById('timer-display').innerText = `${m}:${s}`;
                     if (this.waktuSisa <= 0) { clearInterval(this.timerId); alert("Waktu habis! Kuis otomatis dikumpulkan."); this.submit(); }
                 }, 1000);
@@ -350,8 +343,7 @@
                 const grid = document.getElementById('nav-grid'); grid.innerHTML = '';
                 this.dataSoal.forEach((s, i) => {
                     const box = document.createElement('div');
-                    box.className = `nav-box w-7 h-7 md:w-10 md:h-10 flex items-center justify-center rounded-lg text-xs md:text-sm`;
-                    box.innerText = i + 1;
+                    box.className = `nav-box w-7 h-7 md:w-10 md:h-10 flex items-center justify-center rounded-lg text-xs md:text-sm`; box.innerText = i + 1;
                     if (this.jawabanSiswa[s.id] && this.jawabanSiswa[s.id].length > 0) box.classList.add('answered');
                     if (i === this.idx) box.classList.add('active');
                     box.onclick = () => { audioSys.playSFX(); this.idx = i; this.loadSoal(); };
@@ -374,8 +366,7 @@
                     const label = document.createElement('label');
                     label.className = "flex items-start p-3 md:p-4 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl cursor-pointer hover:border-[var(--primary)] transition";
                     label.innerHTML = `
-                        <input type="${inputType}" name="soal_${soal.id}" value="${key}" ${isChecked} 
-                               onchange="kuis.saveAnswer(${soal.id}, '${key}', this.checked, ${isSingle})">
+                        <input type="${inputType}" name="soal_${soal.id}" value="${key}" ${isChecked} onchange="kuis.saveAnswer(${soal.id}, '${key}', this.checked, ${isSingle})">
                         <span class="text-xs md:text-base font-normal mt-[2px] leading-relaxed">${key}. ${value}</span>
                     `;
                     opsiContainer.appendChild(label);
@@ -394,16 +385,13 @@
                     btnNext.onclick = () => { audioSys.playSFX(); this.next(); };
                 }
                 
-                this.renderNavBoxes();
-                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                this.renderNavBoxes(); window.scrollTo({ top: 0, behavior: 'smooth' }); 
             },
 
             saveAnswer(id, key, isChecked, isSingle) {
                 if (!this.jawabanSiswa[id]) this.jawabanSiswa[id] = [];
-                if (isSingle) { this.jawabanSiswa[id] = [key]; } 
-                else { if (isChecked) this.jawabanSiswa[id].push(key); else this.jawabanSiswa[id] = this.jawabanSiswa[id].filter(k => k !== key); }
-                this.renderNavBoxes();
-                audioSys.playSFX();
+                if (isSingle) { this.jawabanSiswa[id] = [key]; } else { if (isChecked) this.jawabanSiswa[id].push(key); else this.jawabanSiswa[id] = this.jawabanSiswa[id].filter(k => k !== key); }
+                this.renderNavBoxes(); audioSys.playSFX();
             },
 
             next() { if (this.idx < this.dataSoal.length - 1) { this.idx++; this.loadSoal(); } },
@@ -411,19 +399,19 @@
 
             confirmSubmit() {
                 let belum = this.dataSoal.filter(s => !this.jawabanSiswa[s.id] || this.jawabanSiswa[s.id].length === 0).length;
-                if(belum > 0) { if(confirm(`Masih ada ${belum} soal yang kosong. Yakin kumpulkan sekarang?`)) this.submit(); } 
-                else this.submit();
+                if(belum > 0) { if(confirm(`Masih ada ${belum} soal yang kosong. Yakin kumpulkan sekarang?`)) this.submit(); } else this.submit();
             },
 
             submit() {
                 clearInterval(this.timerId);
-                document.getElementById('quiz-header').classList.add('hidden');
-                document.getElementById('quiz-area').classList.add('hidden');
+                document.getElementById('quiz-header').classList.add('hidden'); document.getElementById('quiz-area').classList.add('hidden');
                 
                 let totalBenar = 0; let pesanEvaluasi = "";
                 this.dataSoal.forEach((soal, i) => {
-                    const ansSiswa = [...(this.jawabanSiswa[soal.id] || [])].sort().join('');
+                    const ansSiswaArr = this.jawabanSiswa[soal.id] || [];
+                    const ansSiswa = [...ansSiswaArr].sort().join('');
                     const ansKunci = [...soal.jawaban_benar].sort().join('');
+                    const teksJawabanSiswa = ansSiswaArr.length > 0 ? ansSiswaArr.join(', ') : 'Tidak dijawab';
                     
                     if (ansSiswa === ansKunci && ansSiswa !== "") { totalBenar++; } 
                     else {
@@ -431,8 +419,9 @@
                             <div class="p-4 md:p-5 border-l-4 border-[#ff4757] bg-black/20 rounded-r-xl border-t border-r border-b border-white/5 w-full">
                                 <p class="font-bold text-[#ff4757] text-xs md:text-base">Wah, sayang sekali di Soal Nomor ${i + 1} masih kurang tepat. 🥺</p>
                                 <p class="text-xs md:text-sm mt-2 mb-3 text-gray-300">${soal.pertanyaan}</p>
-                                <div class="bg-[var(--glass-bg)] p-3 rounded-lg border border-[var(--primary)]/30">
-                                    <p class="text-[10px] md:text-sm text-[var(--primary)] font-semibold">💡 Jawaban yang benar adalah: ${soal.jawaban_benar.join(', ')}</p>
+                                <div class="bg-[var(--glass-bg)] p-3 rounded-lg border border-[var(--primary)]/30 space-y-1">
+                                    <p class="text-[10px] md:text-sm text-yellow-400 font-semibold">❌ Jawabanmu: ${teksJawabanSiswa}</p>
+                                    <p class="text-[10px] md:text-sm text-[var(--primary)] font-semibold">💡 Jawaban benar: ${soal.jawaban_benar.join(', ')}</p>
                                 </div>
                             </div>
                         `;
@@ -444,12 +433,10 @@
                 if (pesanEvaluasi === "") evalContainer.innerHTML = `<div class="p-6 border border-[#2ed573] bg-[#2ed573]/10 text-[#2ed573] font-bold rounded-2xl text-center text-sm md:text-lg shadow-[0_0_15px_rgba(46,213,115,0.2)]">🎉 Luar biasa sempurna! Seluruh jawabanmu benar tanpa ada yang salah! Pertahankan belajarmu ya!</div>`;
                 else evalContainer.innerHTML = `<p class="text-xs md:text-base mb-4 text-[var(--text-muted)]">Yuk, kita cek bagian mana yang masih bisa ditingkatkan:</p>` + pesanEvaluasi;
 
-                document.getElementById('result-area').classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                document.getElementById('result-area').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); 
             }
         };
 
-        // Otomatis fokus ke input kode akses saat halaman dimuat
         window.addEventListener('load', () => { document.getElementById('access-code').focus(); });
     </script>
 </body>
