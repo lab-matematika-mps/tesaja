@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Soal - Mugeb TKA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Script MathJax untuk me-render Pecahan (Fractions) -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-top: #0a0a1a; --bg-bottom: #1a0b2e; --primary: #00f3ff; --primary-hover: #00d0ff; --secondary: #b900ff;
+            --text-main: #ffffff; --text-muted: #a0a0b8; 
+            --glass-bg: rgba(20, 20, 40, 0.15); --glass-border: rgba(0, 243, 255, 0.2);
+            --font-main: 'Space Grotesk', sans-serif;
+        }
+        body.theme-sky {
+            --bg-top: #ffe5d9; --bg-bottom: #ffcad4; --primary: #f28482; --primary-hover: #f0716f; --secondary: #84a59d;
+            --text-main: #2b2d42; --text-muted: #5c677d; --glass-bg: rgba(255, 255, 255, 0.25); --glass-border: rgba(242, 132, 130, 0.4);
+        }
+        body.theme-ocean {
+            --bg-top: #001220; --bg-bottom: #004d7a; --primary: #00d4ff; --primary-hover: #00b0ff; --secondary: #00ff88;
+            --text-main: #ffffff; --text-muted: #b3e5fc; --glass-bg: rgba(0, 30, 60, 0.2); --glass-border: rgba(0, 212, 255, 0.3);
+        }
+        
+        body { font-family: var(--font-main); color: var(--text-main); background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom)); background-attachment: fixed; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; margin: 0; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 1.5rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; }
+        .glass-btn { background: var(--glass-bg); backdrop-filter: blur(8px); border: 1px solid var(--glass-border); color: var(--text-main); transition: all 0.3s ease; cursor: pointer; }
+        .glass-btn:hover { border-color: var(--primary); transform: translateY(-2px); }
+        
+        .primary-btn { background: var(--primary); color: #000; font-weight: 700; border: none; transition: all 0.3s; }
+        body.theme-sky .primary-btn { color: #fff; }
+        .primary-btn:hover { background: var(--primary-hover); transform: scale(1.02); box-shadow: 0 0 15px var(--primary-hover); }
+        
+        .glass-input { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: var(--text-main); transition: all 0.3s; outline: none; }
+        .glass-input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); background: rgba(255, 255, 255, 0.1); }
+
+        input[type="radio"], input[type="checkbox"] { accent-color: var(--primary); transform: scale(1.2); margin-right: 12px; cursor: pointer; flex-shrink: 0; }
+        .nav-box { border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); transition: all 0.3s; cursor: pointer; }
+        .nav-box.answered { background: var(--primary); color: #000; font-weight: bold; border-color: var(--primary); }
+        body.theme-sky .nav-box.answered { color: #fff; }
+        .nav-box.active { border-color: var(--primary); box-shadow: 0 0 10px var(--primary); transform: scale(1.1); }
+        
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+        .pulse-slow { animation: pulseGlow 2s infinite; }
+        @keyframes pulseGlow { 0% { opacity: 0.8; } 50% { opacity: 1; text-shadow: 0 0 10px var(--primary); } 100% { opacity: 0.8; } }
+        
+        .fade-in { animation: fadeIn 0.4s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="theme-galaxy">
+
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- TOMBOL PENGATURAN -->
+    <div class="fixed top-4 right-4 z-50">
+        <button onclick="ui.toggleSettings()" class="glass-btn p-3 md:p-4 rounded-full flex items-center justify-center w-10 h-10 md:w-12 md:h-12" aria-label="Pengaturan">
+            <i class="fas fa-cog text-base md:text-xl"></i>
+        </button>
+    </div>
+
+    <!-- CONTAINER UTAMA -->
+    <div class="container mx-auto px-4 py-6 md:py-10 flex-1 max-w-4xl relative z-10 w-full flex flex-col justify-center items-center">
+        
+        <!-- VIEW 1: AKSES KODE -->
+        <div id="view-access" class="glass-panel p-8 md:p-12 text-center w-full max-w-md fade-in">
+            <div class="inline-block p-4 rounded-full bg-[var(--primary)]/20 mb-6 border border-[var(--primary)]/30">
+                <i class="fas fa-lock text-3xl md:text-4xl text-[var(--primary)]"></i>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold mb-2">Area Terkunci</h2>
+            <p class="text-sm md:text-base text-[var(--text-muted)] mb-8">Masukkan kode akses untuk membuka soal Mengubah Bentuk Pecahan.</p>
+            
+            <input type="password" id="access-code" class="glass-input w-full py-3 px-4 rounded-xl text-center text-lg mb-6 tracking-[0.2em]" placeholder="KODE AKSES" autocomplete="off">
+            <button onclick="gate.checkCode()" class="primary-btn w-full py-3 rounded-xl font-bold text-lg flex items-center justify-center gap-2">
+                <i class="fas fa-key"></i> Buka Akses
+            </button>
+            <div class="mt-6">
+                <a href="index.html" class="text-xs text-[var(--text-muted)] hover:text-[var(--primary)] transition"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+            </div>
+        </div>
+
+        <!-- VIEW 2: PILIH PAKET SOAL -->
+        <div id="view-paket" class="w-full hidden fade-in">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl md:text-4xl font-bold mb-2 text-[var(--primary)]">Mengubah Bentuk Pecahan</h2>
+                <p class="text-sm md:text-base text-[var(--text-muted)]">Pilih paket soal yang ingin kamu kerjakan hari ini.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-3xl mx-auto">
+                <div onclick="gate.startPaket(1)" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center group border-t-4 border-t-[var(--primary)]">
+                    <i class="fas fa-box-open text-4xl mb-4 text-[var(--primary)] group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-xl font-bold mb-2">Paket 1</h3>
+                    <p class="text-xs text-[var(--text-muted)] mb-4">11 Soal Latihan</p>
+                    <div class="px-4 py-1 bg-[var(--primary)] text-black rounded-full text-xs font-bold w-full">MULAI KERJAKAN</div>
+                </div>
+
+                <div onclick="gate.startPaket(2)" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center group border-t-4 border-t-[var(--secondary)]">
+                    <i class="fas fa-box-open text-4xl mb-4 text-[var(--secondary)] group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-xl font-bold mb-2">Paket 2</h3>
+                    <p class="text-xs text-[var(--text-muted)] mb-4">11 Soal Latihan</p>
+                    <div class="px-4 py-1 bg-[var(--secondary)] text-black rounded-full text-xs font-bold w-full hover:bg-[var(--secondary)] hover:text-black transition">MULAI KERJAKAN</div>
+                </div>
+
+                <div onclick="gate.startPaket(3)" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center group border-t-4 border-t-[#00ff88]">
+                    <i class="fas fa-box-open text-4xl mb-4 text-[#00ff88] group-hover:scale-110 transition-transform"></i>
+                    <h3 class="text-xl font-bold mb-2">Paket 3</h3>
+                    <p class="text-xs text-[var(--text-muted)] mb-4">11 Soal Latihan</p>
+                    <div class="px-4 py-1 bg-[#00ff88] text-black rounded-full text-xs font-bold w-full hover:bg-[#00ff88] hover:text-black transition">MULAI KERJAKAN</div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-10">
+                <a href="index.html" class="px-6 py-2 rounded-full border border-[var(--glass-border)] hover:bg-white/10 transition text-sm"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+            </div>
+        </div>
+
+        <!-- VIEW 3: AREA KUIS UTAMA -->
+        <div id="view-quiz" class="w-full hidden fade-in flex-col items-center">
+            
+            <div id="quiz-header" class="flex justify-between items-center w-full mb-6 bg-[var(--glass-bg)] p-4 md:p-5 rounded-2xl backdrop-blur-md border border-[var(--glass-border)] shadow-lg">
+                <div>
+                    <h1 class="text-base md:text-2xl font-bold mb-1">Mengubah Bentuk Pecahan <span id="paket-label" class="text-[var(--primary)] text-sm md:text-lg"></span></h1>
+                    <p class="text-[10px] md:text-sm text-[var(--text-muted)]"><i class="fas fa-info-circle text-[var(--primary)] mr-1"></i> Kerjakan dengan santai dan teliti.</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] md:text-xs uppercase tracking-widest text-[var(--text-muted)] font-bold mb-1">Sisa Waktu</p>
+                    <div id="timer-display" class="text-lg md:text-3xl font-mono font-bold text-[var(--primary)] pulse-slow bg-black/20 px-3 py-1 rounded-lg">10:00</div>
+                </div>
+            </div>
+
+            <div id="quiz-area" class="glass-panel p-5 md:p-8 w-full">
+                <div class="mb-6 md:mb-8 pb-5 md:pb-6 border-b border-[var(--glass-border)]">
+                    <p class="text-[10px] md:text-sm mb-3 font-semibold text-[var(--text-muted)]">Pilih Nomor Soal (Kotak warna = sudah dijawab):</p>
+                    <div id="nav-grid" class="flex flex-wrap gap-2 justify-center md:justify-start"></div>
+                </div>
+
+                <div class="mb-6 md:mb-8">
+                    <div class="inline-block px-3 py-1 bg-[var(--primary)]/20 text-[var(--primary)] border border-[var(--primary)]/30 rounded-full text-[10px] md:text-xs font-bold tracking-wider mb-4" id="tipe-soal">TIPE SOAL</div>
+                    <h2 id="nomor-soal-header" class="text-base md:text-xl font-bold mb-3 text-[var(--primary)] border-l-4 border-[var(--primary)] pl-3">Soal nomor 01</h2>
+                    <p id="teks-soal" class="text-sm md:text-lg font-normal leading-relaxed text-gray-100"></p>
+                </div>
+
+                <div id="opsi-container" class="space-y-3 mb-6 md:mb-8"></div>
+
+                <div class="flex justify-between items-center mt-4 md:mt-6 pt-4 md:pt-6 border-t border-[var(--glass-border)]">
+                    <button id="btn-prev" onclick="kuis.prev()" class="px-4 py-2 md:px-6 md:py-3 rounded-full border border-[var(--glass-border)] hover:bg-white/10 transition text-xs md:text-base font-medium">❮ Sebelumnya</button>
+                    <button id="btn-next" onclick="kuis.next()" class="primary-btn px-5 py-2 md:px-8 md:py-3 rounded-full text-xs md:text-base">Selanjutnya ❯</button>
+                </div>
+            </div>
+
+            <div id="result-area" class="glass-panel p-6 md:p-10 hidden text-center w-full">
+                <i class="fas fa-award text-5xl md:text-6xl text-[var(--primary)] mb-4 md:mb-6 pulse-slow"></i>
+                <h2 class="text-2xl md:text-4xl font-bold mb-2">Latihan Selesai!</h2>
+                <p class="text-[var(--text-muted)] mb-6 md:mb-8 text-xs md:text-base">Waktu pengerjaanmu telah dicatat. Ini dia hasilnya!</p>
+                
+                <div class="inline-block p-6 md:p-8 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-3xl mb-8 md:mb-10 shadow-[0_0_20px_rgba(0,0,0,0.3)] w-48 md:w-64">
+                    <p class="text-[10px] md:text-sm uppercase tracking-widest font-bold mb-2 text-[var(--text-muted)]">Skor Akhir</p>
+                    <p id="score-text" class="text-5xl md:text-8xl font-black text-[var(--primary)] drop-shadow-md">0</p>
+                </div>
+
+                <h3 class="text-base md:text-xl font-bold mb-4 md:mb-6 text-left border-b border-[var(--glass-border)] pb-2 md:pb-3"><i class="fas fa-clipboard-check mr-2 text-[var(--primary)]"></i> Evaluasi Belajarmu</h3>
+                <div id="eval-container" class="space-y-4 text-left mb-8 md:mb-10 w-full"></div>
+
+                <div class="flex flex-col md:flex-row gap-4 justify-center">
+                    <button onclick="gate.backToPaket()" class="px-6 py-2 md:px-8 md:py-3 rounded-full border border-[var(--glass-border)] hover:bg-white/10 transition font-bold">Pilih Paket Lain</button>
+                    <a href="index.html" class="primary-btn px-6 py-2 md:px-8 md:py-3 rounded-full text-sm md:text-lg font-bold shadow-lg">Kembali ke Beranda</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER COPYRIGHT -->
+    <footer class="mt-auto py-6 text-center text-[10px] md:text-xs text-[var(--text-muted)] w-full border-t border-[var(--glass-border)] bg-[var(--bg-top)]/30 backdrop-blur-sm z-10 relative">
+        <p class="mb-1">Website dibuat khusus sebagai media latihan TKA oleh Fahilan.</p>
+        <p class="font-semibold text-gray-400">&copy; 2026 Mugeb Primary School (SD Muhammadiyah 1 GKB)</p>
+    </footer>
+
+    <!-- MODAL PENGATURAN -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-11/12 max-w-xs md:max-w-sm p-5 md:p-6 transform scale-95 transition-transform duration-300" id="settings-content">
+            <div class="flex justify-between items-center mb-4 md:mb-6 border-b border-white/10 pb-2 md:pb-3">
+                <h3 class="text-lg md:text-xl font-bold"><i class="fas fa-sliders-h mr-2"></i> Pengaturan</h3>
+                <button onclick="ui.toggleSettings()" class="text-gray-400 hover:text-white"><i class="fas fa-times text-lg md:text-xl"></i></button>
+            </div>
+            <div class="space-y-4 md:space-y-5">
+                <div class="flex justify-between items-center"><span class="font-medium text-xs md:text-sm"><i class="fas fa-music mr-2 w-4 md:w-5"></i> Suara & Musik</span><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="toggle-music" class="sr-only peer" onchange="settings.toggleMusic()"><div class="w-9 h-5 md:w-11 md:h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div></label></div>
+                <div class="flex justify-between items-center"><span class="font-medium text-xs md:text-sm"><i class="fas fa-volume-up mr-2 w-4 md:w-5"></i> Volume</span><input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" class="w-20 md:w-24 accent-[var(--primary)] cursor-pointer" onchange="settings.changeVolume(this.value)"></div>
+                <div class="flex justify-between items-center"><span class="font-medium text-xs md:text-sm"><i class="fas fa-magic mr-2 w-4 md:w-5"></i> Animasi</span><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="toggle-particles" class="sr-only peer" checked onchange="settings.toggleParticles()"><div class="w-9 h-5 md:w-11 md:h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div></label></div>
+                <div class="flex justify-between items-center"><span class="font-medium text-xs md:text-sm"><i class="fas fa-expand mr-2 w-4 md:w-5"></i> Fullscreen</span><button onclick="settings.toggleFullscreen()" class="px-2 py-1 md:px-3 md:py-1 bg-white/10 rounded-md text-[10px] md:text-xs hover:bg-[var(--primary)] hover:text-black transition">Beralih</button></div>
+            </div>
+            <button onclick="ui.toggleSettings()" class="primary-btn w-full mt-5 md:mt-6 py-2 rounded-lg font-bold text-sm md:text-base">Simpan</button>
+        </div>
+    </div>
+    
+    <div id="alert-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="glass-panel w-11/12 max-w-xs md:max-w-sm p-6 md:p-8 text-center transform scale-95 transition-transform duration-300" id="alert-content">
+            <div id="alert-icon" class="text-3xl md:text-4xl mb-3 md:mb-4 text-[var(--primary)]"></div>
+            <h3 id="alert-title" class="text-lg md:text-xl font-bold mb-2"></h3>
+            <p id="alert-msg" class="text-[var(--text-muted)] mb-5 md:mb-6 text-xs md:text-sm"></p>
+            <button onclick="ui.closeAlert()" class="primary-btn px-5 md:px-6 py-2 rounded-full font-bold text-sm md:text-base">Mengerti</button>
+        </div>
+    </div>
+
+    <script>
+        const currentTheme = localStorage.getItem('savedTheme') || 'galaxy';
+        document.body.className = `theme-${currentTheme}`;
+
+        // ENGINE ANIMASI
+        const bgEngine = {
+            canvas: document.getElementById('bg-canvas'), ctx: null, particles: [],
+            init() { this.ctx = this.canvas.getContext('2d'); this.resize(); window.addEventListener('resize', () => this.resize()); this.initParticles(); this.animate(); },
+            resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; this.initParticles(); },
+            initParticles() {
+                this.particles = []; const w = this.canvas.width, h = this.canvas.height, theme = currentTheme;
+                if (theme === 'galaxy') {
+                    for (let i = 0; i < 150; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.5 + 0.5, alpha: Math.random(), alphaChange: (Math.random()*0.02)-0.01, type: 'star' });
+                    for (let i = 0; i < 4; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, length: Math.random()*100+50, speedX: (Math.random()*3+2)*(Math.random()>0.5?1:-1), speedY: Math.random()*3+2, type: 'comet' });
+                } else if (theme === 'sky') {
+                    for (let i = 0; i < 40; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*4+2, speedX: Math.random()*2-1, speedY: Math.random()*1.5+0.5, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'petal' });
+                    for (let i = 0; i < 15; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*8+4, speedX: Math.random()*2-1, speedY: Math.random()*2+1, angle: Math.random()*360, spin: Math.random()*0.1-0.05, type: 'leaf', color: Math.random() > 0.5 ? 'rgba(144, 238, 144, 0.7)' : 'rgba(255, 215, 0, 0.7)' });
+                } else if (theme === 'ocean') {
+                    for (let i = 0; i < 80; i++) this.particles.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*3+1, speedX: Math.random()*0.5-0.25, speedY: -(Math.random()*2+0.5), type: 'bubble' });
+                }
+            },
+            animate() {
+                if(!document.getElementById('toggle-particles') || document.getElementById('toggle-particles').checked) {
+                    const w = this.canvas.width, h = this.canvas.height; this.ctx.clearRect(0, 0, w, h);
+                    for(let i = 0; i < this.particles.length; i++) {
+                        let p = this.particles[i];
+                        if(p.type === 'star') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; this.ctx.shadowBlur = 10; this.ctx.shadowColor = 'rgba(0, 243, 255, 0.9)'; this.ctx.fill(); this.ctx.shadowBlur = 0; p.alpha += p.alphaChange; if(p.alpha <= 0 || p.alpha >= 1) p.alphaChange *= -1; } 
+                        else if(p.type === 'comet') { this.ctx.beginPath(); this.ctx.moveTo(p.x, p.y); this.ctx.lineTo(p.x - (p.speedX * (p.length/10)), p.y - (p.speedY * (p.length/10))); this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.9)'; this.ctx.lineWidth = 3; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.x < 0 || p.x > w || p.y > h || p.y < 0) { p.x = Math.random() * w; p.y = -20; } }
+                        else if(p.type === 'petal' || p.type === 'leaf') { this.ctx.save(); this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle); this.ctx.beginPath(); if(p.type === 'petal') { this.ctx.ellipse(0, 0, p.r, p.r/1.5, 0, 0, Math.PI * 2); this.ctx.fillStyle = 'rgba(255, 183, 197, 0.8)'; } else { this.ctx.ellipse(0, 0, p.r, p.r/2, 0, 0, Math.PI * 2); this.ctx.fillStyle = p.color; } this.ctx.fill(); this.ctx.restore(); p.x += p.speedX; p.y += p.speedY; p.angle += p.spin; if(p.y > h + 20) { p.y = -20; p.x = Math.random() * w; } }
+                        else if(p.type === 'bubble') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.y < -20) { p.y = h + 20; p.x = Math.random() * w; } }
+                    }
+                }
+                requestAnimationFrame(() => this.animate());
+            }
+        };
+        bgEngine.init();
+
+        const audioSys = {
+            bgm: new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3'),
+            isSetup: false,
+            setup() { if(this.isSetup) return; this.bgm.loop = true; this.bgm.volume = document.getElementById('volume-slider').value; this.isSetup = true; },
+            playMusic() { if(!document.getElementById('toggle-music').checked) return this.pauseMusic(); this.setup(); this.bgm.play().catch(e => console.log("Audio diblokir")); },
+            pauseMusic() { if(this.isSetup) this.bgm.pause(); },
+            setVolume(val) { if(this.isSetup) this.bgm.volume = val; },
+            playSFX() { 
+                if(!document.getElementById('toggle-music').checked) return; 
+                try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.type = 'sine'; osc.frequency.setValueAtTime(800, ctx.currentTime); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {}
+            }
+        };
+
+        const ui = {
+            showModal(id, contentId) { const m = document.getElementById(id), c = document.getElementById(contentId); m.classList.remove('hidden', 'opacity-0'); c.classList.remove('scale-95'); c.classList.add('scale-100'); },
+            hideModal(id, contentId) { const m = document.getElementById(id), c = document.getElementById(contentId); m.classList.add('opacity-0'); c.classList.remove('scale-100'); c.classList.add('scale-95'); setTimeout(() => m.classList.add('hidden'), 300); },
+            toggleSettings() { const m = document.getElementById('settings-modal'); if(m.classList.contains('hidden')) this.showModal('settings-modal', 'settings-content'); else this.hideModal('settings-modal', 'settings-content'); },
+            showAlert(title, msg, iconClass = 'fas fa-exclamation-circle') { document.getElementById('alert-title').innerText = title; document.getElementById('alert-msg').innerText = msg; document.getElementById('alert-icon').className = `text-3xl md:text-4xl mb-4 ${iconClass} text-[var(--primary)]`; this.showModal('alert-modal', 'alert-content'); },
+            closeAlert() { this.hideModal('alert-modal', 'alert-content'); }
+        };
+
+        const settings = {
+            toggleMusic() { if(document.getElementById('toggle-music').checked) audioSys.playMusic(); else audioSys.pauseMusic(); },
+            changeVolume(val) { audioSys.setVolume(val); },
+            toggleParticles() { if(!document.getElementById('toggle-particles').checked) bgEngine.ctx.clearRect(0, 0, bgEngine.canvas.width, bgEngine.canvas.height); },
+            toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(e=>console.log(e)); else if (document.exitFullscreen) document.exitFullscreen(); }
+        };
+
+        // KUMPULAN DATA PAKET SOAL MENGUBAH BENTUK PECAHAN
+        const dataPaket1 = [
+            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar denah taman sekolah berbentuk persegi panjang. Pada denah tersebut terdapat keterangan: $\\frac{1}{4}$ bagian ditanami bunga mawar, 0,5 bagian ditanami bunga melati, dan sisanya ditanami rumput hias).\nSiswa kelas 6 mendapat tugas untuk menghitung area taman sekolah. Berdasarkan gambar denah di atas, persentase luas taman yang ditanami bunga mawar adalah...", opsi: { A: "15%", B: "25%", C: "40%", D: "50%" }, jawaban_benar: ["B"] },
+            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Budi sedang membaca sebuah buku petualangan. Pada hari pertama, ia membaca 0,2 bagian dari total halaman. Pada hari kedua, ia membaca $\\frac{1}{5}$ bagian, dan pada hari ketiga ia membaca 30% dari total halaman. Berapa persentase sisa halaman buku yang belum dibaca oleh Budi?", opsi: { A: "20%", B: "25%", C: "30%", D: "40%" }, jawaban_benar: ["C"] },
+            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar 4 botol sirup berjejer: Botol A terisi $\\frac{1}{2}$ bagian, Botol B terisi 0,75 bagian, Botol C terisi 40% bagian, dan Botol D terisi $\\frac{3}{5}$ bagian).\nIbu meminta tolong kepada Siska untuk mengambil botol sirup di dapur. Ibu berpesan agar Siska mengambil botol yang isinya tepat 60% dari kapasitas penuhnya. Berdasarkan gambar, botol manakah yang harus diambil oleh Siska?", opsi: { A: "Botol A", B: "Botol B", C: "Botol C", D: "Botol D" }, jawaban_benar: ["D"] },
+            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Di dalam kelas 5 yang berjumlah 40 siswa, dilakukan survei mata pelajaran favorit. Hasil survei menunjukkan bahwa 10 siswa sangat menyukai pelajaran Matematika. Jika disajikan dalam bentuk desimal, berapakah nilai yang mewakili bagian siswa yang menyukai pelajaran Matematika tersebut?", opsi: { A: "0,10", B: "0,25", C: "0,40", D: "0,50" }, jawaban_benar: ["B"] },
+            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar sebuah poster promosi di depan toko pakaian dengan rincian diskon: Kemeja = diskon $\\frac{1}{2}$ harga, Celana Jeans = diskon 30%, Topi = diskon 0,15, dan Sepatu = diskon $\\frac{1}{4}$).\nToko \"Gaya Kita\" sedang mengadakan cuci gudang besar-besaran. Andi memiliki kupon potongan khusus, namun kupon tersebut hanya berlaku untuk barang yang memiliki diskon persis 25%. Barang manakah yang bisa dibeli Andi menggunakan kupon tersebut?", opsi: { A: "Kemeja", B: "Celana Jeans", C: "Topi", D: "Sepatu" }, jawaban_benar: ["D"] },
+            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Dalam sebuah resep pembuatan kue bolu, tertulis bahwa takaran gula pasir yang dibutuhkan adalah $\\frac{3}{4}$ gelas takar. Nilai pecahan ini jika diubah ke dalam bentuk persentase sama dengan 75%.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "(Gambar sebuah loyang pizza bulat yang telah dipotong menjadi 8 bagian sama besar. Terdapat 3 potong pizza yang sudah diambil ke piring).\nPecahan yang mewakili potongan pizza yang sudah diambil di piring jika dinyatakan dalam bentuk bilangan desimal adalah 0,375.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Ani diajarkan untuk gemar menabung sejak dini. Ia selalu menyisihkan 0,4 bagian dari uang saku mingguannya ke dalam celengan. Ini berarti Ani menabung sebesar $\\frac{1}{4}$ dari total uang sakunya.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar keranjang berisi berbagai macam buah buahan: Terdapat label keterangan berisi 50 buah apel, 30 buah jeruk, dan 20 buah mangga).\nPak RT membagikan bingkisan buah untuk lomba warga. Pilihlah pernyataan yang tepat mengenai proporsi buah dalam keranjang tersebut!", opsi: { A: "Buah jeruk mewakili $\\frac{3}{10}$ bagian dari keseluruhan buah.", B: "Buah apel mewakili 0,05 bagian dari keseluruhan buah.", C: "Buah mangga mewakili 20% dari keseluruhan buah.", D: "Gabungan buah jeruk dan buah mangga adalah $\\frac{1}{2}$ bagian dari keseluruhan buah." }, jawaban_benar: ["A", "C", "D"] },
+            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Toni adalah seorang anggota pramuka. Ia memiliki seutas tali temali yang panjangnya 10 meter untuk mendirikan tenda. Pada saat perlombaan, Toni menggunakan 2,5 meter dari tali tersebut. Pilihlah pernyataan yang benar di bawah ini!", opsi: { A: "Tali yang digunakan oleh Toni adalah 25% dari panjang keseluruhan.", B: "Sisa tali yang belum digunakan oleh Toni adalah $\\frac{3}{4}$ bagian dari panjang keseluruhan.", C: "Tali yang digunakan oleh Toni jika dijadikan pecahan menjadi $\\frac{1}{5}$ bagian.", D: "Sisa tali yang belum digunakan oleh Toni dalam bentuk desimal adalah 0,25." }, jawaban_benar: ["A", "B"] },
+            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar ilustrasi 3 orang pelari di lintasan lari estafet dengan keterangan jarak yang telah ditempuh: Pelari X menyelesaikan $\\frac{4}{5}$ lintasan, Pelari Y menyelesaikan 85% lintasan, dan Pelari Z menyelesaikan 0,9 lintasan).\nKetiga pelari sedang bersaing ketat menuju garis akhir. Pilihlah pernyataan yang menggambarkan situasi balapan dengan tepat!", opsi: { A: "Pelari X baru menyelesaikan 80% dari total lintasannya.", B: "Pelari Z saat ini berada di posisi terdepan memimpin balapan.", C: "Pelari Y berlari menempuh jarak yang lebih pendek dari Pelari X.", D: "Sisa lintasan yang harus ditempuh oleh Pelari Z hingga garis akhir adalah $\\frac{1}{10}$ bagian." }, jawaban_benar: ["A", "B", "D"] }
+        ];
+
+        const dataPaket2 = [
+            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar papan skor target pada permainan panahan: Papan target menunjukkan Andi berhasil mengenai sasaran sebanyak $\\frac{7}{10}$ bagian dari total anak panahnya).\nDalam lomba panahan tingkat desa, Andi mencatatkan skor yang cukup baik. Berdasarkan gambar papan skor tersebut, berapa persentase keberhasilan tembakan Andi?", opsi: { A: "7%", B: "17%", C: "70%", D: "77%" }, jawaban_benar: ["C"] },
+            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Siska senang merangkai perhiasan. Ia memiliki 1 kotak penuh manik-manik. Ia menggunakan 45% manik-manik tersebut untuk membuat sebuah kalung dan 0,2 bagian untuk membuat gelang. Berapakah sisa manik-manik Siska jika dinyatakan dalam bentuk pecahan biasa?", opsi: { A: "$\\frac{3}{20}$", B: "$\\frac{7}{20}$", C: "$\\frac{11}{20}$", D: "$\\frac{13}{20}$" }, jawaban_benar: ["B"] },
+            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar 4 wadah penyimpanan beras di dapur: Wadah P berisi 0,8 kg, Wadah Q berisi $\\frac{3}{4}$ kg, Wadah R terisi 75% dari 1 kg, dan Wadah S berisi $\\frac{4}{5}$ kg).\nIbu meminta Dika memeriksa stok beras. Ibu mengatakan ada dua wadah yang isi berasnya sama persis beratnya jika ditimbang. Pasangan wadah manakah yang dimaksud oleh Ibu?", opsi: { A: "Wadah P dan Wadah Q", B: "Wadah Q dan Wadah R", C: "Wadah P dan Wadah S", D: "Wadah R dan Wadah S" }, jawaban_benar: ["D"] },
+            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Menjelang akhir tahun, sebuah toko sepatu memasang spanduk besar bertuliskan \"Diskon Setengah Harga Untuk Semua Barang!\". Apabila diskon \"setengah harga\" tersebut diubah menjadi bentuk desimal, berapakah nilainya?", opsi: { A: "0,05", B: "0,20", C: "0,50", D: "0,75" }, jawaban_benar: ["C"] },
+            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar indikator baterai pada layar sebuah telepon pintar (smartphone) yang menunjukkan kapasitas daya tersisa adalah 15%).\nDina sedang menonton video edukasi dan mendapat peringatan bahwa baterai ponselnya akan segera habis. Bentuk pecahan paling sederhana dari sisa baterai ponsel Dina pada layar tersebut adalah...", opsi: { A: "$\\frac{1}{15}$", B: "$\\frac{3}{20}$", C: "$\\frac{1}{5}$", D: "$\\frac{3}{10}$" }, jawaban_benar: ["B"] },
+            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Pak Guru menggambar pecahan $\\frac{2}{5}$ di papan tulis. Jika bilangan tersebut dikonversi ke dalam bentuk desimal, nilainya adalah 0,40.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "(Gambar selembar kertas persegi panjang yang dibagi menjadi 5 kolom vertikal yang sama besar. Sebanyak 4 kolom telah diarsir dengan warna biru, dan 1 kolom dibiarkan putih kosong).\nBagian kertas yang dibiarkan putih kosong tanpa arsiran tersebut mewakili 20% dari total luas kertas.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Doni harus mengerjakan tugas PR Matematika sebanyak 20 soal. Jika ia telah menyelesaikan 0,65 bagian dari tugasnya, itu berarti PR yang belum diselesaikan Doni tersisa $\\frac{3}{10}$ bagian.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar label informasi nilai gizi (nutrition facts) pada sebungkus roti tawar: Komposisi Karbohidrat 60%, Protein $\\frac{1}{5}$ bagian, Lemak 0,15 bagian, dan Zat lain-lain sebagai pelengkap sisanya).\nDari label informasi gizi tersebut, manakah pernyataan di bawah ini yang perhitungannya paling akurat?", opsi: { A: "Kandungan protein pada roti tersebut adalah 15%.", B: "Kandungan lemak jika diubah ke dalam bentuk pecahan menjadi $\\frac{3}{20}$.", C: "Zat lain-lain mengambil porsi 10% dari total keseluruhan kandungan.", D: "Kandungan karbohidrat apabila dinyatakan dalam bilangan desimal adalah 0,6." }, jawaban_benar: ["B", "D"] },
+            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Di sebuah tempat parkir sekolah, 0,4 dari keseluruhan kendaraan yang terparkir adalah sepeda motor, $\\frac{1}{2}$ bagian adalah mobil, dan sisanya merupakan sepeda ontel milik siswa. Pernyataan yang tepat dari situasi parkiran ini adalah...", opsi: { A: "Sepeda motor mengambil porsi 40% dari total kendaraan di tempat parkir.", B: "Jumlah mobil yang terparkir mewakili nilai 0,05 dari keseluruhan kendaraan.", C: "Sepeda ontel milik siswa mencakup porsi 10% dari total kendaraan.", D: "Jika diubah menjadi pecahan, kendaraan jenis sepeda ontel mewakili $\\frac{1}{10}$ bagian." }, jawaban_benar: ["A", "C", "D"] },
+            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar 3 potongan pita hias yang dibentangkan lurus: Pita Merah sepanjang 1,2 meter, Pita Kuning sepanjang 1 $\\frac{1}{4}$ meter, dan Pita Hijau sepanjang 130% dari 1 meter).\nKakak sedang mempersiapkan hiasan kado ulang tahun menggunakan ketiga pita tersebut. Pilihlah pernyataan yang mendeskripsikan perbandingan panjang pita dengan benar!", opsi: { A: "Panjang Pita Merah jika dijadikan pecahan campuran adalah 1 $\\frac{1}{5}$ meter.", B: "Panjang Pita Kuning jika diubah menjadi bentuk desimal adalah 1,25 meter.", C: "Pita Hijau adalah potongan pita yang memiliki ukuran paling panjang di antara ketiganya.", D: "Pita Merah memiliki panjang yang sama persis dengan Pita Kuning." }, jawaban_benar: ["A", "B", "C"] }
+        ];
+
+        const dataPaket3 = [
+            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar struk tagihan listrik rumah tangga: Di bagian bawah struk terdapat keterangan bahwa $\\frac{3}{10}$ dari total keseluruhan biaya adalah beban pajak negara).\nBapak sedang menghitung pengeluaran bulanan. Ia melihat keterangan pajak pada struk listrik tersebut. Berapa persentase potongan pajak dari total tagihan listrik bapak?", opsi: { A: "3%", B: "13%", C: "30%", D: "33%" }, jawaban_benar: ["C"] },
+            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Mira membeli pita kain di toko alat jahit sepanjang 2,75 meter untuk membuat kerajinan tangan. Sesampainya di rumah, adik meminta pita tersebut sepanjang 1 $\\frac{1}{2}$ meter. Berapakah sisa pita Mira sekarang jika disajikan dalam bentuk pecahan meter?", opsi: { A: "$\\frac{3}{4}$", B: "$\\frac{5}{4}$", C: "$\\frac{7}{4}$", D: "$\\frac{9}{4}$" }, jawaban_benar: ["B"] },
+            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar grafik batang yang menunjukkan data hobi dari 100 siswa kelas 5 SD: Siswa yang hobi Olahraga mencapai 45 anak, hobi Musik mencapai 15 anak, dan hobi Membaca mencapai 40 anak).\nSekolah ingin memberikan penghargaan kepada kelompok baca perpustakaan. Dari grafik di atas, berapakah pecahan yang mewakili bagian siswa yang memiliki hobi Membaca?", opsi: { A: "$\\frac{1}{4}$", B: "$\\frac{3}{10}$", C: "$\\frac{7}{20}$", D: "$\\frac{2}{5}$" }, jawaban_benar: ["D"] },
+            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Sebuah toko buku daring (online) mengadakan promosi kilat \"Flash Sale\" dengan memberikan potongan harga atau diskon sebesar 80%. Bentuk pecahan paling sederhana yang setara dengan potongan harga toko buku tersebut adalah...", opsi: { A: "$\\frac{8}{10}$", B: "$\\frac{4}{5}$", C: "$\\frac{3}{4}$", D: "$\\frac{2}{5}$" }, jawaban_benar: ["B"] },
+            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar sebuah gelas ukur praktikum kimia di laboratorium yang terisi cairan berwarna biru. Angka pada skala gelas ukur tersebut menunjukkan volume tepat di angka 0,75 liter).\nSaat melakukan percobaan campuran, siswa ditugaskan mengubah takaran desimal menjadi persentase. Volume cairan 0,75 liter tersebut sama nilainya dengan persentase...", opsi: { A: "7,5%", B: "70,5%", C: "75%", D: "750%" }, jawaban_benar: ["C"] },
+            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Caca memotong pita sepanjang $\\frac{1}{8}$ meter. Nilai pecahan ini jika diubah ke dalam bentuk persentase adalah ekuivalen dengan 12,5%.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "(Gambar sebuah timbangan buah digital. Di atasnya diletakkan sebuah semangka utuh yang beratnya tertera secara pecahan sebesar 2 $\\frac{3}{4}$ kilogram).\nJika pembacaan timbangan digital tersebut menggunakan format desimal, maka angka yang akan muncul di layar adalah 2,34 kg.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Dalam pemeriksaan kualitas, ditemukan bagian cacat produksi sebesar 0,02 bagian dari total produk. Angka desimal ini sama artinya dengan 2%.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar poster perbandingan potongan harga pada 3 toko yang berbeda untuk satu jenis tas sekolah yang sama: Toko Maju diskon 0,25 bagian harga, Toko Jaya diskon 30%, dan Toko Makmur diskon $\\frac{1}{5}$ bagian harga).\nIbu ingin membelikan tas baru untuk adik dan membandingkan ketiganya agar mendapat harga termurah. Manakah pernyataan yang tepat dari perbandingan diskon tersebut?", opsi: { A: "Toko Maju memberikan potongan harga senilai 25%.", B: "Toko Makmur memberikan potongan harga senilai 25%.", C: "Toko Jaya menawarkan diskon yang senilai dengan pecahan $\\frac{3}{10}$.", D: "Toko Maju dan Toko Makmur memberikan penawaran diskon yang sama besar." }, jawaban_benar: ["A", "C"] },
+            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Seorang petani mengelola sebidang lahan pertanian yang sangat luas. Berdasarkan data sertifikat, 0,35 bagian dari lahan tersebut ditanami jagung, $\\frac{2}{5}$ bagian ditanami kedelai, dan sisa tanah yang ada digunakan untuk menanam singkong. Pilihlah pernyataan yang akurat berdasarkan rincian lahan ini!", opsi: { A: "Lahan yang digunakan untuk menanam kedelai adalah 40% dari keseluruhan tanah.", B: "Lahan jagung jika dinyatakan dalam bentuk pecahan paling sederhana menjadi $\\frac{7}{20}$ bagian.", C: "Singkong mengambil area sebesar 0,25 bagian dari total luas tanah petani tersebut.", D: "Tanaman yang mengambil porsi lahan paling luas di pertanian tersebut adalah jagung." }, jawaban_benar: ["A", "B", "C"] },
+            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar infografis laporan kehadiran sekolah selama satu semester dari 3 orang siswa: Persentase kehadiran Ali adalah 95%, kehadiran Budi adalah 0,9, dan kehadiran Citra adalah $\\frac{19}{20}$ bagian).\nWali kelas sedang mengevaluasi rapor murid-muridnya berdasarkan infografis tersebut. Pilihlah pernyataan yang merupakan kesimpulan tepat!", opsi: { A: "Ali dan Citra memiliki catatan tingkat kehadiran sekolah yang sama persis persentasenya.", B: "Tingkat kehadiran Budi jika dikonversi menjadi pecahan biasa adalah $\\frac{9}{10}$ bagian.", C: "Tingkat kehadiran Citra bila disajikan dalam bentuk desimal akan menjadi 0,85.", D: "Budi adalah siswa dengan tingkat kehadiran sekolah paling tinggi di antara mereka bertiga." }, jawaban_benar: ["A", "B"] }
+        ];
+
+        // SISTEM NAVIGASI GATE
+        const gate = {
+            checkCode() {
+                const input = document.getElementById('access-code').value.toLowerCase().trim(); audioSys.playSFX();
+                if(input === 'sdmugeb') { document.getElementById('view-access').classList.add('hidden'); document.getElementById('view-paket').classList.remove('hidden'); } 
+                else { ui.showAlert("Akses Ditolak", "Kode yang kamu masukkan salah. Silakan coba lagi.", "fas fa-lock"); }
+            },
+            startPaket(paketNum) {
+                audioSys.playSFX();
+                document.getElementById('view-paket').classList.add('hidden');
+                document.getElementById('view-quiz').classList.remove('hidden'); document.getElementById('view-quiz').classList.add('flex');
+                document.getElementById('paket-label').innerText = `- Paket ${paketNum}`;
+                
+                if(paketNum === 1) kuis.dataSoal = dataPaket1;
+                else if(paketNum === 2) kuis.dataSoal = dataPaket2;
+                else if(paketNum === 3) kuis.dataSoal = dataPaket3;
+                kuis.init();
+            },
+            backToPaket() {
+                audioSys.playSFX();
+                document.getElementById('view-quiz').classList.add('hidden'); document.getElementById('view-quiz').classList.remove('flex');
+                document.getElementById('result-area').classList.add('hidden');
+                document.getElementById('quiz-header').classList.remove('hidden'); document.getElementById('quiz-area').classList.remove('hidden');
+                document.getElementById('view-paket').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+
+        // ENGINE KUIS (DENGAN TAMPILAN JAWABAN LENGKAP & MATHJAX)
+        const kuis = {
+            dataSoal: [], idx: 0, jawabanSiswa: {}, waktuSisa: 600, timerId: null,
+
+            init() { 
+                this.idx = 0; this.jawabanSiswa = {}; this.waktuSisa = 600; clearInterval(this.timerId);
+                this.renderNavBoxes(); this.loadSoal(); this.startTimer(); 
+            },
+
+            startTimer() {
+                this.timerId = setInterval(() => {
+                    this.waktuSisa--;
+                    let m = Math.floor(this.waktuSisa / 60).toString().padStart(2, '0'); let s = (this.waktuSisa % 60).toString().padStart(2, '0');
+                    document.getElementById('timer-display').innerText = `${m}:${s}`;
+                    if (this.waktuSisa <= 0) { clearInterval(this.timerId); alert("Waktu habis! Kuis otomatis dikumpulkan."); this.submit(); }
+                }, 1000);
+            },
+
+            renderNavBoxes() {
+                const grid = document.getElementById('nav-grid'); grid.innerHTML = '';
+                this.dataSoal.forEach((s, i) => {
+                    const box = document.createElement('div');
+                    box.className = `nav-box w-7 h-7 md:w-10 md:h-10 flex items-center justify-center rounded-lg text-xs md:text-sm`; box.innerText = i + 1;
+                    if (this.jawabanSiswa[s.id] && this.jawabanSiswa[s.id].length > 0) box.classList.add('answered');
+                    if (i === this.idx) box.classList.add('active');
+                    box.onclick = () => { audioSys.playSFX(); this.idx = i; this.loadSoal(); };
+                    grid.appendChild(box);
+                });
+            },
+
+            loadSoal() {
+                const soal = this.dataSoal[this.idx];
+                document.getElementById('tipe-soal').innerText = soal.jenis_soal;
+                document.getElementById('nomor-soal-header').innerText = `Soal nomor ${(this.idx + 1).toString().padStart(2, '0')}`;
+                document.getElementById('teks-soal').innerText = soal.pertanyaan;
+
+                const isSingle = (soal.jenis_soal === "Pilihan Ganda" || soal.jenis_soal === "Benar atau Salah");
+                const inputType = isSingle ? 'radio' : 'checkbox';
+                const opsiContainer = document.getElementById('opsi-container'); opsiContainer.innerHTML = '';
+
+                for (const [key, value] of Object.entries(soal.opsi)) {
+                    const isChecked = this.jawabanSiswa[soal.id] && this.jawabanSiswa[soal.id].includes(key) ? 'checked' : '';
+                    const label = document.createElement('label');
+                    label.className = "flex items-start p-3 md:p-4 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl cursor-pointer hover:border-[var(--primary)] transition";
+                    label.innerHTML = `
+                        <input type="${inputType}" name="soal_${soal.id}" value="${key}" ${isChecked} onchange="kuis.saveAnswer(${soal.id}, '${key}', this.checked, ${isSingle})">
+                        <span class="text-xs md:text-base font-normal mt-[2px] leading-relaxed">${key}. ${value}</span>
+                    `;
+                    opsiContainer.appendChild(label);
+                }
+
+                document.getElementById('btn-prev').style.visibility = this.idx === 0 ? 'hidden' : 'visible';
+                const btnNext = document.getElementById('btn-next');
+                
+                if (this.idx === this.dataSoal.length - 1) {
+                    btnNext.innerText = "Kumpulkan ✓";
+                    btnNext.className = "px-5 py-2 md:px-8 md:py-3 rounded-full font-bold bg-green-500 hover:bg-green-600 text-white transition text-xs md:text-base";
+                    btnNext.onclick = () => { audioSys.playSFX(); this.confirmSubmit(); };
+                } else {
+                    btnNext.innerText = "Selanjutnya ❯";
+                    btnNext.className = "primary-btn px-5 py-2 md:px-8 md:py-3 rounded-full text-xs md:text-base";
+                    btnNext.onclick = () => { audioSys.playSFX(); this.next(); };
+                }
+                
+                this.renderNavBoxes(); window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                
+                // Minta MathJax untuk merender ulang equation (pecahan) yang baru dimuat ke DOM
+                if (window.MathJax) { MathJax.typesetPromise([document.getElementById('quiz-area')]).catch((err) => console.log(err.message)); }
+            },
+
+            saveAnswer(id, key, isChecked, isSingle) {
+                if (!this.jawabanSiswa[id]) this.jawabanSiswa[id] = [];
+                if (isSingle) { this.jawabanSiswa[id] = [key]; } else { if (isChecked) this.jawabanSiswa[id].push(key); else this.jawabanSiswa[id] = this.jawabanSiswa[id].filter(k => k !== key); }
+                this.renderNavBoxes(); audioSys.playSFX();
+            },
+
+            next() { if (this.idx < this.dataSoal.length - 1) { this.idx++; this.loadSoal(); } },
+            prev() { if (this.idx > 0) { this.idx--; this.loadSoal(); } },
+
+            confirmSubmit() {
+                let belum = this.dataSoal.filter(s => !this.jawabanSiswa[s.id] || this.jawabanSiswa[s.id].length === 0).length;
+                if(belum > 0) { if(confirm(`Masih ada ${belum} soal yang kosong. Yakin kumpulkan sekarang?`)) this.submit(); } else this.submit();
+            },
+
+            submit() {
+                clearInterval(this.timerId);
+                document.getElementById('quiz-header').classList.add('hidden'); document.getElementById('quiz-area').classList.add('hidden');
+                
+                let totalBenar = 0; let pesanEvaluasi = "";
+                this.dataSoal.forEach((soal, i) => {
+                    const ansSiswaArr = this.jawabanSiswa[soal.id] || [];
+                    const ansSiswa = [...ansSiswaArr].sort().join('');
+                    const ansKunci = [...soal.jawaban_benar].sort().join('');
+                    
+                    if (ansSiswa === ansKunci && ansSiswa !== "") { totalBenar++; } 
+                    else {
+                        // Merakit List Opsi Jawaban untuk Tampilan Evaluasi
+                        let listOpsiHTML = `<div class="mt-3 space-y-2 text-left bg-black/20 p-4 rounded-xl border border-white/5 shadow-inner">`;
+                        for (const [key, value] of Object.entries(soal.opsi)) {
+                            let isKunci = soal.jawaban_benar.includes(key);
+                            let isChosen = ansSiswaArr.includes(key);
+                            let icon = isKunci ? '<i class="fas fa-check-circle text-green-400 mr-2 text-sm md:text-base"></i>' 
+                                               : (isChosen ? '<i class="fas fa-times-circle text-red-400 mr-2 text-sm md:text-base"></i>' 
+                                                           : '<i class="far fa-circle text-gray-500 mr-2 text-sm md:text-base"></i>');
+                            let textColor = isKunci ? 'text-green-300 font-bold' 
+                                                    : (isChosen ? 'text-red-300 font-medium' : 'text-gray-400');
+                            
+                            listOpsiHTML += `<div class="text-xs md:text-sm ${textColor} flex items-start">
+                                                <span class="mt-[2px]">${icon}</span>
+                                                <span><b>${key}.</b> ${value}</span>
+                                             </div>`;
+                        }
+                        listOpsiHTML += `</div>`;
+
+                        pesanEvaluasi += `
+                            <div class="p-4 md:p-6 border-l-4 border-[#ff4757] bg-[var(--glass-bg)] rounded-r-2xl border-t border-r border-b border-[var(--glass-border)] w-full shadow-lg">
+                                <div class="flex items-center mb-3">
+                                    <i class="fas fa-exclamation-circle text-[#ff4757] text-lg mr-2"></i>
+                                    <p class="font-bold text-[#ff4757] text-xs md:text-base">Wah, di Soal Nomor ${i + 1} masih kurang tepat. 🥺</p>
+                                </div>
+                                <p class="text-xs md:text-sm mb-4 text-gray-200 leading-relaxed">${soal.pertanyaan}</p>
+                                <p class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Pilihan Jawaban:</p>
+                                ${listOpsiHTML}
+                            </div>
+                        `;
+                    }
+                });
+
+                document.getElementById('score-text').innerText = Math.round((totalBenar / this.dataSoal.length) * 100);
+                const evalContainer = document.getElementById('eval-container');
+                if (pesanEvaluasi === "") {
+                    evalContainer.innerHTML = `<div class="p-6 border border-[#2ed573] bg-[#2ed573]/10 text-[#2ed573] font-bold rounded-2xl text-center text-sm md:text-lg shadow-[0_0_15px_rgba(46,213,115,0.2)] flex items-center justify-center gap-3"><i class="fas fa-star text-2xl"></i> Luar biasa sempurna! Seluruh jawabanmu benar!</div>`;
+                } else {
+                    evalContainer.innerHTML = `<p class="text-xs md:text-base mb-5 text-[var(--text-muted)] font-medium"><i class="fas fa-search mr-2"></i>Mari kita cek bersama opsi mana yang seharusnya kamu pilih:</p>` + `<div class="space-y-6">${pesanEvaluasi}</div>`;
+                }
+
+                document.getElementById('result-area').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); 
+
+                // Render MathJax di area hasil jika ada
+                if (window.MathJax) { MathJax.typesetPromise([document.getElementById('result-area')]).catch((err) => console.log(err.message)); }
+            }
+        };
+
+        window.addEventListener('load', () => { document.getElementById('access-code').focus(); });
+    </script>
+</body>
+</html>
