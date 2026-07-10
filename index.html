@@ -13,21 +13,23 @@
             --bg-top: #0a0a1a; --bg-bottom: #1a0b2e;
             --primary: #00f3ff; --primary-hover: #00d0ff; --secondary: #b900ff;
             --text-main: #ffffff; --text-muted: #a0a0b8;
-            --glass-bg: rgba(20, 20, 40, 0.4); --glass-border: rgba(0, 243, 255, 0.2);
+            /* Transparansi diturunkan agar lebih tembus pandang (sebelumnya 0.4) */
+            --glass-bg: rgba(20, 20, 40, 0.15); 
+            --glass-border: rgba(0, 243, 255, 0.2);
             --glow-shadow: 0 0 20px rgba(0, 243, 255, 0.5); --font-main: 'Space Grotesk', sans-serif;
         }
         body.theme-sky {
             --bg-top: #ffe5d9; --bg-bottom: #ffcad4;
             --primary: #f28482; --primary-hover: #f0716f; --secondary: #84a59d;
             --text-main: #2b2d42; --text-muted: #5c677d;
-            --glass-bg: rgba(255, 255, 255, 0.5); --glass-border: rgba(242, 132, 130, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.25); --glass-border: rgba(242, 132, 130, 0.4);
             --glow-shadow: 0 10px 25px rgba(242, 132, 130, 0.4);
         }
         body.theme-ocean {
             --bg-top: #001220; --bg-bottom: #004d7a;
             --primary: #00d4ff; --primary-hover: #00b0ff; --secondary: #00ff88;
             --text-main: #ffffff; --text-muted: #b3e5fc;
-            --glass-bg: rgba(0, 30, 60, 0.4); --glass-border: rgba(0, 212, 255, 0.3);
+            --glass-bg: rgba(0, 30, 60, 0.2); --glass-border: rgba(0, 212, 255, 0.3);
             --glow-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
         }
 
@@ -81,38 +83,22 @@
 </head>
 <body class="theme-galaxy">
 
-    <!-- HALAMAN LOADING DIPERCEPAT -->
     <div id="loading-screen" class="fixed inset-0 bg-[#0a0a1a] z-[9999] flex flex-col items-center justify-center transition-opacity duration-500">
-        <!-- Tulisan Elegan -->
         <h1 class="text-2xl md:text-4xl font-light text-transparent bg-clip-text bg-gradient-to-r from-[#00f3ff] to-[#b900ff] mb-12 tracking-[0.2em] md:tracking-[0.3em] uppercase drop-shadow-lg text-center px-4">Selamat Datang</h1>
-        
-        <!-- Animasi Loading Ring Futuristik -->
         <div class="relative w-24 h-24 mb-10">
             <div class="absolute inset-0 border-t-4 border-b-4 border-[#00f3ff] rounded-full animate-[spin_2s_linear_infinite] shadow-[0_0_15px_#00f3ff]"></div>
             <div class="absolute inset-3 border-l-4 border-r-4 border-[#b900ff] rounded-full animate-[spin_1.5s_linear_infinite_reverse] shadow-[0_0_15px_#b900ff]"></div>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <i class="fas fa-satellite text-[#00f3ff] text-2xl animate-pulse"></i>
-            </div>
+            <div class="absolute inset-0 flex items-center justify-center"><i class="fas fa-satellite text-[#00f3ff] text-2xl animate-pulse"></i></div>
         </div>
-
-        <!-- Bar Loading & Persentase Menyatu -->
         <div class="relative w-full max-w-xs md:max-w-sm px-6 mb-8">
             <div class="bg-white/10 rounded-full h-5 md:h-6 overflow-hidden shadow-[0_0_15px_rgba(0,243,255,0.2)] relative flex items-center justify-center">
-                <!-- Bar yang bergerak -->
                 <div id="loading-bar" class="bg-gradient-to-r from-[#00f3ff] to-[#b900ff] h-full absolute left-0 top-0 rounded-full w-0 transition-all duration-300"></div>
-                <!-- Angka Persentase di Tengah Bar -->
                 <p id="loading-percent" class="text-white font-mono font-bold text-xs md:text-sm z-10 drop-shadow-md">0%</p>
             </div>
         </div>
-
-        <!-- Teks Berjalan -->
-        <div class="h-8 flex items-center justify-center">
-            <p id="loading-text" class="text-gray-300 font-light text-sm md:text-base text-center transition-opacity duration-300 opacity-0 italic tracking-wide"></p>
-        </div>
+        <div class="h-8 flex items-center justify-center"><p id="loading-text" class="text-gray-300 font-light text-sm md:text-base text-center transition-opacity duration-300 opacity-0 italic tracking-wide"></p></div>
     </div>
-    <!-- AKHIR HALAMAN LOADING -->
 
-    <!-- CANVAS BACKGROUND -->
     <canvas id="bg-canvas"></canvas>
 
     <!-- TOMBOL PENGATURAN -->
@@ -123,12 +109,10 @@
     </div>
 
     <div class="main-wrapper container mx-auto px-4 py-8 md:py-12">
-        
         <!-- SECTION: LANDING PAGE -->
         <section id="view-landing" class="view-section flex flex-col items-center justify-center max-w-3xl mx-auto w-full text-center">
             <div class="glass-panel p-6 md:p-12 w-full mt-6 float-anim">
                 <div class="mb-8">
-                    <!-- Ikon Utama Modern -->
                     <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] p-1 mb-6 shadow-lg shadow-[var(--primary)]/30">
                         <div class="w-full h-full bg-[var(--bg-top)] rounded-full flex items-center justify-center">
                             <i class="fas fa-laptop-code text-2xl md:text-3xl text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)]"></i>
@@ -137,9 +121,7 @@
                     <h1 class="text-2xl md:text-4xl font-bold mb-3 tracking-tight leading-tight">
                         Mugeb <span class="text-gradient">TKA</span> Learning Center
                     </h1>
-                    <p class="text-sm md:text-base text-[var(--text-muted)] font-light px-2 md:px-4">
-                        Berlatih TKA dengan pengalaman belajar yang menyenangkan.
-                    </p>
+                    <p class="text-sm md:text-base text-[var(--text-muted)] font-light px-2 md:px-4">Berlatih TKA dengan pengalaman belajar yang menyenangkan.</p>
                 </div>
 
                 <div class="mb-8 w-full max-w-sm mx-auto">
@@ -153,16 +135,13 @@
                     <p class="text-[10px] md:text-xs uppercase tracking-widest text-[var(--text-muted)] mb-4 font-semibold">Pilih Tema Perjalananmu</p>
                     <div class="grid grid-cols-3 gap-2 md:gap-4 max-w-md mx-auto">
                         <div class="theme-card glass-btn p-3 md:p-4 rounded-xl active flex flex-col items-center gap-2 group" onclick="app.setTheme('galaxy')" id="btn-theme-galaxy">
-                            <i class="fa-solid fa-atom text-xl md:text-3xl text-cyan-400 group-hover:rotate-180 transition-transform duration-700"></i>
-                            <span class="text-[10px] md:text-xs font-medium">Galaksi</span>
+                            <i class="fa-solid fa-atom text-xl md:text-3xl text-cyan-400 group-hover:rotate-180 transition-transform duration-700"></i><span class="text-[10px] md:text-xs font-medium">Galaksi</span>
                         </div>
                         <div class="theme-card glass-btn p-3 md:p-4 rounded-xl flex flex-col items-center gap-2 group" onclick="app.setTheme('sky')" id="btn-theme-sky">
-                            <i class="fa-solid fa-cloud-sun text-xl md:text-3xl text-yellow-400 group-hover:-translate-y-2 group-hover:scale-110 transition-all duration-500"></i>
-                            <span class="text-[10px] md:text-xs font-medium">Langit</span>
+                            <i class="fa-solid fa-cloud-sun text-xl md:text-3xl text-yellow-400 group-hover:-translate-y-2 group-hover:scale-110 transition-all duration-500"></i><span class="text-[10px] md:text-xs font-medium">Langit</span>
                         </div>
                         <div class="theme-card glass-btn p-3 md:p-4 rounded-xl flex flex-col items-center gap-2 group" onclick="app.setTheme('ocean')" id="btn-theme-ocean">
-                            <i class="fa-solid fa-water text-xl md:text-3xl text-blue-400 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500"></i>
-                            <span class="text-[10px] md:text-xs font-medium">Samudra</span>
+                            <i class="fa-solid fa-water text-xl md:text-3xl text-blue-400 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500"></i><span class="text-[10px] md:text-xs font-medium">Samudra</span>
                         </div>
                     </div>
                 </div>
@@ -176,13 +155,9 @@
         <!-- SECTION: PILIH MAPEL -->
         <section id="view-subject" class="view-section hidden flex-col items-center justify-center max-w-3xl mx-auto w-full">
             <div class="glass-panel p-5 md:p-8 w-full mb-6 md:mb-8 relative overflow-hidden">
-                <div class="absolute -right-5 -top-5 opacity-10 text-7xl md:text-9xl">
-                    <i id="narration-icon" class="fas fa-user-astronaut"></i>
-                </div>
+                <div class="absolute -right-5 -top-5 opacity-10 text-7xl md:text-9xl"><i id="narration-icon" class="fas fa-user-astronaut"></i></div>
                 <div class="relative z-10 flex gap-3 md:gap-4 items-start">
-                    <div class="text-xl md:text-3xl text-[var(--primary)] mt-1">
-                        <i class="fas fa-quote-left"></i>
-                    </div>
+                    <div class="text-xl md:text-3xl text-[var(--primary)] mt-1"><i class="fas fa-quote-left"></i></div>
                     <p id="greeting-text" class="text-sm md:text-lg font-light leading-relaxed"></p>
                 </div>
             </div>
@@ -195,7 +170,6 @@
                     <h3 class="text-lg md:text-2xl font-bold mb-1 md:mb-2">Matematika</h3>
                     <p class="text-[var(--text-muted)] text-[10px] md:text-sm">Logika, Berhitung & Analisis</p>
                 </div>
-
                 <div onclick="ui.showComingSoon()" class="glass-btn p-5 md:p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group">
                     <div class="w-14 h-14 md:w-20 md:h-20 rounded-full bg-[var(--secondary)]/20 flex items-center justify-center mb-3 md:mb-6 group-hover:scale-110 transition-transform duration-300">
                         <i class="fas fa-book-open text-2xl md:text-4xl text-[var(--secondary)]"></i>
@@ -212,14 +186,12 @@
                 <h2 class="text-xl md:text-3xl font-bold mb-1 md:mb-2 text-gradient">Matematika</h2>
                 <p class="text-[var(--text-muted)] text-xs md:text-base">Pilih mode latihan yang kamu inginkan.</p>
             </div>
-
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 w-full">
                 <div onclick="app.navigate('view-math-topics')" class="glass-btn p-5 md:p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group border-t-4 border-t-[var(--primary)]">
                     <i class="fas fa-tasks text-2xl md:text-4xl mb-3 md:mb-4 text-[var(--primary)]"></i>
                     <h3 class="text-base md:text-xl font-bold mb-1 md:mb-2">Latihan Per Materi</h3>
                     <div class="mt-3 md:mt-4 px-3 py-1 bg-[var(--primary)]/20 text-[var(--primary)] rounded-full text-[10px] md:text-xs font-bold tracking-wider">BUKA MATERI</div>
                 </div>
-
                 <div onclick="ui.showComingSoon()" class="glass-btn p-5 md:p-8 rounded-2xl flex flex-col items-center text-center cursor-pointer group border-t-4 border-t-[var(--secondary)]">
                     <i class="fas fa-stopwatch text-2xl md:text-4xl mb-3 md:mb-4 text-[var(--secondary)]"></i>
                     <h3 class="text-base md:text-xl font-bold mb-1 md:mb-2">Simulasi TKA</h3>
@@ -228,20 +200,16 @@
             </div>
         </section>
 
-        <!-- SECTION: MATH TOPICS (DAFTAR MATERI) -->
+        <!-- SECTION: MATH TOPICS -->
         <section id="view-math-topics" class="view-section hidden flex-col items-center justify-center max-w-4xl mx-auto w-full">
             <div class="mb-5 md:mb-8 text-center">
                 <h2 class="text-xl md:text-3xl font-bold mb-1 md:mb-2 text-gradient">Latihan Per Materi</h2>
                 <p class="text-[var(--text-muted)] text-xs md:text-base">Pilih bab dan materi yang ingin kamu kuasai hari ini!</p>
             </div>
-
             <div class="glass-panel p-4 md:p-6 w-full mb-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div class="topic-category">
-                        <div class="topic-header">
-                            <span><i class="fas fa-book text-[var(--primary)] mr-2"></i> 📘 Bilangan</span>
-                            <span class="badge-count">6 Materi</span>
-                        </div>
+                        <div class="topic-header"><span><i class="fas fa-book text-[var(--primary)] mr-2"></i> 📘 Bilangan</span><span class="badge-count">6 Materi</span></div>
                         <ul class="topic-list">
                             <li onclick="app.openMateri('operasi_bilangan_cacah')">Operasi Bilangan Cacah</li>
                             <li onclick="app.openMateri('kpk_dan_fpb')">KPK dan FPB</li>
@@ -252,10 +220,7 @@
                         </ul>
                     </div>
                     <div class="topic-category">
-                        <div class="topic-header">
-                            <span><i class="fas fa-ruler text-[var(--secondary)] mr-2"></i> 📗 Pengukuran</span>
-                            <span class="badge-count">9 Materi</span>
-                        </div>
+                        <div class="topic-header"><span><i class="fas fa-ruler text-[var(--secondary)] mr-2"></i> 📗 Pengukuran</span><span class="badge-count">9 Materi</span></div>
                         <ul class="topic-list">
                             <li onclick="app.openMateri('satuan_panjang')">Satuan Panjang</li>
                             <li onclick="app.openMateri('hubungan_satuan_panjang')">Hubungan Satuan Panjang</li>
@@ -269,10 +234,7 @@
                         </ul>
                     </div>
                     <div class="topic-category">
-                        <div class="topic-header">
-                            <span><i class="fas fa-shapes text-[var(--primary)] mr-2"></i> 📙 Geometri</span>
-                            <span class="badge-count">5 Materi</span>
-                        </div>
+                        <div class="topic-header"><span><i class="fas fa-shapes text-[var(--primary)] mr-2"></i> 📙 Geometri</span><span class="badge-count">5 Materi</span></div>
                         <ul class="topic-list">
                             <li onclick="app.openMateri('bentuk_bangun_datar')">Bentuk Bangun Datar</li>
                             <li onclick="app.openMateri('besar_sudut')">Besar Sudut</li>
@@ -282,10 +244,7 @@
                         </ul>
                     </div>
                     <div class="topic-category">
-                        <div class="topic-header">
-                            <span><i class="fas fa-chart-pie text-[var(--secondary)] mr-2"></i> 📕 Pengolahan Data</span>
-                            <span class="badge-count">1 Materi</span>
-                        </div>
+                        <div class="topic-header"><span><i class="fas fa-chart-pie text-[var(--secondary)] mr-2"></i> 📕 Pengolahan Data</span><span class="badge-count">1 Materi</span></div>
                         <ul class="topic-list">
                             <li class="last-item" onclick="app.openMateri('penyajian_data')">Penyajian Data</li>
                         </ul>
@@ -293,14 +252,20 @@
                 </div>
             </div>
         </section>
+        
+        <!-- TOMBOL KEMBALI -->
+        <div id="back-btn-container" class="hidden flex justify-center z-20 mt-4 mb-4">
+            <button onclick="app.goBack()" class="glass-btn px-5 py-2 md:px-6 md:py-3 rounded-full flex items-center gap-2 hover:bg-white/10 text-xs md:text-sm">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </button>
+        </div>
     </div>
 
-    <!-- TOMBOL KEMBALI -->
-    <div id="back-btn-container" class="hidden pb-6 md:pb-10 flex justify-center z-20">
-        <button onclick="app.goBack()" class="glass-btn px-5 py-2 md:px-6 md:py-3 rounded-full flex items-center gap-2 hover:bg-white/10 text-xs md:text-sm">
-            <i class="fas fa-arrow-left"></i> Kembali
-        </button>
-    </div>
+    <!-- FOOTER COPYRIGHT -->
+    <footer class="mt-auto py-6 text-center text-[10px] md:text-xs text-[var(--text-muted)] w-full border-t border-[var(--glass-border)] bg-[var(--bg-top)]/30 backdrop-blur-sm z-10 relative">
+        <p class="mb-1">Website dibuat khusus sebagai media latihan TKA oleh Fahilan.</p>
+        <p class="font-semibold text-gray-400">&copy; 2026 Mugeb Primary School (SD Muhammadiyah 1 GKB)</p>
+    </footer>
 
     <!-- MODAL PENGATURAN -->
     <div id="settings-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
@@ -313,10 +278,7 @@
             <div class="space-y-4 md:space-y-5">
                 <div class="flex justify-between items-center">
                     <span class="font-medium text-xs md:text-sm"><i class="fas fa-music mr-2 w-4 md:w-5 text-center"></i> Suara & Musik</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-music" class="sr-only peer" onchange="settings.toggleMusic()">
-                        <div class="w-9 h-5 md:w-11 md:h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div>
-                    </label>
+                    <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="toggle-music" class="sr-only peer" onchange="settings.toggleMusic()"><div class="w-9 h-5 md:w-11 md:h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div></label>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="font-medium text-xs md:text-sm"><i class="fas fa-volume-up mr-2 w-4 md:w-5 text-center"></i> Volume</span>
@@ -324,10 +286,7 @@
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="font-medium text-xs md:text-sm"><i class="fas fa-magic mr-2 w-4 md:w-5 text-center"></i> Efek Animasi</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-particles" class="sr-only peer" checked onchange="settings.toggleParticles()">
-                        <div class="w-9 h-5 md:w-11 md:h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div>
-                    </label>
+                    <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" id="toggle-particles" class="sr-only peer" checked onchange="settings.toggleParticles()"><div class="w-9 h-5 md:w-11 md:h-6 bg-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-[var(--primary)]"></div></label>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="font-medium text-xs md:text-sm"><i class="fas fa-expand mr-2 w-4 md:w-5 text-center"></i> Layar Penuh</span>
@@ -349,7 +308,6 @@
     </div>
 
     <script>
-        // --- LOGIKA LOADING SCREEN CEPAT ---
         window.addEventListener('load', () => {
             let progress = 0;
             const loadingBar = document.getElementById('loading-bar');
@@ -357,61 +315,28 @@
             const loadingScreen = document.getElementById('loading-screen');
             const textDisplay = document.getElementById('loading-text');
             
-            const texts = [
-                "Menghubungkan ke Galaksi Belajar...",
-                "Menyiapkan Guru Terbaik...",
-                "Menghubungkan ke dunia tak terbatas...",
-                "Menyiapkan Materi TKA...",
-                "Hampir Selesai...",
-                "Selamat Datang di Mugeb School!"
-            ];
+            const texts = ["Menghubungkan ke Galaksi Belajar...", "Menyiapkan Guru Terbaik...", "Menghubungkan ke dunia tak terbatas...", "Menyiapkan Materi TKA...", "Hampir Selesai...", "Selamat Datang di Mugeb School!"];
             
-            let textIdx = 0;
-            textDisplay.innerText = texts[0];
-            setTimeout(() => { textDisplay.style.opacity = 1; }, 50);
+            let textIdx = 0; textDisplay.innerText = texts[0]; setTimeout(() => { textDisplay.style.opacity = 1; }, 50);
 
-            // Pergantian teks lebih gesit (tiap 900ms)
             const textInterval = setInterval(() => {
                 textDisplay.style.opacity = 0; 
-                setTimeout(() => {
-                    textIdx++;
-                    if (textIdx < texts.length) {
-                        textDisplay.innerText = texts[textIdx];
-                        textDisplay.style.opacity = 1; 
-                    }
-                }, 300); 
+                setTimeout(() => { textIdx++; if (textIdx < texts.length) { textDisplay.innerText = texts[textIdx]; textDisplay.style.opacity = 1; } }, 300); 
             }, 900); 
 
-            // Loading bar sekitar 3-4 detik
             const progressInterval = setInterval(() => {
-                progress += Math.floor(Math.random() * 5) + 3; 
-                if (progress > 100) progress = 100;
-                
-                loadingBar.style.width = progress + '%';
-                loadingPercent.innerText = progress + '%';
+                progress += Math.floor(Math.random() * 5) + 3; if (progress > 100) progress = 100;
+                loadingBar.style.width = progress + '%'; loadingPercent.innerText = progress + '%';
                 
                 if (progress === 100) {
-                    clearInterval(progressInterval);
-                    clearInterval(textInterval);
-                    textDisplay.style.opacity = 0;
-                    setTimeout(() => { 
-                        textDisplay.innerText = texts[texts.length-1]; 
-                        textDisplay.style.opacity = 1; 
-                    }, 300);
-                    
-                    setTimeout(() => {
-                        loadingScreen.classList.add('opacity-0');
-                        setTimeout(() => loadingScreen.classList.add('hidden'), 500);
-                        bgEngine.init();
-                    }, 1000); 
+                    clearInterval(progressInterval); clearInterval(textInterval); textDisplay.style.opacity = 0;
+                    setTimeout(() => { textDisplay.innerText = texts[texts.length-1]; textDisplay.style.opacity = 1; }, 300);
+                    setTimeout(() => { loadingScreen.classList.add('opacity-0'); setTimeout(() => loadingScreen.classList.add('hidden'), 500); bgEngine.init(); }, 1000); 
                 }
             }, 120); 
         });
 
-        const state = {
-            viewHistory: ['view-landing'], currentTheme: localStorage.getItem('savedTheme') || 'galaxy',
-            studentName: '', particlesEnabled: true, musicEnabled: false
-        };
+        const state = { viewHistory: ['view-landing'], currentTheme: localStorage.getItem('savedTheme') || 'galaxy', studentName: '', particlesEnabled: true, musicEnabled: false };
         document.body.className = `theme-${state.currentTheme}`;
 
         const materiData = {
@@ -445,23 +370,12 @@
         };
 
         const audioSys = {
-            bgm: new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3'),
-            isSetup: false,
+            bgm: new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3'), isSetup: false,
             setup() { if(this.isSetup) return; this.bgm.loop = true; this.bgm.volume = document.getElementById('volume-slider').value; this.isSetup = true; },
-            playMusic() { 
-                if(!document.getElementById('toggle-music').checked) return this.pauseMusic(); 
-                this.setup(); 
-                this.bgm.play().catch(e => {
-                    console.log("Autoplay diblokir, butuh klik dari user");
-                    ui.showAlert("Info Audio", "Browser menghentikan lagu otomatis. Silakan sentuh layar agar musik berputar.", "fas fa-music");
-                }); 
-            },
+            playMusic() { if(!document.getElementById('toggle-music').checked) return this.pauseMusic(); this.setup(); this.bgm.play().catch(e => { ui.showAlert("Info Audio", "Browser menghentikan lagu otomatis. Silakan sentuh layar agar musik berputar.", "fas fa-music"); }); },
             pauseMusic() { if(this.isSetup) this.bgm.pause(); },
             setVolume(val) { if(this.isSetup) this.bgm.volume = val; },
-            playSFX() { 
-                if(!document.getElementById('toggle-music').checked) return; 
-                try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.type = 'sine'; osc.frequency.setValueAtTime(800, ctx.currentTime); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {}
-            }
+            playSFX() { if(!document.getElementById('toggle-music').checked) return; try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.type = 'sine'; osc.frequency.setValueAtTime(800, ctx.currentTime); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {} }
         };
 
         const ui = {
@@ -482,21 +396,15 @@
 
         const app = {
             setTheme(themeName) {
-                state.currentTheme = themeName;
-                localStorage.setItem('savedTheme', themeName);
-                document.body.className = `theme-${themeName}`;
+                state.currentTheme = themeName; localStorage.setItem('savedTheme', themeName); document.body.className = `theme-${themeName}`;
                 document.querySelectorAll('.theme-card').forEach(el => el.classList.remove('active', 'bg-[var(--glass-border)]'));
                 document.getElementById(`btn-theme-${themeName}`).classList.add('active', 'bg-[var(--glass-border)]');
-                bgEngine.initParticles();
-                audioSys.playSFX();
+                bgEngine.initParticles(); audioSys.playSFX();
             },
             startLearning() {
                 const nameInput = document.getElementById('student-name').value.trim();
                 if(!nameInput) { ui.showAlert("Halo, Siapa namamu?", "Silakan masukkan nama terlebih dahulu.", "fas fa-keyboard"); return; }
-                state.studentName = nameInput;
-                this.updateGreeting();
-                this.navigate('view-subject');
-                audioSys.playSFX();
+                state.studentName = nameInput; this.updateGreeting(); this.navigate('view-subject'); audioSys.playSFX();
                 if(document.getElementById('toggle-music').checked && !audioSys.isSetup) { audioSys.setup(); audioSys.playMusic(); }
             },
             updateGreeting() {
@@ -508,38 +416,23 @@
                 const currentViewId = state.viewHistory[state.viewHistory.length - 1];
                 if(currentViewId === targetViewId) return;
                 const currentEl = document.getElementById(currentViewId), targetEl = document.getElementById(targetViewId);
-                currentEl.classList.add('fade-exit');
-                audioSys.playSFX();
-                setTimeout(() => {
-                    currentEl.classList.add('hidden'); currentEl.classList.remove('fade-exit', 'fade-enter');
-                    targetEl.classList.remove('hidden'); targetEl.classList.add('fade-enter');
-                    state.viewHistory.push(targetViewId); this.updateBackButton();
-                    window.scrollTo({ top: 0, behavior: 'smooth' }); 
-                }, 400); 
+                currentEl.classList.add('fade-exit'); audioSys.playSFX();
+                setTimeout(() => { currentEl.classList.add('hidden'); currentEl.classList.remove('fade-exit', 'fade-enter'); targetEl.classList.remove('hidden'); targetEl.classList.add('fade-enter'); state.viewHistory.push(targetViewId); this.updateBackButton(); window.scrollTo({ top: 0, behavior: 'smooth' }); }, 400); 
             },
             goBack() {
                 if(state.viewHistory.length <= 1) return;
                 const currentViewId = state.viewHistory.pop(), targetViewId = state.viewHistory[state.viewHistory.length - 1];
                 const currentEl = document.getElementById(currentViewId), targetEl = document.getElementById(targetViewId);
-                currentEl.classList.add('fade-exit');
-                audioSys.playSFX();
-                setTimeout(() => {
-                    currentEl.classList.add('hidden'); currentEl.classList.remove('fade-exit', 'fade-enter');
-                    targetEl.classList.remove('hidden'); targetEl.classList.add('fade-enter');
-                    this.updateBackButton();
-                    window.scrollTo({ top: 0, behavior: 'smooth' }); 
-                }, 400);
+                currentEl.classList.add('fade-exit'); audioSys.playSFX();
+                setTimeout(() => { currentEl.classList.add('hidden'); currentEl.classList.remove('fade-exit', 'fade-enter'); targetEl.classList.remove('hidden'); targetEl.classList.add('fade-enter'); this.updateBackButton(); window.scrollTo({ top: 0, behavior: 'smooth' }); }, 400);
             },
             updateBackButton() {
                 const backBtn = document.getElementById('back-btn-container');
-                if(state.viewHistory.length > 1) { backBtn.classList.remove('hidden'); backBtn.classList.add('fade-enter'); } 
-                else { backBtn.classList.add('hidden'); backBtn.classList.remove('fade-enter'); }
+                if(state.viewHistory.length > 1) { backBtn.classList.remove('hidden'); backBtn.classList.add('fade-enter'); } else { backBtn.classList.add('hidden'); backBtn.classList.remove('fade-enter'); }
             },
             openMateri(materiId) {
-                const materi = materiData[materiId];
-                if (!materi) return;
-                if (materi.tersedia) { audioSys.playSFX(); window.location.href = materi.url; }
-                else ui.showAlert("Coming Soon!", `Materi "${materi.title}" sedang dalam tahap penyusunan. Terus semangat belajar ya!`, "fas fa-rocket");
+                const materi = materiData[materiId]; if (!materi) return;
+                if (materi.tersedia) { audioSys.playSFX(); window.location.href = materi.url; } else ui.showComingSoon();
             }
         };
 
@@ -564,29 +457,10 @@
                 const w = this.canvas.width, h = this.canvas.height; this.ctx.clearRect(0, 0, w, h);
                 for(let i = 0; i < this.particles.length; i++) {
                     let p = this.particles[i];
-                    if(p.type === 'star') {
-                        this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                        this.ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
-                        this.ctx.shadowBlur = 10; this.ctx.shadowColor = 'rgba(0, 243, 255, 0.9)';
-                        this.ctx.fill(); this.ctx.shadowBlur = 0; 
-                        p.alpha += p.alphaChange; if(p.alpha <= 0 || p.alpha >= 1) p.alphaChange *= -1;
-                    } 
-                    else if(p.type === 'comet') {
-                        this.ctx.beginPath(); this.ctx.moveTo(p.x, p.y); this.ctx.lineTo(p.x - (p.speedX * (p.length/10)), p.y - (p.speedY * (p.length/10)));
-                        this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.9)'; this.ctx.lineWidth = 3; this.ctx.stroke(); 
-                        p.x += p.speedX; p.y += p.speedY; if(p.x < 0 || p.x > w || p.y > h || p.y < 0) { p.x = Math.random() * w; p.y = -20; }
-                    }
-                    else if(p.type === 'petal' || p.type === 'leaf') {
-                        this.ctx.save(); this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle); this.ctx.beginPath();
-                        if(p.type === 'petal') { this.ctx.ellipse(0, 0, p.r, p.r/1.5, 0, 0, Math.PI * 2); this.ctx.fillStyle = 'rgba(255, 183, 197, 0.8)'; }
-                        else { this.ctx.ellipse(0, 0, p.r, p.r/2, 0, 0, Math.PI * 2); this.ctx.fillStyle = p.color; } 
-                        this.ctx.fill(); this.ctx.restore();
-                        p.x += p.speedX; p.y += p.speedY; p.angle += p.spin; if(p.y > h + 20) { p.y = -20; p.x = Math.random() * w; }
-                    }
-                    else if(p.type === 'bubble') {
-                        this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; this.ctx.stroke();
-                        p.x += p.speedX; p.y += p.speedY; if(p.y < -20) { p.y = h + 20; p.x = Math.random() * w; }
-                    }
+                    if(p.type === 'star') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`; this.ctx.shadowBlur = 10; this.ctx.shadowColor = 'rgba(0, 243, 255, 0.9)'; this.ctx.fill(); this.ctx.shadowBlur = 0; p.alpha += p.alphaChange; if(p.alpha <= 0 || p.alpha >= 1) p.alphaChange *= -1; } 
+                    else if(p.type === 'comet') { this.ctx.beginPath(); this.ctx.moveTo(p.x, p.y); this.ctx.lineTo(p.x - (p.speedX * (p.length/10)), p.y - (p.speedY * (p.length/10))); this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.9)'; this.ctx.lineWidth = 3; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.x < 0 || p.x > w || p.y > h || p.y < 0) { p.x = Math.random() * w; p.y = -20; } }
+                    else if(p.type === 'petal' || p.type === 'leaf') { this.ctx.save(); this.ctx.translate(p.x, p.y); this.ctx.rotate(p.angle); this.ctx.beginPath(); if(p.type === 'petal') { this.ctx.ellipse(0, 0, p.r, p.r/1.5, 0, 0, Math.PI * 2); this.ctx.fillStyle = 'rgba(255, 183, 197, 0.8)'; } else { this.ctx.ellipse(0, 0, p.r, p.r/2, 0, 0, Math.PI * 2); this.ctx.fillStyle = p.color; } this.ctx.fill(); this.ctx.restore(); p.x += p.speedX; p.y += p.speedY; p.angle += p.spin; if(p.y > h + 20) { p.y = -20; p.x = Math.random() * w; } }
+                    else if(p.type === 'bubble') { this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)'; this.ctx.stroke(); p.x += p.speedX; p.y += p.speedY; if(p.y < -20) { p.y = h + 20; p.x = Math.random() * w; } }
                 }
                 requestAnimationFrame(() => this.animate());
             }
