@@ -10,19 +10,21 @@
     <style>
         :root {
             --bg-top: #0a0a1a; --bg-bottom: #1a0b2e; --primary: #00f3ff; --primary-hover: #00d0ff; --secondary: #b900ff;
-            --text-main: #ffffff; --text-muted: #a0a0b8; --glass-bg: rgba(20, 20, 40, 0.4); --glass-border: rgba(0, 243, 255, 0.2);
+            --text-main: #ffffff; --text-muted: #a0a0b8; 
+            /* Transparansi disamakan agar tembus pandang */
+            --glass-bg: rgba(20, 20, 40, 0.15); --glass-border: rgba(0, 243, 255, 0.2);
             --font-main: 'Space Grotesk', sans-serif;
         }
         body.theme-sky {
             --bg-top: #ffe5d9; --bg-bottom: #ffcad4; --primary: #f28482; --primary-hover: #f0716f; --secondary: #84a59d;
-            --text-main: #2b2d42; --text-muted: #5c677d; --glass-bg: rgba(255, 255, 255, 0.5); --glass-border: rgba(242, 132, 130, 0.4);
+            --text-main: #2b2d42; --text-muted: #5c677d; --glass-bg: rgba(255, 255, 255, 0.25); --glass-border: rgba(242, 132, 130, 0.4);
         }
         body.theme-ocean {
             --bg-top: #001220; --bg-bottom: #004d7a; --primary: #00d4ff; --primary-hover: #00b0ff; --secondary: #00ff88;
-            --text-main: #ffffff; --text-muted: #b3e5fc; --glass-bg: rgba(0, 30, 60, 0.4); --glass-border: rgba(0, 212, 255, 0.3);
+            --text-main: #ffffff; --text-muted: #b3e5fc; --glass-bg: rgba(0, 30, 60, 0.2); --glass-border: rgba(0, 212, 255, 0.3);
         }
         
-        body { font-family: var(--font-main); color: var(--text-main); background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom)); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; margin: 0; }
+        body { font-family: var(--font-main); color: var(--text-main); background: linear-gradient(135deg, var(--bg-top), var(--bg-bottom)); background-attachment: fixed; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; margin: 0; }
         
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -31,8 +33,6 @@
         .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 1.5rem; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; }
         .glass-btn { background: var(--glass-bg); backdrop-filter: blur(8px); border: 1px solid var(--glass-border); color: var(--text-main); transition: all 0.3s ease; cursor: pointer; }
         .glass-btn:hover { border-color: var(--primary); transform: translateY(-2px); }
-        .glass-btn.locked { opacity: 0.6; cursor: not-allowed; }
-        .glass-btn.locked:hover { transform: none; border-color: var(--glass-border); }
         
         .primary-btn { background: var(--primary); color: #000; font-weight: 700; border: none; transition: all 0.3s; }
         body.theme-sky .primary-btn { color: #fff; }
@@ -105,14 +105,14 @@
                     <i class="fas fa-box-open text-4xl mb-4 text-[var(--secondary)] group-hover:scale-110 transition-transform"></i>
                     <h3 class="text-xl font-bold mb-2">Paket 2</h3>
                     <p class="text-xs text-[var(--text-muted)] mb-4">11 Soal Latihan</p>
-                    <div class="px-4 py-1 bg-white/20 text-white rounded-full text-xs font-bold w-full hover:bg-[var(--secondary)] hover:text-black transition">MULAI KERJAKAN</div>
+                    <div class="px-4 py-1 bg-[var(--secondary)] text-black rounded-full text-xs font-bold w-full hover:bg-[var(--secondary)] hover:text-black transition">MULAI KERJAKAN</div>
                 </div>
 
                 <div onclick="gate.startPaket(3)" class="glass-btn p-8 rounded-2xl flex flex-col items-center text-center group border-t-4 border-t-[#00ff88]">
                     <i class="fas fa-box-open text-4xl mb-4 text-[#00ff88] group-hover:scale-110 transition-transform"></i>
                     <h3 class="text-xl font-bold mb-2">Paket 3</h3>
                     <p class="text-xs text-[var(--text-muted)] mb-4">11 Soal Latihan</p>
-                    <div class="px-4 py-1 bg-white/20 text-white rounded-full text-xs font-bold w-full hover:bg-[#00ff88] hover:text-black transition">MULAI KERJAKAN</div>
+                    <div class="px-4 py-1 bg-[#00ff88] text-black rounded-full text-xs font-bold w-full hover:bg-[#00ff88] hover:text-black transition">MULAI KERJAKAN</div>
                 </div>
             </div>
             
@@ -176,7 +176,13 @@
         </div>
     </div>
 
-    <!-- MODAL PENGATURAN & ALERT (Sama seperti sebelumnya) -->
+    <!-- FOOTER COPYRIGHT -->
+    <footer class="mt-auto py-6 text-center text-[10px] md:text-xs text-[var(--text-muted)] w-full border-t border-[var(--glass-border)] bg-[var(--bg-top)]/30 backdrop-blur-sm z-10 relative">
+        <p class="mb-1">Website dibuat khusus sebagai media latihan TKA oleh Fahilan.</p>
+        <p class="font-semibold text-gray-400">&copy; 2026 Mugeb Primary School (SD Muhammadiyah 1 GKB)</p>
+    </footer>
+
+    <!-- MODAL PENGATURAN -->
     <div id="settings-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
         <div class="glass-panel w-11/12 max-w-xs md:max-w-sm p-5 md:p-6 transform scale-95 transition-transform duration-300" id="settings-content">
             <div class="flex justify-between items-center mb-4 md:mb-6 border-b border-white/10 pb-2 md:pb-3">
@@ -269,48 +275,48 @@
 
         // KUMPULAN DATA PAKET SOAL KPK & FPB
         const dataPaket1 = [
-            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "Kelompok ronda di Kampung Damai dibagi menjadi dua tim. Tim Ronda A bertugas setiap 6 hari sekali, sedangkan Tim Ronda B bertugas setiap 8 hari sekali. Jika hari ini kedua tim berjaga bersamaan, setiap berapa hari sekalikah kedua tim akan bertemu di jadwal yang sama?", opsi: { A: "24 hari", B: "12 hari", C: "16 hari", D: "48 hari" }, jawaban_benar: ["A"] },
-            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Ibu membelikan adik 24 buah apel dan 36 buah jeruk. Ibu ingin membagikan buah-buahan tersebut ke dalam beberapa kantong plastik secara merata tanpa ada sisa. Berapakah jumlah kantong plastik terbanyak yang harus disiapkan Ibu?", opsi: { A: "6 kantong", B: "12 kantong", C: "18 kantong", D: "24 kantong" }, jawaban_benar: ["B"] },
-            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "Roni dan Susi mengikuti les matematika di tempat yang sama. Roni pergi les setiap 4 hari sekali, sedangkan Susi setiap 6 hari sekali. Jika mereka pertama kali bertemu pada hari Selasa, pada hari apakah mereka akan les bersama-sama untuk kedua kalinya?", opsi: { A: "Kamis", B: "Jumat", C: "Sabtu", D: "Minggu" }, jawaban_benar: ["D"] },
-            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Dika sedang belajar mengenai struktur bilangan dalam pelajaran matematika. Guru meminta Dika mencari bentuk perkalian faktor-faktor prima (faktorisasi prima) dari bilangan 60. Bentuk faktorisasi prima yang benar adalah...", opsi: { A: "2 × 3 × 5", B: "2² × 3 × 5", C: "2 × 3² × 5", D: "2² × 3² × 5" }, jawaban_benar: ["B"] },
-            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "Seorang petani memanen 45 kg buah mangga dan 75 kg buah rambutan. Buah-buah tersebut akan dimasukkan ke dalam beberapa keranjang dengan jumlah yang sama banyak untuk setiap jenisnya. Berapa berat buah mangga yang ada di dalam setiap keranjang?", opsi: { A: "3 kg", B: "5 kg", C: "15 kg", D: "25 kg" }, jawaban_benar: ["A"] },
-            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Dalam sebuah kuis matematika, siswa diminta menentukan hubungan antar bilangan asli. Salah satu pernyataannya adalah: Bilangan 15 merupakan salah satu faktor dari bilangan 45.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
-            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "Bus Maju Jaya berangkat dari terminal setiap 15 menit sekali, sedangkan Bus Sumber Makmur berangkat setiap 20 menit sekali. Jika kedua bus berangkat bersamaan pada pukul 08.00, maka mereka akan berangkat bersamaan kembali pada pukul 09.20.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
-            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Seorang guru meminta siswa mencari Faktor Persekutuan Terbesar (FPB) dari dua buah bilangan untuk menyederhanakan pecahan. Nilai FPB dari bilangan 36 dan 54 adalah 18.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
-            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Ali mengunjungi rumah neneknya setiap 6 hari sekali, sementara Budi mengunjunginya setiap 8 hari sekali. Jika hari ini mereka tidak sengaja bertemu di rumah nenek, pada hari ke berapakah mereka bisa bertemu kembali di sana? (Pilihlah 2 jawaban yang benar!)", opsi: { A: "24 hari lagi", B: "36 hari lagi", C: "48 hari lagi", D: "60 hari lagi" }, jawaban_benar: ["A", "C"] },
-            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Toko Grosir Jaya memiliki dua jenis papan kayu dengan panjang masing-masing 24 meter dan 32 meter. Tukang kayu ingin memotong kedua papan menjadi beberapa bagian yang sama panjang tanpa sisa. Ukuran panjang potongan kayu yang mungkin adalah... (Pilihlah 2 jawaban yang benar!)", opsi: { A: "3 meter", B: "4 meter", C: "6 meter", D: "8 meter" }, jawaban_benar: ["B", "D"] },
-            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Pada sebuah lampu hias, lampu merah berkedip setiap 4 detik dan lampu hijau berkedip setiap 6 detik. Di antara bilangan berikut, manakah yang merupakan waktu (detik) di mana kedua lampu menyala bersamaan sebelum detik ke-40? (Pilihlah 3 jawaban yang benar!)", opsi: { A: "12", B: "18", C: "24", D: "36" }, jawaban_benar: ["A", "C", "D"] }
+            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "Budi pergi ke perpustakaan daerah setiap 3 hari sekali untuk membaca buku, sedangkan Andi pergi ke perpustakaan yang sama setiap 4 hari sekali. Jika hari ini mereka tidak sengaja bertemu di perpustakaan tersebut, berapa hari lagikah mereka akan bertemu kembali di perpustakaan?", opsi: { A: "7 hari", B: "10 hari", C: "12 hari", D: "14 hari" }, jawaban_benar: ["C"] },
+            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Ibu akan mengadakan syukuran dan membagikan buah-buahan kepada tetangga. Ibu memiliki 15 buah apel dan 20 buah jeruk. Buah-buahan tersebut akan dimasukkan ke dalam kantong plastik dengan jumlah apel dan jeruk yang sama banyak di setiap kantong. Berapakah jumlah kantong plastik terbanyak yang bisa disiapkan Ibu?", opsi: { A: "3 kantong", B: "4 kantong", C: "5 kantong", D: "10 kantong" }, jawaban_benar: ["C"] },
+            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "Pak Guru memiliki persediaan 120 buku tulis. Buku-buku tersebut dibagikan sama rata kepada 4 kelas. Setelah diterima oleh masing-masing kelas, setiap kelas sepakat untuk menyumbangkan 5 buah buku ke panti asuhan terdekat. Berapa banyak sisa buku yang ada di salah satu kelas tersebut?", opsi: { A: "20 buku", B: "25 buku", C: "30 buku", D: "35 buku" }, jawaban_benar: ["B"] },
+            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Sebuah toko beras memiliki stok sebanyak 250 kg. Pada pagi hari, beras tersebut laku terjual sebanyak 130 kg. Pemilik toko kemudian berniat menyumbangkan sisa beras yang ada ke 2 panti asuhan sama banyak. Berapa kilogram beras yang akan diterima oleh setiap panti asuhan?", opsi: { A: "60 kg", B: "70 kg", C: "80 kg", D: "90 kg" }, jawaban_benar: ["A"] },
+            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "Dina membeli 3 kotak pensil warna di koperasi sekolah. Setiap kotak berisi 12 batang pensil warna. Dina kemudian membagikan semua pensil warna tersebut kepada 4 orang sahabatnya sama rata agar mereka bisa menggambar bersama. Berapa batang pensil warna yang didapatkan oleh masing-masing sahabat Dina?", opsi: { A: "6 batang", B: "8 batang", C: "9 batang", D: "12 batang" }, jawaban_benar: ["C"] },
+            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Siti memiliki kebiasaan menabung Rp5.000 setiap harinya dari sisa uang sakunya. Setelah rutin menabung selama 10 hari, uang Siti sudah cukup untuk membeli sebuah buku cerita seharga Rp55.000.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "Rina mengambil les renang setiap 4 hari sekali, sedangkan Sari setiap 6 hari sekali. Jika hari ini mereka berenang bersama, maka mereka akan bertemu kembali di kolam renang 12 hari kemudian.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Sebuah toko kue memiliki 45 permen rasa cokelat dan 30 permen rasa stroberi. Jika permen-permen tersebut dibungkus ke dalam bingkisan dengan jumlah tiap rasa sama banyak, maka bingkisan terbanyak yang bisa dibuat oleh toko tersebut adalah 10 bingkisan.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Pak RT membagikan paket sembako yang terdiri dari 24 kg beras dan 36 bungkus mie instan. Sembako ini akan dibagikan kepada warga dengan jumlah beras dan mie instan yang sama persis tiap paketnya. Pernyataan yang tepat dari situasi di atas adalah...", opsi: { A: "Paket sembako terbanyak yang bisa dibuat Pak RT adalah 12 paket.", B: "Setiap paket sembako akan berisi 2 kg beras.", C: "Setiap paket sembako akan berisi 4 bungkus mie instan.", D: "Bisa juga dibuat menjadi 6 paket sembako saja dengan pembagian isi yang tetap rata." }, jawaban_benar: ["A", "B", "D"] },
+            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Toko roti \"Enak\" menjual kue pukis setiap pagi. Hari ini toko tersebut memproduksi 100 buah kue. Kue tersebut dibeli oleh 3 orang pelanggan yang masing-masing membeli 20 buah kue. Saat akan ditata ulang, penjual menyisihkan 10 buah kue yang bentuknya rusak. Pernyataan yang tepat adalah...", opsi: { A: "Sisa kue yang masih bagus di toko sekarang adalah 30 kue.", B: "Total kue yang berhasil terjual kepada 3 pelanggan berjumlah 60 kue.", C: "Sisa kue yang masih ada di toko lebih sedikit jumlahnya dibandingkan kue yang rusak.", D: "Jika sisa kue yang bagus dibagikan ke 5 anak jalanan, masing-masing akan mendapat 6 kue." }, jawaban_benar: ["A", "B", "D"] },
+            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Tiga buah lampu hias di taman kota memiliki pola kedipan yang berbeda. Lampu merah berkedip setiap 5 detik, lampu kuning berkedip setiap 10 detik, dan lampu hijau berkedip setiap 15 detik. Ketiga lampu tersebut baru saja berkedip secara bersamaan. Pernyataan yang tepat dari pola lampu tersebut adalah...", opsi: { A: "Lampu merah dan lampu kuning akan selalu berkedip bersama setiap kelipatan 10 detik.", B: "Ketiga lampu tersebut akan kembali berkedip bersamaan pada detik ke-30.", C: "Pada detik ke-15, hanya lampu hijau saja yang akan berkedip.", D: "Lampu kuning berkedip dengan frekuensi yang lebih sering daripada lampu merah." }, jawaban_benar: ["A", "B"] }
         ];
 
         const dataPaket2 = [
-            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "Dalam sesi pemanasan, atlet A berlari mengelilingi lapangan setiap 12 menit sekali, dan atlet B setiap 18 menit sekali. Kelipatan persekutuan terkecil (KPK) dari waktu berlari kedua atlet tersebut adalah...", opsi: { A: "36", B: "54", C: "72", D: "108" }, jawaban_benar: ["A"] },
-            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Panitia baksos OSIS mengumpulkan 50 buku tulis dan 75 pensil untuk diberikan kepada anak-anak panti asuhan. Setiap anak akan menerima paket alat tulis dengan jumlah yang sama banyak. Berapakah jumlah anak maksimal yang bisa menerima paket tersebut?", opsi: { A: "5 anak", B: "15 anak", C: "25 anak", D: "50 anak" }, jawaban_benar: ["C"] },
-            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "Tiga buah jam beker di kamar pameran diatur untuk berdering berkala. Jam pertama berdering setiap 10 menit, jam kedua setiap 15 menit, dan jam ketiga setiap 20 menit. Setiap berapa menit sekalikah ketiga jam tersebut akan berdering bersamaan?", opsi: { A: "60 menit", B: "30 menit", C: "45 menit", D: "90 menit" }, jawaban_benar: ["A"] },
-            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Andi ditugaskan mencari Faktor Persekutuan Terbesar (FPB) dari jumlah kelereng merah dan kelereng biru miliknya. Jika jumlah kelereng merah adalah 28 dan kelereng biru adalah 42, berapakah nilai FPB-nya?", opsi: { A: "7", B: "14", C: "21", D: "28" }, jawaban_benar: ["B"] },
-            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "Dina menyiram tanaman bunga mawar setiap 3 hari sekali dan melati setiap 4 hari sekali. Jika pada tanggal 1 Juni Dina menyiram kedua tanaman tersebut bersama-sama, pada tanggal berapakah ia akan menyiram bersamaan lagi?", opsi: { A: "7 Juni", B: "12 Juni", C: "13 Juni", D: "15 Juni" }, jawaban_benar: ["C"] },
-            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Sebuah toko kue ingin mengemas 40 kue sus dan 60 kue lemper ke dalam wadah kotak plastik. Jumlah wadah terbanyak yang bisa dibuat dengan isi kue sama rata per jenisnya adalah 20 wadah.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
-            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "Pada materi kelipatan bilangan asli di kelas 4, guru memberikan tebakan angka. Salah satu tebakannya adalah: Bilangan 28 merupakan salah satu bilangan kelipatan dari 6.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
-            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Tiga orang anak berlatih memanah di lapangan. Anak pertama memanah setiap 8 detik, anak kedua setiap 12 detik, dan anak ketiga setiap 16 detik. Kelipatan Persekutuan Terkecil (KPK) dari waktu memanah ketiga anak tersebut adalah 32.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
-            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Dalam materi pengenalan faktor bilangan asli, siswa diminta mencari angka-angka yang dapat membagi habis suatu bilangan. Bilangan berikut ini yang merupakan faktor dari 48 adalah... (Pilihlah 2 jawaban yang benar!)", opsi: { A: "6", B: "9", C: "12", D: "14" }, jawaban_benar: ["A", "C"] },
-            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Jadwal periksa pos ronda Kampung A dilakukan setiap 4 hari sekali, sedangkan Kampung B setiap 5 hari sekali. Jika petugas dari kedua kampung melakukan ronda bersama pada malam hari ini, mereka akan ronda bersama lagi pada malam ke-... (Pilihlah 2 jawaban yang benar!)", opsi: { A: "20", B: "30", C: "40", D: "50" }, jawaban_benar: ["A", "C"] },
-            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Seorang guru olahraga ingin membagikan 24 bola kasti dan 36 peluit kepada beberapa kelompok siswa secara merata untuk praktik. Jumlah kelompok siswa yang mungkin dibentuk oleh guru tersebut adalah... (Pilihlah 2 jawaban yang benar!)", opsi: { A: "4 kelompok", B: "6 kelompok", C: "8 kelompok", D: "9 kelompok" }, jawaban_benar: ["A", "B"] }
+            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "Di terminal kota, Bus rute A berangkat setiap 15 menit sekali, sedangkan Bus rute B berangkat setiap 20 menit sekali. Jika kedua bus tersebut berangkat bersamaan pada pukul 06.00 pagi, setelah berapa menitkah mereka akan kembali berangkat secara bersamaan?", opsi: { A: "20 menit", B: "30 menit", C: "45 menit", D: "60 menit" }, jawaban_benar: ["D"] },
+            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Pak Tani baru saja memanen 4 keranjang tomat dari kebunnya. Setiap keranjang memiliki berat 25 kg. Setengah dari total keseluruhan tomat yang dipanen tersebut langsung dijual ke pasar. Berapa kilogram tomat yang dijual oleh Pak Tani ke pasar?", opsi: { A: "25 kg", B: "40 kg", C: "50 kg", D: "100 kg" }, jawaban_benar: ["C"] },
+            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "Ani memiliki uang tabungan sebesar Rp120.000. Ia lalu pergi ke toko alat tulis dan membeli 2 buah buku bacaan yang masing-masing harganya Rp35.000. Sisa uang dari pembelian buku tersebut ia bagikan kepada 2 orang adiknya sama rata. Berapakah uang yang diterima oleh setiap adik Ani?", opsi: { A: "Rp20.000", B: "Rp25.000", C: "Rp30.000", D: "Rp35.000" }, jawaban_benar: ["B"] },
+            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Ibu Guru mempunyai hadiah berupa 40 buah pensil dan 60 buah penghapus. Hadiah tersebut akan dibagikan kepada sejumlah siswa berprestasi dengan jumlah pensil dan penghapus yang sama banyak. Berapa jumlah siswa paling banyak yang bisa menerima hadiah alat tulis tersebut?", opsi: { A: "10 siswa", B: "12 siswa", C: "15 siswa", D: "20 siswa" }, jawaban_benar: ["D"] },
+            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "Di lapangan upacara sekolah, tersusun kursi tamu sebanyak 15 baris. Setiap barisnya berisi 10 kursi. Saat pengecekan, panitia menemukan ada 18 kursi yang patah lalu menyingkirkannya dari lapangan. Berapakah sisa kursi yang masih bisa diduduki oleh para tamu?", opsi: { A: "122 kursi", B: "132 kursi", C: "142 kursi", D: "150 kursi" }, jawaban_benar: ["B"] },
+            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Lampu jalan A menyala setiap 8 menit, dan lampu jalan B menyala setiap 12 menit. Jika kedua lampu menyala bersamaan pada menit ini, mereka akan menyala bersama lagi 24 menit kemudian.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "Pak Doni baru saja memanen 30 buah mangga dan 50 buah jeruk. Faktor Persekutuan Terbesar (FPB) dari jumlah buah mangga dan jeruk milik Pak Doni tersebut adalah 5.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Andi membeli 4 bungkus roti tawar dengan harga total Rp20.000. Jika Budi datang dan ingin membeli 6 bungkus roti tawar yang sama, maka Budi harus membayar sebesar Rp30.000.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Dalam rangka penghijauan sekolah, Kelompok A mendapat tugas menanam bibit setiap 3 hari sekali, Kelompok B setiap 4 hari sekali, dan Kelompok C setiap 6 hari sekali. Pernyataan yang benar berdasarkan jadwal kegiatan tersebut adalah...", opsi: { A: "Kelompok A dan Kelompok B akan menanam bibit bersama-sama setiap 12 hari sekali.", B: "Kelompok B dan Kelompok C akan menanam bibit bersama-sama setiap 10 hari sekali.", C: "Ketiga kelompok tersebut (A, B, dan C) akan melakukan penanaman bibit secara serentak setiap 12 hari sekali.", D: "Secara jadwal, Kelompok A melakukan penanaman bibit lebih sering dibandingkan Kelompok C." }, jawaban_benar: ["A", "C", "D"] },
+            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Koperasi sekolah memiliki persediaan buku tulis sebanyak 120 buah pada awal minggu. Menjelang akhir minggu, tercatat buku tulis tersebut laku terjual sebanyak 75 buah. Petugas koperasi kemudian melakukan penyetokan ulang dengan membeli lagi 3 lusin buku tulis baru (1 lusin = 12 buah). Pernyataan yang tepat adalah...", opsi: { A: "Sisa buku tulis di koperasi sebelum membeli stok baru adalah 45 buah.", B: "Koperasi sekolah menambah pasokan buku tulis sebanyak 36 buah.", C: "Total persediaan akhir buku tulis di koperasi saat ini adalah 80 buah.", D: "Total persediaan akhir buku tulis di koperasi saat ini merupakan bilangan ganjil." }, jawaban_benar: ["A", "B", "D"] },
+            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Paman membagikan uang THR dengan total Rp100.000 kepada 4 orang keponakannya. Keponakan pertama yang paling besar mendapat jatah Rp40.000. Paman kemudian memutuskan sisa uang THR tersebut dibagikan sama rata kepada 3 keponakan yang lain. Pernyataan yang benar mengenai uang THR tersebut adalah...", opsi: { A: "Sisa uang yang akan dibagikan untuk 3 keponakan lainnya adalah Rp60.000.", B: "Tiga keponakan lainnya tersebut masing-masing akan mendapat bagian uang sebesar Rp20.000.", C: "Keponakan pertama mendapat nominal uang THR yang paling besar dari paman.", D: "Selisih uang THR antara keponakan pertama dan keponakan lainnya masing-masing adalah Rp10.000." }, jawaban_benar: ["A", "B", "C"] }
         ];
 
         const dataPaket3 = [
-            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "Dua buah tali memiliki panjang masing-masing 18 meter dan 24 meter. Tali tersebut akan dipotong menjadi beberapa bagian yang sama panjang. Faktor persekutuan terbesar (FPB) atau panjang maksimal dari potongan tali tersebut adalah...", opsi: { A: "3 meter", B: "4 meter", C: "6 meter", D: "8 meter" }, jawaban_benar: ["C"] },
-            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Ayah menjadwalkan untuk menguras akuarium A setiap 8 hari sekali dan akuarium B setiap 12 hari sekali. Jika hari ini kedua akuarium dikuras secara bersamaan, berapa hari lagikah Ayah akan menguras kedua akuarium tersebut bersama-sama kembali?", opsi: { A: "16 hari", B: "24 hari", C: "32 hari", D: "48 hari" }, jawaban_benar: ["B"] },
-            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "Siska memiliki 30 manik-manik merah dan 45 manik-manik biru untuk dibuat menjadi beberapa gelang hias. Setiap gelang harus memiliki kombinasi jumlah warna yang sama. Berapakah jumlah manik-manik biru pada setiap gelang jika Siska membuat gelang sebanyak-banyaknya?", opsi: { A: "2 manik-manik", B: "3 manik-manik", C: "5 manik-manik", D: "15 manik-manik" }, jawaban_benar: ["B"] },
-            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Dua buah alarm disetel dengan interval waktu berbeda. Alarm pertama berbunyi setiap 9 menit, dan alarm kedua setiap 15 menit. Kelipatan persekutuan terkecil (KPK) dari waktu berbunyi kedua alarm tersebut adalah...", opsi: { A: "3", B: "30", C: "45", D: "90" }, jawaban_benar: ["C"] },
-            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "Pak Doni memiliki 42 bibit pohon cabai dan 56 bibit pohon tomat. Ia ingin menanam bibit-bibit tersebut dalam beberapa barisan di kebunnya dengan jumlah pohon yang sama banyak di tiap barisnya. Berapa baris maksimal yang dapat dibuat Pak Doni?", opsi: { A: "7 baris", B: "14 baris", C: "28 baris", D: "42 baris" }, jawaban_benar: ["B"] },
-            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Dalam teori bilangan matematika asli, terdapat aturan mengenai Faktor Persekutuan Terbesar (FPB). Nilai FPB dari dua bilangan prima yang berbeda angka nilainya selalu sama dengan 1.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
-            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "Dua buah sirine di pabrik berbunyi berkala. Jika Kelipatan Persekutuan Terkecil (KPK) waktu berbunyi dari dua sirine tersebut adalah 30 menit, maka waktu pertemuan/berbunyi bersamaan berikutnya setelah itu adalah pada menit ke-45.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
-            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Siswa kelas 5 sedang mendaftar seluruh bilangan pembagi dari angka 24. Deretan angka: 1, 2, 3, 4, 6, 8, 12, dan 24 adalah seluruh faktor pelengkap yang dimiliki oleh bilangan 24.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
-            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Sebuah kapal kargo dengan rute A berlayar setiap 9 hari sekali, sedangkan kapal kargo dengan rute B berlayar setiap 12 hari sekali. Jika kedua kapal berangkat bersamaan dari pelabuhan hari ini, mereka akan terjadwal berangkat bersama kembali setelah... hari. (Pilihlah 2 jawaban yang benar!)", opsi: { A: "36", B: "54", C: "72", D: "90" }, jawaban_benar: ["A", "C"] },
-            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Diberikan dua buah bilangan asli yaitu 60 dan 90. Di antara pernyataan-pernyataan matematika berikut ini, manakah pernyataan yang bernilai benar mengenai kedua bilangan tersebut? (Pilihlah 2 jawaban yang benar!)", opsi: { A: "Faktor Persekutuan Terbesar (FPB) kedua bilangan adalah 30.", B: "Kelipatan Persekutuan Terkecil (KPK) kedua bilangan adalah 120.", C: "Faktor persekutuan terbesar keduanya adalah 30.", D: "Kelipatan persekutuan terkecil keduanya adalah 150." }, jawaban_benar: ["A", "C"] },
-            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Pak Guru meminta siswa mencari angka kelipatan persekutuan dari angka 3 dan 5. Di antara bilangan berikut, manakah yang merupakan kelipatan persekutuan dari 3 dan 5 yang letaknya di antara angka 20 dan 70? (Pilihlah 3 jawaban yang benar!)", opsi: { A: "30", B: "40", C: "45", D: "60" }, jawaban_benar: ["A", "C", "D"] }
+            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "Tiga pos keamanan di sebuah komplek perumahan memiliki jadwal ronda keliling yang berbeda. Petugas Pos 1 berkeliling setiap 3 jam, Pos 2 setiap 4 jam, dan Pos 3 setiap 6 jam. Jika pada pukul 22.00 mereka kebetulan berkeliling bersamaan, berapa jam lagikah ketiga pos tersebut akan melakukan ronda berkeliling secara bersamaan lagi?", opsi: { A: "8 jam", B: "12 jam", C: "16 jam", D: "24 jam" }, jawaban_benar: ["B"] },
+            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Pak Ridwan adalah peternak lele. Hari ini ia berhasil memanen 500 ekor ikan lele. Ia mengambil 50 ekor lele untuk dikonsumsi sendiri oleh keluarganya. Sisa ikan lele tersebut kemudian dijual kepada 3 warung makan langganannya dengan jumlah sama banyak. Berapakah ekor ikan lele yang diterima oleh masing-masing warung makan?", opsi: { A: "100 ekor", B: "125 ekor", C: "150 ekor", D: "175 ekor" }, jawaban_benar: ["C"] },
+            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "Sebuah pabrik roti rumahan baru saja memanggang 8 loyang roti bolu. Setiap loyangnya kemudian dipotong menjadi 12 bagian yang sama besar. Roti-roti yang sudah dipotong ini lantas dikemas menggunakan kotak plastik mika, di mana setiap kotak memuat 4 potong roti. Berapa banyak kotak plastik yang dibutuhkan untuk mengemas semua roti?", opsi: { A: "20 kotak", B: "24 kotak", C: "28 kotak", D: "32 kotak" }, jawaban_benar: ["B"] },
+            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Bu Aisyah menyiapkan bingkisan ulang tahun anaknya yang berisi 18 bungkus cokelat dan 27 butir permen karet. Ia ingin membuat bingkisan sebanyak mungkin dengan pembagian isi cokelat dan permen karet yang sama di setiap plastiknya. Berapakah butir permen karet yang ada di dalam setiap plastik bingkisan tersebut?", opsi: { A: "3 butir", B: "6 butir", C: "9 butir", D: "12 butir" }, jawaban_benar: ["A"] },
+            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "Doni sangat menginginkan sebuah sepeda baru yang harganya Rp800.000. Ia sudah memecahkan celengannya dan memiliki uang sebesar Rp500.000. Untuk menutupi kekurangannya, Doni menyisihkan uang jajannya setiap minggu dengan nominal yang sama selama 15 minggu. Berapa rupiah uang jajan yang disisihkan Doni tiap minggunya?", opsi: { A: "Rp15.000", B: "Rp20.000", C: "Rp25.000", D: "Rp30.000" }, jawaban_benar: ["B"] },
+            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Lani mendapat tugas merapikan 120 buku bacaan di perpustakaan. Ia saat ini sudah selesai merapikan 4 buah rak, di mana masing-masing rak memuat 25 buku. Maka sisa buku yang belum dirapikan oleh Lani adalah sebanyak 20 buku.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "Dika rutin mengikuti senam aerobik setiap 5 hari sekali, sedangkan Edo mengikuti senam setiap 7 hari sekali. Jika hari ini mereka berdua melakukan senam bersamaan, maka mereka akan bertemu kembali di sanggar senam setelah 30 hari.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Ibu membuat 45 bungkus kue lemper dan 60 buah kue pastel. Jika kue-kue tersebut akan disajikan ke dalam piring tamu dengan porsi tiap jenis kue sama rata per piringnya, maka piring terbanyak yang perlu disiapkan ibu adalah 15 buah piring.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Tim relawan bencana menerima pasokan sumbangan yang terdiri dari 48 dus air mineral dan 72 helai selimut tebal. Barang-barang ini akan dikirimkan ke beberapa posko pengungsian dengan jumlah barang yang sama banyak di tiap posko. Pernyataan yang tepat mengenai distribusi bantuan tersebut adalah...", opsi: { A: "Posko terbanyak yang memungkinkan untuk menerima pembagian bantuan tersebut adalah 24 posko.", B: "Nantinya setiap posko pengungsian akan menerima bantuan 2 dus air mineral.", C: "Nantinya setiap posko pengungsian akan menerima bantuan 4 helai selimut.", D: "Selisih jumlah selimut dan air mineral yang diterima oleh masing-masing posko pengungsian adalah 1 buah." }, jawaban_benar: ["A", "B", "D"] },
+            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Sebuah agen beras harus mendistribusikan berasnya ke tiga pasar tradisional. Pasar A dikirimi stok beras setiap 2 minggu sekali, Pasar B setiap 3 minggu sekali, dan Pasar C setiap 5 minggu sekali. Pernyataan yang benar mengenai jadwal agen beras tersebut adalah...", opsi: { A: "Pasar A dan Pasar B akan mendapat jadwal kiriman beras di hari yang bersamaan setiap siklus 6 mingguan.", B: "Pasar A dan Pasar C akan mendapat jadwal kiriman beras di hari yang bersamaan setiap siklus 10 mingguan.", C: "Ketiga pasar (A, B, dan C) akan menerima kiriman beras bersamaan di satu hari yang sama setiap 15 minggu sekali.", D: "Pasar C menerima jadwal kiriman beras dari agen dengan frekuensi yang lebih sering dibandingkan Pasar A." }, jawaban_benar: ["A", "B"] },
+            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Acara jalan santai yang diadakan sebuah sekolah diikuti oleh 250 orang siswa. Pihak panitia telah menyediakan 5 kardus penganan, di mana setiap kardusnya berisi 60 bungkus roti tawar lapis. Setelah acara selesai, ternyata ada roti yang tersisa karena tidak semua anak mengambil penganan tersebut. Pernyataan yang tepat adalah...", opsi: { A: "Total bungkus roti yang disiapkan oleh panitia pada hari itu berjumlah 300 bungkus.", B: "Jika diasumsikan setiap siswa pasti hanya mengambil 1 buah roti, maka sisa roti di panitia adalah 50 bungkus.", C: "Jika sisa roti tersebut (asumsi siswa mengambil satu) didonasikan ke 5 panti asuhan, tiap panti mendapat 10 roti.", D: "Jumlah total bungkus roti yang disiapkan panitia lebih sedikit jika dibandingkan dengan jumlah pesertanya." }, jawaban_benar: ["A", "B", "C"] }
         ];
 
-        // SISTEM NAVIGASI GATE (Gerbang Masuk)
+        // SISTEM NAVIGASI GATE
         const gate = {
             checkCode() {
                 const input = document.getElementById('access-code').value.toLowerCase().trim();
@@ -325,12 +331,9 @@
             startPaket(paketNum) {
                 audioSys.playSFX();
                 document.getElementById('view-paket').classList.add('hidden');
-                document.getElementById('view-quiz').classList.remove('hidden');
-                document.getElementById('view-quiz').classList.add('flex');
-                
+                document.getElementById('view-quiz').classList.remove('hidden'); document.getElementById('view-quiz').classList.add('flex');
                 document.getElementById('paket-label').innerText = `- Paket ${paketNum}`;
                 
-                // Pilih data sesuai paket yang ditekan
                 if(paketNum === 1) kuis.dataSoal = dataPaket1;
                 else if(paketNum === 2) kuis.dataSoal = dataPaket2;
                 else if(paketNum === 3) kuis.dataSoal = dataPaket3;
@@ -339,33 +342,27 @@
             },
             backToPaket() {
                 audioSys.playSFX();
-                document.getElementById('view-quiz').classList.add('hidden');
-                document.getElementById('view-quiz').classList.remove('flex');
-                
+                document.getElementById('view-quiz').classList.add('hidden'); document.getElementById('view-quiz').classList.remove('flex');
                 document.getElementById('result-area').classList.add('hidden');
-                document.getElementById('quiz-header').classList.remove('hidden');
-                document.getElementById('quiz-area').classList.remove('hidden');
-                
+                document.getElementById('quiz-header').classList.remove('hidden'); document.getElementById('quiz-area').classList.remove('hidden');
                 document.getElementById('view-paket').classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
 
-        // ENGINE KUIS
+        // ENGINE KUIS (MENAMPILKAN JAWABAN SISWA)
         const kuis = {
             dataSoal: [], idx: 0, jawabanSiswa: {}, waktuSisa: 600, timerId: null,
 
             init() { 
-                this.idx = 0; this.jawabanSiswa = {}; this.waktuSisa = 600; 
-                clearInterval(this.timerId);
+                this.idx = 0; this.jawabanSiswa = {}; this.waktuSisa = 600; clearInterval(this.timerId);
                 this.renderNavBoxes(); this.loadSoal(); this.startTimer(); 
             },
 
             startTimer() {
                 this.timerId = setInterval(() => {
                     this.waktuSisa--;
-                    let m = Math.floor(this.waktuSisa / 60).toString().padStart(2, '0');
-                    let s = (this.waktuSisa % 60).toString().padStart(2, '0');
+                    let m = Math.floor(this.waktuSisa / 60).toString().padStart(2, '0'); let s = (this.waktuSisa % 60).toString().padStart(2, '0');
                     document.getElementById('timer-display').innerText = `${m}:${s}`;
                     if (this.waktuSisa <= 0) { clearInterval(this.timerId); alert("Waktu habis! Kuis otomatis dikumpulkan."); this.submit(); }
                 }, 1000);
@@ -375,8 +372,7 @@
                 const grid = document.getElementById('nav-grid'); grid.innerHTML = '';
                 this.dataSoal.forEach((s, i) => {
                     const box = document.createElement('div');
-                    box.className = `nav-box w-7 h-7 md:w-10 md:h-10 flex items-center justify-center rounded-lg text-xs md:text-sm`;
-                    box.innerText = i + 1;
+                    box.className = `nav-box w-7 h-7 md:w-10 md:h-10 flex items-center justify-center rounded-lg text-xs md:text-sm`; box.innerText = i + 1;
                     if (this.jawabanSiswa[s.id] && this.jawabanSiswa[s.id].length > 0) box.classList.add('answered');
                     if (i === this.idx) box.classList.add('active');
                     box.onclick = () => { audioSys.playSFX(); this.idx = i; this.loadSoal(); };
@@ -399,8 +395,7 @@
                     const label = document.createElement('label');
                     label.className = "flex items-start p-3 md:p-4 bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-xl cursor-pointer hover:border-[var(--primary)] transition";
                     label.innerHTML = `
-                        <input type="${inputType}" name="soal_${soal.id}" value="${key}" ${isChecked} 
-                               onchange="kuis.saveAnswer(${soal.id}, '${key}', this.checked, ${isSingle})">
+                        <input type="${inputType}" name="soal_${soal.id}" value="${key}" ${isChecked} onchange="kuis.saveAnswer(${soal.id}, '${key}', this.checked, ${isSingle})">
                         <span class="text-xs md:text-base font-normal mt-[2px] leading-relaxed">${key}. ${value}</span>
                     `;
                     opsiContainer.appendChild(label);
@@ -419,16 +414,13 @@
                     btnNext.onclick = () => { audioSys.playSFX(); this.next(); };
                 }
                 
-                this.renderNavBoxes();
-                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                this.renderNavBoxes(); window.scrollTo({ top: 0, behavior: 'smooth' }); 
             },
 
             saveAnswer(id, key, isChecked, isSingle) {
                 if (!this.jawabanSiswa[id]) this.jawabanSiswa[id] = [];
-                if (isSingle) { this.jawabanSiswa[id] = [key]; } 
-                else { if (isChecked) this.jawabanSiswa[id].push(key); else this.jawabanSiswa[id] = this.jawabanSiswa[id].filter(k => k !== key); }
-                this.renderNavBoxes();
-                audioSys.playSFX();
+                if (isSingle) { this.jawabanSiswa[id] = [key]; } else { if (isChecked) this.jawabanSiswa[id].push(key); else this.jawabanSiswa[id] = this.jawabanSiswa[id].filter(k => k !== key); }
+                this.renderNavBoxes(); audioSys.playSFX();
             },
 
             next() { if (this.idx < this.dataSoal.length - 1) { this.idx++; this.loadSoal(); } },
@@ -436,19 +428,19 @@
 
             confirmSubmit() {
                 let belum = this.dataSoal.filter(s => !this.jawabanSiswa[s.id] || this.jawabanSiswa[s.id].length === 0).length;
-                if(belum > 0) { if(confirm(`Masih ada ${belum} soal yang kosong. Yakin kumpulkan sekarang?`)) this.submit(); } 
-                else this.submit();
+                if(belum > 0) { if(confirm(`Masih ada ${belum} soal yang kosong. Yakin kumpulkan sekarang?`)) this.submit(); } else this.submit();
             },
 
             submit() {
                 clearInterval(this.timerId);
-                document.getElementById('quiz-header').classList.add('hidden');
-                document.getElementById('quiz-area').classList.add('hidden');
+                document.getElementById('quiz-header').classList.add('hidden'); document.getElementById('quiz-area').classList.add('hidden');
                 
                 let totalBenar = 0; let pesanEvaluasi = "";
                 this.dataSoal.forEach((soal, i) => {
-                    const ansSiswa = [...(this.jawabanSiswa[soal.id] || [])].sort().join('');
+                    const ansSiswaArr = this.jawabanSiswa[soal.id] || [];
+                    const ansSiswa = [...ansSiswaArr].sort().join('');
                     const ansKunci = [...soal.jawaban_benar].sort().join('');
+                    const teksJawabanSiswa = ansSiswaArr.length > 0 ? ansSiswaArr.join(', ') : 'Tidak dijawab';
                     
                     if (ansSiswa === ansKunci && ansSiswa !== "") { totalBenar++; } 
                     else {
@@ -456,8 +448,9 @@
                             <div class="p-4 md:p-5 border-l-4 border-[#ff4757] bg-black/20 rounded-r-xl border-t border-r border-b border-white/5 w-full">
                                 <p class="font-bold text-[#ff4757] text-xs md:text-base">Wah, sayang sekali di Soal Nomor ${i + 1} masih kurang tepat. 🥺</p>
                                 <p class="text-xs md:text-sm mt-2 mb-3 text-gray-300">${soal.pertanyaan}</p>
-                                <div class="bg-[var(--glass-bg)] p-3 rounded-lg border border-[var(--primary)]/30">
-                                    <p class="text-[10px] md:text-sm text-[var(--primary)] font-semibold">💡 Jawaban yang benar adalah: ${soal.jawaban_benar.join(', ')}</p>
+                                <div class="bg-[var(--glass-bg)] p-3 rounded-lg border border-[var(--primary)]/30 space-y-1">
+                                    <p class="text-[10px] md:text-sm text-yellow-400 font-semibold">❌ Jawabanmu: ${teksJawabanSiswa}</p>
+                                    <p class="text-[10px] md:text-sm text-[var(--primary)] font-semibold">💡 Jawaban benar: ${soal.jawaban_benar.join(', ')}</p>
                                 </div>
                             </div>
                         `;
@@ -469,12 +462,10 @@
                 if (pesanEvaluasi === "") evalContainer.innerHTML = `<div class="p-6 border border-[#2ed573] bg-[#2ed573]/10 text-[#2ed573] font-bold rounded-2xl text-center text-sm md:text-lg shadow-[0_0_15px_rgba(46,213,115,0.2)]">🎉 Luar biasa sempurna! Seluruh jawabanmu benar tanpa ada yang salah! Pertahankan belajarmu ya!</div>`;
                 else evalContainer.innerHTML = `<p class="text-xs md:text-base mb-4 text-[var(--text-muted)]">Yuk, kita cek bagian mana yang masih bisa ditingkatkan:</p>` + pesanEvaluasi;
 
-                document.getElementById('result-area').classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                document.getElementById('result-area').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); 
             }
         };
 
-        // Otomatis fokus ke input kode akses
         window.addEventListener('load', () => { document.getElementById('access-code').focus(); });
     </script>
 </body>
