@@ -7,11 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Script MathJax untuk me-render Pecahan (Fractions) -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
     <style>
         :root {
             --bg-top: #0a0a1a; --bg-bottom: #1a0b2e; --primary: #00f3ff; --primary-hover: #00d0ff; --secondary: #b900ff;
@@ -63,7 +58,6 @@
 
     <canvas id="bg-canvas"></canvas>
 
-    <!-- TOMBOL PENGATURAN -->
     <div class="fixed top-4 right-4 z-50">
         <button onclick="ui.toggleSettings()" class="glass-btn p-3 md:p-4 rounded-full flex items-center justify-center w-10 h-10 md:w-12 md:h-12" aria-label="Pengaturan">
             <i class="fas fa-cog text-base md:text-xl"></i>
@@ -81,7 +75,8 @@
             <h2 class="text-2xl md:text-3xl font-bold mb-2">Area Terkunci</h2>
             <p class="text-sm md:text-base text-[var(--text-muted)] mb-8">Masukkan kode akses untuk membuka soal Mengubah Bentuk Pecahan.</p>
             
-            <input type="password" id="access-code" class="glass-input w-full py-3 px-4 rounded-xl text-center text-lg mb-6 tracking-[0.2em]" placeholder="KODE AKSES" autocomplete="off">
+            <input type="password" id="access-code" class="glass-input w-full py-3 px-4 rounded-xl text-center text-lg mb-6 tracking-[0.2em]" placeholder="KODE AKSES" autocomplete="off" onkeydown="if(event.key === 'Enter') { event.preventDefault(); gate.checkCode(); }">
+            
             <button onclick="gate.checkCode()" class="primary-btn w-full py-3 rounded-xl font-bold text-lg flex items-center justify-center gap-2">
                 <i class="fas fa-key"></i> Buka Akses
             </button>
@@ -148,7 +143,7 @@
                 <div class="mb-6 md:mb-8">
                     <div class="inline-block px-3 py-1 bg-[var(--primary)]/20 text-[var(--primary)] border border-[var(--primary)]/30 rounded-full text-[10px] md:text-xs font-bold tracking-wider mb-4" id="tipe-soal">TIPE SOAL</div>
                     <h2 id="nomor-soal-header" class="text-base md:text-xl font-bold mb-3 text-[var(--primary)] border-l-4 border-[var(--primary)] pl-3">Soal nomor 01</h2>
-                    <p id="teks-soal" class="text-sm md:text-lg font-normal leading-relaxed text-gray-100"></p>
+                    <p id="teks-soal" class="text-sm md:text-lg font-normal leading-relaxed text-gray-100 whitespace-pre-line"></p>
                 </div>
 
                 <div id="opsi-container" class="space-y-3 mb-6 md:mb-8"></div>
@@ -213,7 +208,13 @@
     </div>
 
     <script>
-        const currentTheme = localStorage.getItem('savedTheme') || 'galaxy';
+        // PENGAMAN LOCAL STORAGE AGAR TIDAK CRASH
+        let currentTheme = 'galaxy';
+        try {
+            currentTheme = localStorage.getItem('savedTheme') || 'galaxy';
+        } catch(e) {
+            console.warn("Akses LocalStorage diblokir oleh browser.");
+        }
         document.body.className = `theme-${currentTheme}`;
 
         // ENGINE ANIMASI
@@ -249,16 +250,31 @@
         };
         bgEngine.init();
 
+        // PENGAMAN AUDIO SYSTEM AGAR TIDAK CRASH
         const audioSys = {
             bgm: new Audio('https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3'),
             isSetup: false,
             setup() { if(this.isSetup) return; this.bgm.loop = true; this.bgm.volume = document.getElementById('volume-slider').value; this.isSetup = true; },
-            playMusic() { if(!document.getElementById('toggle-music').checked) return this.pauseMusic(); this.setup(); this.bgm.play().catch(e => console.log("Audio diblokir")); },
+            playMusic() { 
+                try {
+                    const toggle = document.getElementById('toggle-music');
+                    if(!toggle || !toggle.checked) return this.pauseMusic(); 
+                    this.setup(); this.bgm.play().catch(e => console.log("Audio diblokir browser"));
+                } catch(e) {}
+            },
             pauseMusic() { if(this.isSetup) this.bgm.pause(); },
             setVolume(val) { if(this.isSetup) this.bgm.volume = val; },
             playSFX() { 
-                if(!document.getElementById('toggle-music').checked) return; 
-                try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); osc.type = 'sine'; osc.frequency.setValueAtTime(800, ctx.currentTime); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); osc.start(); osc.stop(ctx.currentTime + 0.1); } catch(e) {}
+                try { 
+                    const toggle = document.getElementById('toggle-music');
+                    if(!toggle || !toggle.checked) return; 
+                    const AC = window.AudioContext || window.webkitAudioContext;
+                    if(!AC) return;
+                    const ctx = new AC(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); 
+                    osc.connect(gain); gain.connect(ctx.destination); osc.type = 'sine'; 
+                    osc.frequency.setValueAtTime(800, ctx.currentTime); gain.gain.setValueAtTime(0.1, ctx.currentTime); 
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); osc.start(); osc.stop(ctx.currentTime + 0.1); 
+                } catch(e) { console.log("SFX diblokir browser"); }
             }
         };
 
@@ -277,55 +293,63 @@
             toggleFullscreen() { if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(e=>console.log(e)); else if (document.exitFullscreen) document.exitFullscreen(); }
         };
 
-        // KUMPULAN DATA PAKET SOAL MENGUBAH BENTUK PECAHAN
+        // KUMPULAN DATA PAKET SOAL (MENGUBAH BENTUK PECAHAN)
         const dataPaket1 = [
-            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar denah taman sekolah berbentuk persegi panjang. Pada denah tersebut terdapat keterangan: $\\frac{1}{4}$ bagian ditanami bunga mawar, 0,5 bagian ditanami bunga melati, dan sisanya ditanami rumput hias).\nSiswa kelas 6 mendapat tugas untuk menghitung area taman sekolah. Berdasarkan gambar denah di atas, persentase luas taman yang ditanami bunga mawar adalah...", opsi: { A: "15%", B: "25%", C: "40%", D: "50%" }, jawaban_benar: ["B"] },
-            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Budi sedang membaca sebuah buku petualangan. Pada hari pertama, ia membaca 0,2 bagian dari total halaman. Pada hari kedua, ia membaca $\\frac{1}{5}$ bagian, dan pada hari ketiga ia membaca 30% dari total halaman. Berapa persentase sisa halaman buku yang belum dibaca oleh Budi?", opsi: { A: "20%", B: "25%", C: "30%", D: "40%" }, jawaban_benar: ["C"] },
-            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar 4 botol sirup berjejer: Botol A terisi $\\frac{1}{2}$ bagian, Botol B terisi 0,75 bagian, Botol C terisi 40% bagian, dan Botol D terisi $\\frac{3}{5}$ bagian).\nIbu meminta tolong kepada Siska untuk mengambil botol sirup di dapur. Ibu berpesan agar Siska mengambil botol yang isinya tepat 60% dari kapasitas penuhnya. Berdasarkan gambar, botol manakah yang harus diambil oleh Siska?", opsi: { A: "Botol A", B: "Botol B", C: "Botol C", D: "Botol D" }, jawaban_benar: ["D"] },
+            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar denah taman sekolah berbentuk persegi panjang. Pada denah tersebut terdapat keterangan: 1/4 bagian ditanami bunga mawar, 0,5 bagian ditanami bunga melati, dan sisanya ditanami rumput hias).\n\nSiswa kelas 6 mendapat tugas untuk menghitung area taman sekolah. Berdasarkan gambar denah di atas, persentase luas taman yang ditanami bunga mawar adalah...", opsi: { A: "15%", B: "25%", C: "40%", D: "50%" }, jawaban_benar: ["B"] },
+            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Budi sedang membaca sebuah buku petualangan. Pada hari pertama, ia membaca 0,2 bagian dari total halaman. Pada hari kedua, ia membaca 1/5 bagian, dan pada hari ketiga ia membaca 30% dari total halaman. Berapa persentase sisa halaman buku yang belum dibaca oleh Budi?", opsi: { A: "20%", B: "25%", C: "30%", D: "40%" }, jawaban_benar: ["C"] },
+            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar 4 botol sirup berjejer: Botol A terisi 1/2 bagian, Botol B terisi 0,75 bagian, Botol C terisi 40% bagian, dan Botol D terisi 3/5 bagian).\n\nIbu meminta tolong kepada Siska untuk mengambil botol sirup di dapur. Ibu berpesan agar Siska mengambil botol yang isinya tepat 60% dari kapasitas penuhnya. Berdasarkan gambar, botol manakah yang harus diambil oleh Siska?", opsi: { A: "Botol A", B: "Botol B", C: "Botol C", D: "Botol D" }, jawaban_benar: ["D"] },
             { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Di dalam kelas 5 yang berjumlah 40 siswa, dilakukan survei mata pelajaran favorit. Hasil survei menunjukkan bahwa 10 siswa sangat menyukai pelajaran Matematika. Jika disajikan dalam bentuk desimal, berapakah nilai yang mewakili bagian siswa yang menyukai pelajaran Matematika tersebut?", opsi: { A: "0,10", B: "0,25", C: "0,40", D: "0,50" }, jawaban_benar: ["B"] },
-            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar sebuah poster promosi di depan toko pakaian dengan rincian diskon: Kemeja = diskon $\\frac{1}{2}$ harga, Celana Jeans = diskon 30%, Topi = diskon 0,15, dan Sepatu = diskon $\\frac{1}{4}$).\nToko \"Gaya Kita\" sedang mengadakan cuci gudang besar-besaran. Andi memiliki kupon potongan khusus, namun kupon tersebut hanya berlaku untuk barang yang memiliki diskon persis 25%. Barang manakah yang bisa dibeli Andi menggunakan kupon tersebut?", opsi: { A: "Kemeja", B: "Celana Jeans", C: "Topi", D: "Sepatu" }, jawaban_benar: ["D"] },
-            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Dalam sebuah resep pembuatan kue bolu, tertulis bahwa takaran gula pasir yang dibutuhkan adalah $\\frac{3}{4}$ gelas takar. Nilai pecahan ini jika diubah ke dalam bentuk persentase sama dengan 75%.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
-            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "(Gambar sebuah loyang pizza bulat yang telah dipotong menjadi 8 bagian sama besar. Terdapat 3 potong pizza yang sudah diambil ke piring).\nPecahan yang mewakili potongan pizza yang sudah diambil di piring jika dinyatakan dalam bentuk bilangan desimal adalah 0,375.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
-            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Ani diajarkan untuk gemar menabung sejak dini. Ia selalu menyisihkan 0,4 bagian dari uang saku mingguannya ke dalam celengan. Ini berarti Ani menabung sebesar $\\frac{1}{4}$ dari total uang sakunya.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
-            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar keranjang berisi berbagai macam buah buahan: Terdapat label keterangan berisi 50 buah apel, 30 buah jeruk, dan 20 buah mangga).\nPak RT membagikan bingkisan buah untuk lomba warga. Pilihlah pernyataan yang tepat mengenai proporsi buah dalam keranjang tersebut!", opsi: { A: "Buah jeruk mewakili $\\frac{3}{10}$ bagian dari keseluruhan buah.", B: "Buah apel mewakili 0,05 bagian dari keseluruhan buah.", C: "Buah mangga mewakili 20% dari keseluruhan buah.", D: "Gabungan buah jeruk dan buah mangga adalah $\\frac{1}{2}$ bagian dari keseluruhan buah." }, jawaban_benar: ["A", "C", "D"] },
-            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Toni adalah seorang anggota pramuka. Ia memiliki seutas tali temali yang panjangnya 10 meter untuk mendirikan tenda. Pada saat perlombaan, Toni menggunakan 2,5 meter dari tali tersebut. Pilihlah pernyataan yang benar di bawah ini!", opsi: { A: "Tali yang digunakan oleh Toni adalah 25% dari panjang keseluruhan.", B: "Sisa tali yang belum digunakan oleh Toni adalah $\\frac{3}{4}$ bagian dari panjang keseluruhan.", C: "Tali yang digunakan oleh Toni jika dijadikan pecahan menjadi $\\frac{1}{5}$ bagian.", D: "Sisa tali yang belum digunakan oleh Toni dalam bentuk desimal adalah 0,25." }, jawaban_benar: ["A", "B"] },
-            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar ilustrasi 3 orang pelari di lintasan lari estafet dengan keterangan jarak yang telah ditempuh: Pelari X menyelesaikan $\\frac{4}{5}$ lintasan, Pelari Y menyelesaikan 85% lintasan, dan Pelari Z menyelesaikan 0,9 lintasan).\nKetiga pelari sedang bersaing ketat menuju garis akhir. Pilihlah pernyataan yang menggambarkan situasi balapan dengan tepat!", opsi: { A: "Pelari X baru menyelesaikan 80% dari total lintasannya.", B: "Pelari Z saat ini berada di posisi terdepan memimpin balapan.", C: "Pelari Y berlari menempuh jarak yang lebih pendek dari Pelari X.", D: "Sisa lintasan yang harus ditempuh oleh Pelari Z hingga garis akhir adalah $\\frac{1}{10}$ bagian." }, jawaban_benar: ["A", "B", "D"] }
+            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar sebuah poster promosi di depan toko pakaian dengan rincian diskon: Kemeja = diskon 1/2 harga, Celana Jeans = diskon 30%, Topi = diskon 0,15, dan Sepatu = diskon 1/4).\n\nToko \"Gaya Kita\" sedang mengadakan cuci gudang besar-besaran. Andi memiliki kupon potongan khusus, namun kupon tersebut hanya berlaku untuk barang yang memiliki diskon persis 25%. Barang manakah yang bisa dibeli Andi menggunakan kupon tersebut?", opsi: { A: "Kemeja", B: "Celana Jeans", C: "Topi", D: "Sepatu" }, jawaban_benar: ["D"] },
+            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Dalam sebuah resep pembuatan kue bolu, tertulis bahwa takaran gula pasir yang dibutuhkan adalah 3/4 gelas takar. Nilai pecahan ini jika diubah ke dalam bentuk persentase sama dengan 75%.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "(Gambar sebuah loyang pizza bulat yang telah dipotong menjadi 8 bagian sama besar. Terdapat 3 potong pizza yang sudah diambil ke piring).\n\nPecahan yang mewakili potongan pizza yang sudah diambil di piring jika dinyatakan dalam bentuk bilangan desimal adalah 0,375.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Ani diajarkan untuk gemar menabung sejak dini. Ia selalu menyisihkan 0,4 bagian dari uang saku mingguannya ke dalam celengan. Ini berarti Ani menabung sebesar 1/4 dari total uang sakunya.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar keranjang berisi berbagai macam buah buahan: Terdapat label keterangan berisi 50 buah apel, 30 buah jeruk, dan 20 buah mangga).\n\nPak RT membagikan bingkisan buah untuk lomba warga. Pilihlah pernyataan yang tepat mengenai proporsi buah dalam keranjang tersebut!", opsi: { A: "Buah jeruk mewakili 3/10 bagian dari keseluruhan buah.", B: "Buah apel mewakili 0,05 bagian dari keseluruhan buah.", C: "Buah mangga mewakili 20% dari keseluruhan buah.", D: "Gabungan buah jeruk dan buah mangga adalah 1/2 bagian dari keseluruhan buah." }, jawaban_benar: ["A", "C", "D"] },
+            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Toni adalah seorang anggota pramuka. Ia memiliki seutas tali temali yang panjangnya 10 meter untuk mendirikan tenda. Pada saat perlombaan, Toni menggunakan 2,5 meter dari tali tersebut. Pilihlah pernyataan yang benar di bawah ini!", opsi: { A: "Tali yang digunakan oleh Toni adalah 25% dari panjang keseluruhan.", B: "Sisa tali yang belum digunakan oleh Toni adalah 3/4 bagian dari panjang keseluruhan.", C: "Tali yang digunakan oleh Toni jika dijadikan pecahan menjadi 1/5 bagian.", D: "Sisa tali yang belum digunakan oleh Toni dalam bentuk desimal adalah 0,25." }, jawaban_benar: ["A", "B"] },
+            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar ilustrasi 3 orang pelari di lintasan lari estafet dengan keterangan jarak yang telah ditempuh: Pelari X menyelesaikan 4/5 lintasan, Pelari Y menyelesaikan 85% lintasan, dan Pelari Z menyelesaikan 0,9 lintasan).\n\nKetiga pelari sedang bersaing ketat menuju garis akhir. Pilihlah pernyataan yang menggambarkan situasi balapan dengan tepat!", opsi: { A: "Pelari X baru menyelesaikan 80% dari total lintasannya.", B: "Pelari Z saat ini berada di posisi terdepan memimpin balapan.", C: "Pelari Y berlari menempuh jarak yang lebih pendek dari Pelari X.", D: "Sisa lintasan yang harus ditempuh oleh Pelari Z hingga garis akhir adalah 1/10 bagian." }, jawaban_benar: ["A", "B", "D"] }
         ];
 
         const dataPaket2 = [
-            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar papan skor target pada permainan panahan: Papan target menunjukkan Andi berhasil mengenai sasaran sebanyak $\\frac{7}{10}$ bagian dari total anak panahnya).\nDalam lomba panahan tingkat desa, Andi mencatatkan skor yang cukup baik. Berdasarkan gambar papan skor tersebut, berapa persentase keberhasilan tembakan Andi?", opsi: { A: "7%", B: "17%", C: "70%", D: "77%" }, jawaban_benar: ["C"] },
-            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Siska senang merangkai perhiasan. Ia memiliki 1 kotak penuh manik-manik. Ia menggunakan 45% manik-manik tersebut untuk membuat sebuah kalung dan 0,2 bagian untuk membuat gelang. Berapakah sisa manik-manik Siska jika dinyatakan dalam bentuk pecahan biasa?", opsi: { A: "$\\frac{3}{20}$", B: "$\\frac{7}{20}$", C: "$\\frac{11}{20}$", D: "$\\frac{13}{20}$" }, jawaban_benar: ["B"] },
-            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar 4 wadah penyimpanan beras di dapur: Wadah P berisi 0,8 kg, Wadah Q berisi $\\frac{3}{4}$ kg, Wadah R terisi 75% dari 1 kg, dan Wadah S berisi $\\frac{4}{5}$ kg).\nIbu meminta Dika memeriksa stok beras. Ibu mengatakan ada dua wadah yang isi berasnya sama persis beratnya jika ditimbang. Pasangan wadah manakah yang dimaksud oleh Ibu?", opsi: { A: "Wadah P dan Wadah Q", B: "Wadah Q dan Wadah R", C: "Wadah P dan Wadah S", D: "Wadah R dan Wadah S" }, jawaban_benar: ["D"] },
+            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar papan skor target pada permainan panahan: Papan target menunjukkan Andi berhasil mengenai sasaran sebanyak 7/10 bagian dari total anak panahnya).\n\nDalam lomba panahan tingkat desa, Andi mencatatkan skor yang cukup baik. Berdasarkan gambar papan skor tersebut, berapa persentase keberhasilan tembakan Andi?", opsi: { A: "7%", B: "17%", C: "70%", D: "77%" }, jawaban_benar: ["C"] },
+            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Siska senang merangkai perhiasan. Ia memiliki 1 kotak penuh manik-manik. Ia menggunakan 45% manik-manik tersebut untuk membuat sebuah kalung dan 0,2 bagian untuk membuat gelang. Berapakah sisa manik-manik Siska jika dinyatakan dalam bentuk pecahan biasa?", opsi: { A: "3/20", B: "7/20", C: "11/20", D: "13/20" }, jawaban_benar: ["B"] },
+            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar 4 wadah penyimpanan beras di dapur: Wadah P berisi 0,8 kg, Wadah Q berisi 3/4 kg, Wadah R terisi 75% dari 1 kg, dan Wadah S berisi 4/5 kg).\n\nIbu meminta Dika memeriksa stok beras. Ibu mengatakan ada dua wadah yang isi berasnya sama persis beratnya jika ditimbang. Pasangan wadah manakah yang dimaksud oleh Ibu?", opsi: { A: "Wadah P dan Wadah Q", B: "Wadah Q dan Wadah R", C: "Wadah P dan Wadah S", D: "Wadah R dan Wadah S" }, jawaban_benar: ["D"] },
             { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Menjelang akhir tahun, sebuah toko sepatu memasang spanduk besar bertuliskan \"Diskon Setengah Harga Untuk Semua Barang!\". Apabila diskon \"setengah harga\" tersebut diubah menjadi bentuk desimal, berapakah nilainya?", opsi: { A: "0,05", B: "0,20", C: "0,50", D: "0,75" }, jawaban_benar: ["C"] },
-            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar indikator baterai pada layar sebuah telepon pintar (smartphone) yang menunjukkan kapasitas daya tersisa adalah 15%).\nDina sedang menonton video edukasi dan mendapat peringatan bahwa baterai ponselnya akan segera habis. Bentuk pecahan paling sederhana dari sisa baterai ponsel Dina pada layar tersebut adalah...", opsi: { A: "$\\frac{1}{15}$", B: "$\\frac{3}{20}$", C: "$\\frac{1}{5}$", D: "$\\frac{3}{10}$" }, jawaban_benar: ["B"] },
-            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Pak Guru menggambar pecahan $\\frac{2}{5}$ di papan tulis. Jika bilangan tersebut dikonversi ke dalam bentuk desimal, nilainya adalah 0,40.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
-            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "(Gambar selembar kertas persegi panjang yang dibagi menjadi 5 kolom vertikal yang sama besar. Sebanyak 4 kolom telah diarsir dengan warna biru, dan 1 kolom dibiarkan putih kosong).\nBagian kertas yang dibiarkan putih kosong tanpa arsiran tersebut mewakili 20% dari total luas kertas.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
-            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Doni harus mengerjakan tugas PR Matematika sebanyak 20 soal. Jika ia telah menyelesaikan 0,65 bagian dari tugasnya, itu berarti PR yang belum diselesaikan Doni tersisa $\\frac{3}{10}$ bagian.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
-            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar label informasi nilai gizi (nutrition facts) pada sebungkus roti tawar: Komposisi Karbohidrat 60%, Protein $\\frac{1}{5}$ bagian, Lemak 0,15 bagian, dan Zat lain-lain sebagai pelengkap sisanya).\nDari label informasi gizi tersebut, manakah pernyataan di bawah ini yang perhitungannya paling akurat?", opsi: { A: "Kandungan protein pada roti tersebut adalah 15%.", B: "Kandungan lemak jika diubah ke dalam bentuk pecahan menjadi $\\frac{3}{20}$.", C: "Zat lain-lain mengambil porsi 10% dari total keseluruhan kandungan.", D: "Kandungan karbohidrat apabila dinyatakan dalam bilangan desimal adalah 0,6." }, jawaban_benar: ["B", "D"] },
-            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Di sebuah tempat parkir sekolah, 0,4 dari keseluruhan kendaraan yang terparkir adalah sepeda motor, $\\frac{1}{2}$ bagian adalah mobil, dan sisanya merupakan sepeda ontel milik siswa. Pernyataan yang tepat dari situasi parkiran ini adalah...", opsi: { A: "Sepeda motor mengambil porsi 40% dari total kendaraan di tempat parkir.", B: "Jumlah mobil yang terparkir mewakili nilai 0,05 dari keseluruhan kendaraan.", C: "Sepeda ontel milik siswa mencakup porsi 10% dari total kendaraan.", D: "Jika diubah menjadi pecahan, kendaraan jenis sepeda ontel mewakili $\\frac{1}{10}$ bagian." }, jawaban_benar: ["A", "C", "D"] },
-            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar 3 potongan pita hias yang dibentangkan lurus: Pita Merah sepanjang 1,2 meter, Pita Kuning sepanjang 1 $\\frac{1}{4}$ meter, dan Pita Hijau sepanjang 130% dari 1 meter).\nKakak sedang mempersiapkan hiasan kado ulang tahun menggunakan ketiga pita tersebut. Pilihlah pernyataan yang mendeskripsikan perbandingan panjang pita dengan benar!", opsi: { A: "Panjang Pita Merah jika dijadikan pecahan campuran adalah 1 $\\frac{1}{5}$ meter.", B: "Panjang Pita Kuning jika diubah menjadi bentuk desimal adalah 1,25 meter.", C: "Pita Hijau adalah potongan pita yang memiliki ukuran paling panjang di antara ketiganya.", D: "Pita Merah memiliki panjang yang sama persis dengan Pita Kuning." }, jawaban_benar: ["A", "B", "C"] }
+            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar indikator baterai pada layar sebuah telepon pintar yang menunjukkan kapasitas daya tersisa adalah 15%).\n\nDina sedang menonton video edukasi dan mendapat peringatan bahwa baterai ponselnya akan segera habis. Bentuk pecahan paling sederhana dari sisa baterai ponsel Dina pada layar tersebut adalah...", opsi: { A: "1/15", B: "3/20", C: "1/5", D: "3/10" }, jawaban_benar: ["B"] },
+            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Pak Guru menggambar pecahan 2/5 di papan tulis. Jika bilangan tersebut dikonversi ke dalam bentuk desimal, nilainya adalah 0,40.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "(Gambar selembar kertas persegi panjang yang dibagi menjadi 5 kolom vertikal yang sama besar. Sebanyak 4 kolom telah diarsir dengan warna biru, dan 1 kolom dibiarkan putih kosong).\n\nBagian kertas yang dibiarkan putih kosong tanpa arsiran tersebut mewakili 20% dari total luas kertas.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Doni harus mengerjakan tugas PR Matematika sebanyak 20 soal. Jika ia telah menyelesaikan 0,65 bagian dari tugasnya, itu berarti PR yang belum diselesaikan Doni tersisa 3/10 bagian.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar label informasi nilai gizi pada sebungkus roti tawar: Komposisi Karbohidrat 60%, Protein 1/5 bagian, Lemak 0,15 bagian, dan Zat lain-lain sebagai pelengkap sisanya).\n\nDari label informasi gizi tersebut, manakah pernyataan di bawah ini yang perhitungannya paling akurat?", opsi: { A: "Kandungan protein pada roti tersebut adalah 15%.", B: "Kandungan lemak jika diubah ke dalam bentuk pecahan menjadi 3/20.", C: "Zat lain-lain mengambil porsi 10% dari total keseluruhan kandungan.", D: "Kandungan karbohidrat apabila dinyatakan dalam bilangan desimal adalah 0,6." }, jawaban_benar: ["B", "D"] },
+            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Di sebuah tempat parkir sekolah, 0,4 dari keseluruhan kendaraan yang terparkir adalah sepeda motor, 1/2 bagian adalah mobil, dan sisanya merupakan sepeda ontel milik siswa. Pernyataan yang tepat dari situasi parkiran ini adalah...", opsi: { A: "Sepeda motor mengambil porsi 40% dari total kendaraan di tempat parkir.", B: "Jumlah mobil yang terparkir mewakili nilai 0,05 dari keseluruhan kendaraan.", C: "Sepeda ontel milik siswa mencakup porsi 10% dari total kendaraan.", D: "Jika diubah menjadi pecahan, kendaraan jenis sepeda ontel mewakili 1/10 bagian." }, jawaban_benar: ["A", "C", "D"] },
+            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar 3 potongan pita hias yang dibentangkan lurus: Pita Merah sepanjang 1,2 meter, Pita Kuning sepanjang 1 1/4 meter, dan Pita Hijau sepanjang 130% dari 1 meter).\n\nKakak sedang mempersiapkan hiasan kado ulang tahun menggunakan ketiga pita tersebut. Pilihlah pernyataan yang mendeskripsikan perbandingan panjang pita dengan benar!", opsi: { A: "Panjang Pita Merah jika dijadikan pecahan campuran adalah 1 1/5 meter.", B: "Panjang Pita Kuning jika diubah menjadi bentuk desimal adalah 1,25 meter.", C: "Pita Hijau adalah potongan pita yang memiliki ukuran paling panjang di antara ketiganya.", D: "Pita Merah memiliki panjang yang sama persis dengan Pita Kuning." }, jawaban_benar: ["A", "B", "C"] }
         ];
 
         const dataPaket3 = [
-            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar struk tagihan listrik rumah tangga: Di bagian bawah struk terdapat keterangan bahwa $\\frac{3}{10}$ dari total keseluruhan biaya adalah beban pajak negara).\nBapak sedang menghitung pengeluaran bulanan. Ia melihat keterangan pajak pada struk listrik tersebut. Berapa persentase potongan pajak dari total tagihan listrik bapak?", opsi: { A: "3%", B: "13%", C: "30%", D: "33%" }, jawaban_benar: ["C"] },
-            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Mira membeli pita kain di toko alat jahit sepanjang 2,75 meter untuk membuat kerajinan tangan. Sesampainya di rumah, adik meminta pita tersebut sepanjang 1 $\\frac{1}{2}$ meter. Berapakah sisa pita Mira sekarang jika disajikan dalam bentuk pecahan meter?", opsi: { A: "$\\frac{3}{4}$", B: "$\\frac{5}{4}$", C: "$\\frac{7}{4}$", D: "$\\frac{9}{4}$" }, jawaban_benar: ["B"] },
-            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar grafik batang yang menunjukkan data hobi dari 100 siswa kelas 5 SD: Siswa yang hobi Olahraga mencapai 45 anak, hobi Musik mencapai 15 anak, dan hobi Membaca mencapai 40 anak).\nSekolah ingin memberikan penghargaan kepada kelompok baca perpustakaan. Dari grafik di atas, berapakah pecahan yang mewakili bagian siswa yang memiliki hobi Membaca?", opsi: { A: "$\\frac{1}{4}$", B: "$\\frac{3}{10}$", C: "$\\frac{7}{20}$", D: "$\\frac{2}{5}$" }, jawaban_benar: ["D"] },
-            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Sebuah toko buku daring (online) mengadakan promosi kilat \"Flash Sale\" dengan memberikan potongan harga atau diskon sebesar 80%. Bentuk pecahan paling sederhana yang setara dengan potongan harga toko buku tersebut adalah...", opsi: { A: "$\\frac{8}{10}$", B: "$\\frac{4}{5}$", C: "$\\frac{3}{4}$", D: "$\\frac{2}{5}$" }, jawaban_benar: ["B"] },
-            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar sebuah gelas ukur praktikum kimia di laboratorium yang terisi cairan berwarna biru. Angka pada skala gelas ukur tersebut menunjukkan volume tepat di angka 0,75 liter).\nSaat melakukan percobaan campuran, siswa ditugaskan mengubah takaran desimal menjadi persentase. Volume cairan 0,75 liter tersebut sama nilainya dengan persentase...", opsi: { A: "7,5%", B: "70,5%", C: "75%", D: "750%" }, jawaban_benar: ["C"] },
-            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Caca memotong pita sepanjang $\\frac{1}{8}$ meter. Nilai pecahan ini jika diubah ke dalam bentuk persentase adalah ekuivalen dengan 12,5%.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
-            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "(Gambar sebuah timbangan buah digital. Di atasnya diletakkan sebuah semangka utuh yang beratnya tertera secara pecahan sebesar 2 $\\frac{3}{4}$ kilogram).\nJika pembacaan timbangan digital tersebut menggunakan format desimal, maka angka yang akan muncul di layar adalah 2,34 kg.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
+            { id: 1, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar struk tagihan listrik rumah tangga: Di bagian bawah struk terdapat keterangan bahwa 3/10 dari total keseluruhan biaya adalah beban pajak negara).\n\nBapak sedang menghitung pengeluaran bulanan. Ia melihat keterangan pajak pada struk listrik tersebut. Berapa persentase potongan pajak dari total tagihan listrik bapak?", opsi: { A: "3%", B: "13%", C: "30%", D: "33%" }, jawaban_benar: ["C"] },
+            { id: 2, jenis_soal: "Pilihan Ganda", pertanyaan: "Mira membeli pita kain di toko alat jahit sepanjang 2,75 meter untuk membuat kerajinan tangan. Sesampainya di rumah, adik meminta pita tersebut sepanjang 1 1/2 meter. Berapakah sisa pita Mira sekarang jika disajikan dalam bentuk pecahan meter?", opsi: { A: "3/4", B: "5/4", C: "7/4", D: "9/4" }, jawaban_benar: ["B"] },
+            { id: 3, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar grafik batang yang menunjukkan data hobi dari 100 siswa kelas 5 SD: Siswa yang hobi Olahraga mencapai 45 anak, hobi Musik mencapai 15 anak, dan hobi Membaca mencapai 40 anak).\n\nSekolah ingin memberikan penghargaan kepada kelompok baca perpustakaan. Dari grafik di atas, berapakah pecahan yang mewakili bagian siswa yang memiliki hobi Membaca?", opsi: { A: "1/4", B: "3/10", C: "7/20", D: "2/5" }, jawaban_benar: ["D"] },
+            { id: 4, jenis_soal: "Pilihan Ganda", pertanyaan: "Sebuah toko buku daring (online) mengadakan promosi kilat dengan memberikan potongan harga sebesar 80%. Bentuk pecahan paling sederhana yang setara dengan potongan harga toko buku tersebut adalah...", opsi: { A: "8/10", B: "4/5", C: "3/4", D: "2/5" }, jawaban_benar: ["B"] },
+            { id: 5, jenis_soal: "Pilihan Ganda", pertanyaan: "(Gambar sebuah gelas ukur praktikum kimia di laboratorium yang terisi cairan berwarna biru. Angka pada skala gelas ukur tersebut menunjukkan volume tepat di angka 0,75 liter).\n\nSaat melakukan percobaan campuran, siswa ditugaskan mengubah takaran desimal menjadi persentase. Volume cairan 0,75 liter tersebut sama nilainya dengan persentase...", opsi: { A: "7,5%", B: "70,5%", C: "75%", D: "750%" }, jawaban_benar: ["C"] },
+            { id: 6, jenis_soal: "Benar atau Salah", pertanyaan: "Caca memotong pita sepanjang 1/8 meter. Nilai pecahan ini jika diubah ke dalam bentuk persentase adalah ekuivalen dengan 12,5%.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
+            { id: 7, jenis_soal: "Benar atau Salah", pertanyaan: "(Gambar sebuah timbangan buah digital. Di atasnya diletakkan sebuah semangka utuh yang beratnya tertera secara pecahan sebesar 2 3/4 kilogram).\n\nJika pembacaan timbangan digital tersebut menggunakan format desimal, maka angka yang akan muncul di layar adalah 2,34 kg.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["B"] },
             { id: 8, jenis_soal: "Benar atau Salah", pertanyaan: "Dalam pemeriksaan kualitas, ditemukan bagian cacat produksi sebesar 0,02 bagian dari total produk. Angka desimal ini sama artinya dengan 2%.", opsi: { A: "Benar", B: "Salah" }, jawaban_benar: ["A"] },
-            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar poster perbandingan potongan harga pada 3 toko yang berbeda untuk satu jenis tas sekolah yang sama: Toko Maju diskon 0,25 bagian harga, Toko Jaya diskon 30%, dan Toko Makmur diskon $\\frac{1}{5}$ bagian harga).\nIbu ingin membelikan tas baru untuk adik dan membandingkan ketiganya agar mendapat harga termurah. Manakah pernyataan yang tepat dari perbandingan diskon tersebut?", opsi: { A: "Toko Maju memberikan potongan harga senilai 25%.", B: "Toko Makmur memberikan potongan harga senilai 25%.", C: "Toko Jaya menawarkan diskon yang senilai dengan pecahan $\\frac{3}{10}$.", D: "Toko Maju dan Toko Makmur memberikan penawaran diskon yang sama besar." }, jawaban_benar: ["A", "C"] },
-            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Seorang petani mengelola sebidang lahan pertanian yang sangat luas. Berdasarkan data sertifikat, 0,35 bagian dari lahan tersebut ditanami jagung, $\\frac{2}{5}$ bagian ditanami kedelai, dan sisa tanah yang ada digunakan untuk menanam singkong. Pilihlah pernyataan yang akurat berdasarkan rincian lahan ini!", opsi: { A: "Lahan yang digunakan untuk menanam kedelai adalah 40% dari keseluruhan tanah.", B: "Lahan jagung jika dinyatakan dalam bentuk pecahan paling sederhana menjadi $\\frac{7}{20}$ bagian.", C: "Singkong mengambil area sebesar 0,25 bagian dari total luas tanah petani tersebut.", D: "Tanaman yang mengambil porsi lahan paling luas di pertanian tersebut adalah jagung." }, jawaban_benar: ["A", "B", "C"] },
-            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar infografis laporan kehadiran sekolah selama satu semester dari 3 orang siswa: Persentase kehadiran Ali adalah 95%, kehadiran Budi adalah 0,9, dan kehadiran Citra adalah $\\frac{19}{20}$ bagian).\nWali kelas sedang mengevaluasi rapor murid-muridnya berdasarkan infografis tersebut. Pilihlah pernyataan yang merupakan kesimpulan tepat!", opsi: { A: "Ali dan Citra memiliki catatan tingkat kehadiran sekolah yang sama persis persentasenya.", B: "Tingkat kehadiran Budi jika dikonversi menjadi pecahan biasa adalah $\\frac{9}{10}$ bagian.", C: "Tingkat kehadiran Citra bila disajikan dalam bentuk desimal akan menjadi 0,85.", D: "Budi adalah siswa dengan tingkat kehadiran sekolah paling tinggi di antara mereka bertiga." }, jawaban_benar: ["A", "B"] }
+            { id: 9, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar poster perbandingan potongan harga pada 3 toko yang berbeda untuk satu jenis tas sekolah yang sama: Toko Maju diskon 0,25 bagian harga, Toko Jaya diskon 30%, dan Toko Makmur diskon 1/5 bagian harga).\n\nIbu ingin membelikan tas baru untuk adik dan membandingkan ketiganya agar mendapat harga termurah. Manakah pernyataan yang tepat dari perbandingan diskon tersebut?", opsi: { A: "Toko Maju memberikan potongan harga senilai 25%.", B: "Toko Makmur memberikan potongan harga senilai 25%.", C: "Toko Jaya menawarkan diskon yang senilai dengan pecahan 3/10.", D: "Toko Maju dan Toko Makmur memberikan penawaran diskon yang sama besar." }, jawaban_benar: ["A", "C"] },
+            { id: 10, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "Seorang petani mengelola sebidang lahan pertanian yang sangat luas. Berdasarkan data sertifikat, 0,35 bagian dari lahan tersebut ditanami jagung, 2/5 bagian ditanami kedelai, dan sisa tanah yang ada digunakan untuk menanam singkong. Pilihlah pernyataan yang akurat berdasarkan rincian lahan ini!", opsi: { A: "Lahan yang digunakan untuk menanam kedelai adalah 40% dari keseluruhan tanah.", B: "Lahan jagung jika dinyatakan dalam bentuk pecahan paling sederhana menjadi 7/20 bagian.", C: "Singkong mengambil area sebesar 0,25 bagian dari total luas tanah petani tersebut.", D: "Tanaman yang mengambil porsi lahan paling luas di pertanian tersebut adalah jagung." }, jawaban_benar: ["A", "B", "C"] },
+            { id: 11, jenis_soal: "Pilihan Ganda Kompleks", pertanyaan: "(Gambar infografis laporan kehadiran sekolah selama satu semester dari 3 orang siswa: Persentase kehadiran Ali adalah 95%, kehadiran Budi adalah 0,9, dan kehadiran Citra adalah 19/20 bagian).\n\nWali kelas sedang mengevaluasi rapor murid-muridnya berdasarkan infografis tersebut. Pilihlah pernyataan yang merupakan kesimpulan tepat!", opsi: { A: "Ali dan Citra memiliki catatan tingkat kehadiran sekolah yang sama persis persentasenya.", B: "Tingkat kehadiran Budi jika dikonversi menjadi pecahan biasa adalah 9/10 bagian.", C: "Tingkat kehadiran Citra bila disajikan dalam bentuk desimal akan menjadi 0,85.", D: "Budi adalah siswa dengan tingkat kehadiran sekolah paling tinggi di antara mereka bertiga." }, jawaban_benar: ["A", "B"] }
         ];
 
         // SISTEM NAVIGASI GATE
         const gate = {
             checkCode() {
-                const input = document.getElementById('access-code').value.toLowerCase().trim(); audioSys.playSFX();
-                if(input === 'sdmugeb') { document.getElementById('view-access').classList.add('hidden'); document.getElementById('view-paket').classList.remove('hidden'); } 
-                else { ui.showAlert("Akses Ditolak", "Kode yang kamu masukkan salah. Silakan coba lagi.", "fas fa-lock"); }
+                const inputElement = document.getElementById('access-code');
+                if(!inputElement) return;
+                const input = inputElement.value.toLowerCase().trim();
+                audioSys.playSFX();
+                
+                if(input === 'sdmugeb') {
+                    document.getElementById('view-access').classList.add('hidden');
+                    document.getElementById('view-paket').classList.remove('hidden');
+                } else {
+                    ui.showAlert("Akses Ditolak", "Kode yang kamu masukkan salah. Silakan coba lagi.", "fas fa-lock");
+                }
             },
             startPaket(paketNum) {
                 audioSys.playSFX();
@@ -336,6 +360,7 @@
                 if(paketNum === 1) kuis.dataSoal = dataPaket1;
                 else if(paketNum === 2) kuis.dataSoal = dataPaket2;
                 else if(paketNum === 3) kuis.dataSoal = dataPaket3;
+                
                 kuis.init();
             },
             backToPaket() {
@@ -343,11 +368,12 @@
                 document.getElementById('view-quiz').classList.add('hidden'); document.getElementById('view-quiz').classList.remove('flex');
                 document.getElementById('result-area').classList.add('hidden');
                 document.getElementById('quiz-header').classList.remove('hidden'); document.getElementById('quiz-area').classList.remove('hidden');
-                document.getElementById('view-paket').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' });
+                document.getElementById('view-paket').classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
 
-        // ENGINE KUIS (DENGAN TAMPILAN JAWABAN LENGKAP & MATHJAX)
+        // ENGINE KUIS (MENAMPILKAN JAWABAN SISWA)
         const kuis = {
             dataSoal: [], idx: 0, jawabanSiswa: {}, waktuSisa: 600, timerId: null,
 
@@ -412,9 +438,6 @@
                 }
                 
                 this.renderNavBoxes(); window.scrollTo({ top: 0, behavior: 'smooth' }); 
-                
-                // Minta MathJax untuk merender ulang equation (pecahan) yang baru dimuat ke DOM
-                if (window.MathJax) { MathJax.typesetPromise([document.getElementById('quiz-area')]).catch((err) => console.log(err.message)); }
             },
 
             saveAnswer(id, key, isChecked, isSingle) {
@@ -440,36 +463,18 @@
                     const ansSiswaArr = this.jawabanSiswa[soal.id] || [];
                     const ansSiswa = [...ansSiswaArr].sort().join('');
                     const ansKunci = [...soal.jawaban_benar].sort().join('');
+                    const teksJawabanSiswa = ansSiswaArr.length > 0 ? ansSiswaArr.join(', ') : 'Tidak dijawab';
                     
                     if (ansSiswa === ansKunci && ansSiswa !== "") { totalBenar++; } 
                     else {
-                        // Merakit List Opsi Jawaban untuk Tampilan Evaluasi
-                        let listOpsiHTML = `<div class="mt-3 space-y-2 text-left bg-black/20 p-4 rounded-xl border border-white/5 shadow-inner">`;
-                        for (const [key, value] of Object.entries(soal.opsi)) {
-                            let isKunci = soal.jawaban_benar.includes(key);
-                            let isChosen = ansSiswaArr.includes(key);
-                            let icon = isKunci ? '<i class="fas fa-check-circle text-green-400 mr-2 text-sm md:text-base"></i>' 
-                                               : (isChosen ? '<i class="fas fa-times-circle text-red-400 mr-2 text-sm md:text-base"></i>' 
-                                                           : '<i class="far fa-circle text-gray-500 mr-2 text-sm md:text-base"></i>');
-                            let textColor = isKunci ? 'text-green-300 font-bold' 
-                                                    : (isChosen ? 'text-red-300 font-medium' : 'text-gray-400');
-                            
-                            listOpsiHTML += `<div class="text-xs md:text-sm ${textColor} flex items-start">
-                                                <span class="mt-[2px]">${icon}</span>
-                                                <span><b>${key}.</b> ${value}</span>
-                                             </div>`;
-                        }
-                        listOpsiHTML += `</div>`;
-
                         pesanEvaluasi += `
-                            <div class="p-4 md:p-6 border-l-4 border-[#ff4757] bg-[var(--glass-bg)] rounded-r-2xl border-t border-r border-b border-[var(--glass-border)] w-full shadow-lg">
-                                <div class="flex items-center mb-3">
-                                    <i class="fas fa-exclamation-circle text-[#ff4757] text-lg mr-2"></i>
-                                    <p class="font-bold text-[#ff4757] text-xs md:text-base">Wah, di Soal Nomor ${i + 1} masih kurang tepat. 🥺</p>
+                            <div class="p-4 md:p-5 border-l-4 border-[#ff4757] bg-black/20 rounded-r-xl border-t border-r border-b border-white/5 w-full mb-4">
+                                <p class="font-bold text-[#ff4757] text-xs md:text-base">Wah, sayang sekali di Soal Nomor ${i + 1} masih kurang tepat. 🥺</p>
+                                <p class="text-xs md:text-sm mt-2 mb-3 text-gray-300 whitespace-pre-line">${soal.pertanyaan}</p>
+                                <div class="bg-[var(--glass-bg)] p-3 rounded-lg border border-[var(--primary)]/30 space-y-1">
+                                    <p class="text-[10px] md:text-sm text-yellow-400 font-semibold">❌ Jawabanmu: ${teksJawabanSiswa}</p>
+                                    <p class="text-[10px] md:text-sm text-[var(--primary)] font-semibold">💡 Jawaban benar: ${soal.jawaban_benar.join(', ')}</p>
                                 </div>
-                                <p class="text-xs md:text-sm mb-4 text-gray-200 leading-relaxed">${soal.pertanyaan}</p>
-                                <p class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Pilihan Jawaban:</p>
-                                ${listOpsiHTML}
                             </div>
                         `;
                     }
@@ -477,16 +482,10 @@
 
                 document.getElementById('score-text').innerText = Math.round((totalBenar / this.dataSoal.length) * 100);
                 const evalContainer = document.getElementById('eval-container');
-                if (pesanEvaluasi === "") {
-                    evalContainer.innerHTML = `<div class="p-6 border border-[#2ed573] bg-[#2ed573]/10 text-[#2ed573] font-bold rounded-2xl text-center text-sm md:text-lg shadow-[0_0_15px_rgba(46,213,115,0.2)] flex items-center justify-center gap-3"><i class="fas fa-star text-2xl"></i> Luar biasa sempurna! Seluruh jawabanmu benar!</div>`;
-                } else {
-                    evalContainer.innerHTML = `<p class="text-xs md:text-base mb-5 text-[var(--text-muted)] font-medium"><i class="fas fa-search mr-2"></i>Mari kita cek bersama opsi mana yang seharusnya kamu pilih:</p>` + `<div class="space-y-6">${pesanEvaluasi}</div>`;
-                }
+                if (pesanEvaluasi === "") evalContainer.innerHTML = `<div class="p-6 border border-[#2ed573] bg-[#2ed573]/10 text-[#2ed573] font-bold rounded-2xl text-center text-sm md:text-lg shadow-[0_0_15px_rgba(46,213,115,0.2)]">🎉 Luar biasa sempurna! Seluruh jawabanmu benar tanpa ada yang salah! Pertahankan belajarmu ya!</div>`;
+                else evalContainer.innerHTML = `<p class="text-xs md:text-base mb-4 text-[var(--text-muted)]">Yuk, kita cek bagian mana yang masih bisa ditingkatkan:</p>` + pesanEvaluasi;
 
                 document.getElementById('result-area').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); 
-
-                // Render MathJax di area hasil jika ada
-                if (window.MathJax) { MathJax.typesetPromise([document.getElementById('result-area')]).catch((err) => console.log(err.message)); }
             }
         };
 
